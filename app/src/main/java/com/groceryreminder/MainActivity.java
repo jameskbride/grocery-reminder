@@ -1,12 +1,19 @@
 package com.groceryreminder;
 
-import android.support.v7.app.ActionBarActivity;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import javax.inject.Inject;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends ReminderBaseActivity {
+
+    @Inject
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
