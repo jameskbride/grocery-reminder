@@ -65,6 +65,7 @@ dependencies {
     testCompile('junit:junit:4.12') {
         exclude module: 'hamcrest-core'
     }
+    testCompile("org.mockito:mockito-core:1.+")
     testCompile('org.robolectric:robolectric:2.4') {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
