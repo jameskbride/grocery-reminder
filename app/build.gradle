@@ -53,7 +53,6 @@ idea {
     }
 }
 
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
@@ -63,9 +62,6 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-integration:1.1'
     testCompile 'org.hamcrest:hamcrest-core:1.1'
     testCompile 'org.hamcrest:hamcrest-library:1.1'
-    testCompile('junit:junit-dep:4.11') {
-        exclude module: 'hamcrest-core'
-    }
     testCompile('junit:junit:4.12') {
         exclude module: 'hamcrest-core'
     }
@@ -93,20 +89,16 @@ dependencies {
     androidTestCompile('junit:junit-dep:4.11') {
         exclude module: 'hamcrest-core'
     }
-    androidTestCompile('junit:junit:4.12') {
-        exclude module: 'hamcrest-core'
-    }
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.0') {
         exclude module: 'hamcrest-core'
         exclude module: 'hamcrest-library'
         exclude module: 'hamcrest-integration'
-        exclude module: 'junit'
         exclude group: 'javax.inject'
     }
     androidTestCompile('com.android.support.test:testing-support-lib:0.1') {
         exclude module: 'hamcrest-core'
         exclude module: 'hamcrest-library'
         exclude module: 'hamcrest-integration'
-        exclude module: 'junit'
     }
 }
