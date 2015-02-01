@@ -1,16 +1,17 @@
 package com.groceryreminder;
 
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 
-public class MainActivity extends ReminderBaseActivity {
+public class MainActivity extends ReminderFragmentBaseActivity {
 
     @Inject
     LocationManager locationManager;
@@ -19,6 +20,11 @@ public class MainActivity extends ReminderBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        List<Reminder> reminders = new ArrayList<Reminder>();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, ReminderListFragment.newInstance(reminders))
+                .commit();
     }
 
 

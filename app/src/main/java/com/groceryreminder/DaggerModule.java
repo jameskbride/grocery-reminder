@@ -6,7 +6,9 @@ import dagger.Module;
     includes = {
         AndroidModule.class
     },
-    injects = MainActivity.class,
+    injects = {
+      MainActivity.class
+    },
     complete = false
 )
 public class DaggerModule {
