@@ -3,12 +3,12 @@ package com.groceryreminder;
 import android.content.Context;
 import android.location.LocationManager;
 
-import static android.content.Context.LOCATION_SERVICE;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 @Module(library = true)
 public class AndroidModule {

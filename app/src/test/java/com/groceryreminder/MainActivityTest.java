@@ -1,19 +1,16 @@
 package com.groceryreminder;
 
-import android.widget.ListView;
-
-import com.groceryreminder.MainActivity;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(emulateSdk = 18)
 public class MainActivityTest {
 
     private MainActivity activity;
@@ -24,8 +21,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void givenNoRemindersExistThenTheReminderListIsEmpty() {
-        ListView listView = (ListView)activity.findViewById(R.id.reminders_list);
-        assertEquals(listView.getCount(), 0);
+    public void whenTheActivityIsCreatedThenItShouldBeStarted() {
+        assertFalse(activity.isFinishing());
     }
 }

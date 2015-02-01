@@ -58,14 +58,13 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.squareup.dagger:dagger:1.2.2'
     compile 'com.squareup.dagger:dagger-compiler:1.2.2'
-
     testCompile 'org.hamcrest:hamcrest-integration:1.1'
     testCompile 'org.hamcrest:hamcrest-core:1.1'
     testCompile 'org.hamcrest:hamcrest-library:1.1'
     testCompile('junit:junit:4.12') {
         exclude module: 'hamcrest-core'
     }
-    testCompile("org.mockito:mockito-core:1.+")
+    testCompile 'org.mockito:mockito-core:1.+'
     testCompile('org.robolectric:robolectric:2.4') {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
@@ -83,14 +82,12 @@ dependencies {
         exclude module: 'wagon-http-lightweight'
         exclude module: 'wagon-provider-api'
     }
-
     androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
     androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
     androidTestCompile('junit:junit-dep:4.11') {
         exclude module: 'hamcrest-core'
     }
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.0') {
         exclude module: 'hamcrest-core'
         exclude module: 'hamcrest-library'
