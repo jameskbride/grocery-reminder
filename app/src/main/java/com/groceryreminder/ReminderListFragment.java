@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
@@ -31,14 +34,24 @@ public class ReminderListFragment extends ListFragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments() != null) {
             this.reminders = (List<Reminder>)getArguments().getSerializable(REMINDERS_KEY);
         }
 
         // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<Reminder>(getActivity(),
+        View root = inflater.inflate(R.layout.reminder_list_fragment, container, false);
+        ListView list = (ListView)root.findViewById(android.R.id.list);
+        list.setAdapter(new ArrayAdapter<Reminder>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, reminders));
-        return super.onCreateView(inflater, container, savedInstanceState);
+        FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab);
+        fab.attachToListView(list);
+
+        return root;
     }
 }
