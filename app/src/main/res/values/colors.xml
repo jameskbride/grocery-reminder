@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="primary" type="color">#FF33B5E5</item>
+    <item name="primary_pressed" type="color">#FF0099CC</item>
+    <item name="ripple" type="color">#FF0099CC</item>
+
+    <integer-array name="androidcolors">
+        <item>@color/primary</item>
+        <item>@color/primary_pressed</item>
+    </integer-array>
+</resources>
