@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 public class AddReminderFragment extends Fragment {
 
 
+    public OnAddReminderRequestListener getOnAddReminderRequestListener() {
+        return onAddReminderRequestListener;
+    }
+
     OnAddReminderRequestListener onAddReminderRequestListener;
 
     @Override

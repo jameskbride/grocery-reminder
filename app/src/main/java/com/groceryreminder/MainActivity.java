@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class MainActivity extends ReminderFragmentBaseActivity {
+public class MainActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener {
 
     @Inject
     LocationManager locationManager;

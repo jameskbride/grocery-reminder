@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.util.FragmentTestUtil;
 
 import static junit.framework.Assert.assertNotNull;
 
@@ -34,7 +33,7 @@ public class AddReminderFragmentTest {
 
         addReminderFragment.onAttach(activity);
 
-        OnAddReminderRequestListener onAddReminderRequestListener = addReminderFragment.onAddReminderRequestListener;
+        OnAddReminderRequestListener onAddReminderRequestListener = addReminderFragment.getOnAddReminderRequestListener();
         assertNotNull(onAddReminderRequestListener);
     }
 }
