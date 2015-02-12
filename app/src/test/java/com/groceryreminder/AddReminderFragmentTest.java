@@ -27,13 +27,5 @@ public class AddReminderFragmentTest {
         assertNotNull(addReminderFragment);
     }
 
-    @Test
-    public void whenTheFragmentIsAttachedThenTheOnAddReminderRequestListenerShouldBeSet() {
-        AddReminderFragment addReminderFragment = AddReminderFragment.newInstance();
 
-        addReminderFragment.onAttach(activity);
-
-        OnAddReminderRequestListener onAddReminderRequestListener = addReminderFragment.getOnAddReminderRequestListener();
-        assertNotNull(onAddReminderRequestListener);
-    }
 }

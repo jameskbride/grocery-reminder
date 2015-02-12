@@ -1,5 +1,6 @@
 package com.groceryreminder;
 
+import android.app.Activity;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,12 @@ public class ReminderListFragment extends ListFragment {
 
     private static final String REMINDERS_KEY = "REMINDERS_KEY";
     private List<Reminder> reminders;
+    private OnAddReminderRequestListener onAddReminderRequestListener;
+
+    public OnAddReminderRequestListener getOnAddReminderRequestListener() {
+        return onAddReminderRequestListener;
+    }
+
 
     public static ReminderListFragment newInstance(List<Reminder> reminders) {
         ReminderListFragment fragment = new ReminderListFragment();
@@ -53,5 +60,11 @@ public class ReminderListFragment extends ListFragment {
         fab.attachToListView(list);
 
         return root;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        onAddReminderRequestListener = (OnAddReminderRequestListener)activity;
     }
 }

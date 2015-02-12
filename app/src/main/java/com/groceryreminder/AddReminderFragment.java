@@ -23,13 +23,6 @@ public class AddReminderFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        onAddReminderRequestListener = (OnAddReminderRequestListener)activity;
-
-    }
-
     public static AddReminderFragment newInstance() {
         AddReminderFragment fragment = new AddReminderFragment();
 
