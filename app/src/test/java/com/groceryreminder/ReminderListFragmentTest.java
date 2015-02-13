@@ -19,12 +19,14 @@ import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.spy;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class ReminderListFragmentTest {
 
     private MainActivity activity;
+    private MainActivity mainActivitySpy = spy(activity);
 
     @Before
     public void setUp() {
@@ -61,5 +63,13 @@ public class ReminderListFragmentTest {
 
         OnAddReminderRequestListener onAddReminderRequestListener = reminderListFragment.getOnAddReminderRequestListener();
         assertNotNull(onAddReminderRequestListener);
+    }
+
+    @Test
+    public void whenTheAddReminderButtonIsTappedThenTheOnAddReminderListenerIsCalled() {
+        List<Reminder> reminders = new ArrayList<Reminder>();
+        ReminderListFragment reminderListFragment = ReminderListFragment.newInstance(reminders);
+        startFragment(activity, reminderListFragment);
+        reminderListFragment.onAttach(activity);
     }
 }
