@@ -7,9 +7,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static junit.framework.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
@@ -32,7 +29,6 @@ public class AddReminderFragmentTest extends RobolectricTestBase {
 
     @Test
     public void whenTheFragmentIsAttachedThenTheOnAddReminderListenerShouldBeSet() {
-        List<Reminder> reminders = new ArrayList<Reminder>();
         AddReminderFragment reminderListFragment = AddReminderFragment.newInstance();
         startFragment(activity, reminderListFragment);
         reminderListFragment.onAttach(activity);

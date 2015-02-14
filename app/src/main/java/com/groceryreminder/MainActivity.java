@@ -2,7 +2,6 @@ package com.groceryreminder;
 
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -61,9 +60,12 @@ public class MainActivity extends ReminderFragmentBaseActivity implements OnAddR
 
     @Override
     public void addReminder(String value) {
-        ReminderListFragment reminderListFragment = (ReminderListFragment)getSupportFragmentManager().findFragmentByTag(REMINDER_LIST_FRAGMENT);
+        ReminderListFragment reminderListFragment = (ReminderListFragment)getSupportFragmentManager()
+                .findFragmentByTag(REMINDER_LIST_FRAGMENT);
         Reminder reminder = new Reminder(value);
         reminderListFragment.addReminder(reminder);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)
+                .commit();
     }
 }

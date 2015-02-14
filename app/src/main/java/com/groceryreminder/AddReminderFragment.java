@@ -17,6 +17,12 @@ public class AddReminderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_reminder_fragment, container, false);
+        wireAddReminderButton(view);
+
+        return view;
+    }
+
+    private void wireAddReminderButton(View view) {
         Button addReminderButton = (Button)view.findViewById(R.id.add_reminder_button);
         addReminderButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,7 +32,6 @@ public class AddReminderFragment extends Fragment {
                 onAddReminderListener.addReminder(reminderText);
             }
         });
-        return view;
     }
 
     @Override

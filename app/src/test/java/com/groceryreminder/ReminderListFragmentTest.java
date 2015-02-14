@@ -1,16 +1,6 @@
 package com.groceryreminder;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.widget.ListView;
-
-import com.melnykov.fab.FloatingActionButton;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +15,6 @@ import java.util.List;
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
