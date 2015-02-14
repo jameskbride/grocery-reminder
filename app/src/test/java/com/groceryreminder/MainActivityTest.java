@@ -53,4 +53,5 @@ public class MainActivityTest {
 
         assertEquals(View.VISIBLE, addReminderEditText.getVisibility());
     }
+
 }

@@ -3,6 +3,7 @@ package com.groceryreminder;
 import android.app.Activity;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class ReminderListFragment extends ListFragment {
         if (getArguments() != null) {
             this.reminders = (List<Reminder>)getArguments().getSerializable(REMINDERS_KEY);
         }
-
+        Log.d("ReminderListFragment","In onCreateView");
         // TODO: Change Adapter to display your content
         View root = inflater.inflate(R.layout.reminder_list_fragment, container, false);
         ListView list = (ListView)root.findViewById(android.R.id.list);
@@ -58,12 +59,7 @@ public class ReminderListFragment extends ListFragment {
                 android.R.layout.simple_list_item_1, android.R.id.text1, reminders));
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab);
         fab.attachToListView(list);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onAddReminderRequestListener.requestNewReminder();
-            }
-        });
+        fab.setOnClickListener(new RequestAddReminderClickListener(this.onAddReminderRequestListener));
 
         return root;
     }
@@ -71,6 +67,8 @@ public class ReminderListFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.d("ReminderListFragment", "In onAttach");
         onAddReminderRequestListener = (OnAddReminderRequestListener)activity;
     }
+
 }
