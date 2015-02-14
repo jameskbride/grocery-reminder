@@ -58,6 +58,12 @@ public class ReminderListFragment extends ListFragment {
                 android.R.layout.simple_list_item_1, android.R.id.text1, reminders));
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab);
         fab.attachToListView(list);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddReminderRequestListener.requestNewReminder();
+            }
+        });
 
         return root;
     }

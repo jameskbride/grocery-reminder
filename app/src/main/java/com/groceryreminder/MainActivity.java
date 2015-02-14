@@ -49,4 +49,9 @@ public class MainActivity extends ReminderFragmentBaseActivity implements OnAddR
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void requestNewReminder() {
+
+    }
 }
