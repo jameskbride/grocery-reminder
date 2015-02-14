@@ -41,13 +41,6 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
         this.mainActivitySpy = spy(activity);
     }
 
-    private void startFragment(FragmentActivity parentActivity, Fragment fragment) {
-        FragmentManager fragmentManager = parentActivity.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(fragment, null);
-        fragmentTransaction.commit();
-    }
-
     @Test
     public void givenNoRemindersWhenTheFragmentIsCreatedThenTheViewShouldBePopulated() {
         Reminder reminder = new Reminder("test");
@@ -71,5 +64,18 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
 
         OnAddReminderRequestListener onAddReminderRequestListener = reminderListFragment.getOnAddReminderRequestListener();
         assertNotNull(onAddReminderRequestListener);
+    }
+
+    @Test
+    public void whenAReminderIsAddedThenTheReminderListIsUpdated() {
+        List<Reminder> reminders = new ArrayList<Reminder>();
+        ReminderListFragment reminderListFragment = ReminderListFragment.newInstance(reminders);
+        startFragment(activity, reminderListFragment);
+
+        reminderListFragment.addReminder(new Reminder("new reminder"));
+
+        ListView reminderListView = reminderListFragment.getListView();
+        Reminder actualReminder = (Reminder)reminderListView.getAdapter().getItem(0);
+        assertEquals("new reminder", actualReminder.getText());
     }
 }

@@ -12,8 +12,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class MainActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener {
+public class MainActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnAddReminderListener {
 
+    public static final String REMINDER_LIST_FRAGMENT = "REMINDER_LIST_FRAGMENT";
     @Inject
     LocationManager locationManager;
 
@@ -24,7 +25,7 @@ public class MainActivity extends ReminderFragmentBaseActivity implements OnAddR
 
         List<Reminder> reminders = new ArrayList<Reminder>();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, ReminderListFragment.newInstance(reminders))
+                .add(R.id.fragment_container, ReminderListFragment.newInstance(reminders), REMINDER_LIST_FRAGMENT)
                 .commit();
     }
 
@@ -56,5 +57,13 @@ public class MainActivity extends ReminderFragmentBaseActivity implements OnAddR
         AddReminderFragment addReminderFragment = AddReminderFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, addReminderFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void addReminder(String value) {
+        ReminderListFragment reminderListFragment = (ReminderListFragment)getSupportFragmentManager().findFragmentByTag(REMINDER_LIST_FRAGMENT);
+        Reminder reminder = new Reminder(value);
+        reminderListFragment.addReminder(reminder);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT).commit();
     }
 }

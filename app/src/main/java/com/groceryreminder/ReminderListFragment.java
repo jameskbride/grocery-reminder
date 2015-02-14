@@ -71,4 +71,7 @@ public class ReminderListFragment extends ListFragment {
         onAddReminderRequestListener = (OnAddReminderRequestListener)activity;
     }
 
+    public void addReminder(Reminder reminder) {
+        reminders.add(reminder);
+    }
 }

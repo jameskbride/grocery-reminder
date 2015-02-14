@@ -1,6 +1,7 @@
 package com.groceryreminder;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -34,24 +35,55 @@ public class MainActivityTest {
 
     @Test
     public void whenTheActivityIsCreatedThenTheReminderListShouldBeDisplayed() {
-        ReminderListFragment reminderListFragment =
-                (ReminderListFragment)activity.getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_container);
+        ReminderListFragment reminderListFragment = getReminderListFragment();
 
         ListView listView = (ListView)reminderListFragment.getView().findViewById(android.R.id.list);
         assertEquals(View.VISIBLE, listView.getVisibility());
     }
 
     @Test
-    public void whenTheAddReminderButtonIsTappedThenTheAddReminderFragmentShouldBeDisplayed() {
-        FloatingActionButton floatingActionButton = (FloatingActionButton)activity.findViewById(R.id.fab);
-        floatingActionButton.performClick();
-
-        AddReminderFragment addReminderFragment = (AddReminderFragment)activity.getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
+    public void whenTheAddReminderRequestButtonIsTappedThenTheAddReminderFragmentShouldBeDisplayed() {
+        clickAddReminderRequestButton();
+        AddReminderFragment addReminderFragment = getAddReminderFragment();
         EditText addReminderEditText = (EditText)addReminderFragment.getView().findViewById(R.id.add_reminder_edit);
 
         assertEquals(View.VISIBLE, addReminderEditText.getVisibility());
     }
 
+    @Test
+    public void givenTheAddReminderFragmentIsVisibleWhenAReminderIsEnteredThenTheReminderListIsUpdated() {
+        clickAddReminderRequestButton();
+        AddReminderFragment addReminderFragment = getAddReminderFragment();
+        EditText addReminderEditText = (EditText)addReminderFragment.getView().findViewById(R.id.add_reminder_edit);
+        addReminderEditText.setText("a reminder");
+
+        clickAddReminderButton(addReminderFragment);
+
+        ReminderListFragment reminderListFragment = getReminderListFragment();
+
+        ListView listView = (ListView)reminderListFragment.getView().findViewById(android.R.id.list);
+
+        Reminder actualReminder = (Reminder)listView.getAdapter().getItem(0);
+        assertEquals("a reminder", actualReminder.getText());
+    }
+
+    private ReminderListFragment getReminderListFragment() {
+        return (ReminderListFragment)activity.getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+    }
+
+    private AddReminderFragment getAddReminderFragment() {
+        return (AddReminderFragment)activity.getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+    }
+
+    private void clickAddReminderButton(AddReminderFragment addReminderFragment) {
+        Button addButton = (Button)addReminderFragment.getView().findViewById(R.id.add_reminder_button);
+        addButton.performClick();
+    }
+
+    private void clickAddReminderRequestButton() {
+        FloatingActionButton addReminderRequestButton = (FloatingActionButton)activity.findViewById(R.id.fab);
+        addReminderRequestButton.performClick();
+    }
 }
