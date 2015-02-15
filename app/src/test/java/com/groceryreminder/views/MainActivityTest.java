@@ -1,10 +1,15 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.groceryreminder.R;
+import com.groceryreminder.models.Reminder;
+import com.groceryreminder.views.AddReminderFragment;
+import com.groceryreminder.views.MainActivity;
+import com.groceryreminder.views.ReminderListFragment;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.junit.Before;

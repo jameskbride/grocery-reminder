@@ -1,9 +1,13 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.groceryreminder.R;
+import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
+import com.groceryreminder.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;

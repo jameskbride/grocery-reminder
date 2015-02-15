@@ -6,13 +6,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <application
-        android:name=".ReminderApplication"
+        android:name=".injection.ReminderApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".views.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,12 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
 import android.widget.ListView;
+
+import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.models.Reminder;
+import com.groceryreminder.views.MainActivity;
+import com.groceryreminder.views.OnAddReminderRequestListener;
+import com.groceryreminder.views.ReminderListFragment;
 
 import org.junit.Before;
 import org.junit.Test;

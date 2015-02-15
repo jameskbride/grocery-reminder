@@ -1,4 +1,4 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
 public interface OnAddReminderListener {
 

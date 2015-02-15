@@ -1,4 +1,4 @@
-package com.groceryreminder;
+package com.groceryreminder.injection;
 
 import java.lang.annotation.Retention;
 

@@ -1,4 +1,6 @@
-package com.groceryreminder;
+package com.groceryreminder.models;
+
+import com.groceryreminder.models.Reminder;
 
 import org.junit.Test;
 

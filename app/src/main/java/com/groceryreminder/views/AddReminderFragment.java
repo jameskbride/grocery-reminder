@@ -1,4 +1,4 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.groceryreminder.R;
 
 public class AddReminderFragment extends Fragment {
 

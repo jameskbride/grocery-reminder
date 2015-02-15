@@ -4,7 +4,7 @@ import android.support.test.espresso.assertion.ViewAssertions;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.groceryreminder.MainActivity;
+import com.groceryreminder.views.MainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;

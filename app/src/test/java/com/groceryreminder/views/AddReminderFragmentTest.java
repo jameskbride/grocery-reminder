@@ -1,10 +1,16 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.groceryreminder.R;
+import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.views.AddReminderFragment;
+import com.groceryreminder.views.MainActivity;
+import com.groceryreminder.views.OnAddReminderListener;
 
 import org.junit.Before;
 import org.junit.Test;

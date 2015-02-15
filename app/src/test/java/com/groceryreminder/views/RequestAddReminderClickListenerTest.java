@@ -1,4 +1,8 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
+
+import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.views.OnAddReminderRequestListener;
+import com.groceryreminder.views.RequestAddReminderClickListener;
 
 import org.junit.Before;
 import org.junit.Test;

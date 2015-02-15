@@ -1,4 +1,4 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
 import android.app.Activity;
 import android.support.v4.app.ListFragment;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.groceryreminder.R;
+import com.groceryreminder.models.Reminder;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;

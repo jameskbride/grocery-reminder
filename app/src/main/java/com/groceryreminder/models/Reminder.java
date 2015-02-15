@@ -1,4 +1,4 @@
-package com.groceryreminder;
+package com.groceryreminder.models;
 
 import java.io.Serializable;
 

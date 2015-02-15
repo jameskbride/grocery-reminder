@@ -1,7 +1,9 @@
-package com.groceryreminder;
+package com.groceryreminder.injection.views;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.groceryreminder.injection.ReminderApplication;
 
 public abstract class ReminderBaseActivity extends Activity {
 
