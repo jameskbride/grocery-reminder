@@ -47,40 +47,62 @@ public class AddReminderFragmentTest extends RobolectricTestBase {
 
     @Test
     public void whenTheReminderTextIsIsEmptyThenTheAddReminderButtonIsDisabled() {
-        AddReminderFragment reminderListFragment = AddReminderFragment.newInstance();
-        startFragment(activity, reminderListFragment);
-        reminderListFragment.onAttach(activity);
-        reminderListFragment.onCreate(new Bundle());
-        reminderListFragment.onCreateView(LayoutInflater.from(activity), (ViewGroup)activity.findViewById(R.id.fragment_container), null);
+        AddReminderFragment reminderListFragment = getAddReminderFragmentFromOnCreateView();
 
-        Button addReminderButton = (Button)reminderListFragment.getView().findViewById(R.id.add_reminder_button);
+        Button addReminderButton = getAddReminderButton(reminderListFragment);
         assertFalse(addReminderButton.isEnabled());
     }
 
     @Test
     public void whenTheReminderTextIsIsSetThenTheAddReminderButtonIsEnabled() {
-        AddReminderFragment reminderListFragment = AddReminderFragment.newInstance();
-        startFragment(activity, reminderListFragment);
-        reminderListFragment.onAttach(activity);
-        reminderListFragment.onCreate(new Bundle());
-        reminderListFragment.onCreateView(LayoutInflater.from(activity), (ViewGroup)activity.findViewById(R.id.fragment_container), null);
-        EditText reminderText = (EditText)reminderListFragment.getView().findViewById(R.id.add_reminder_edit);
+        AddReminderFragment reminderListFragment = getAddReminderFragmentFromOnCreateView();
+        EditText reminderText = getReminderText(reminderListFragment);
+
         reminderText.setText("test");
-        Button addReminderButton = (Button)reminderListFragment.getView().findViewById(R.id.add_reminder_button);
+
+        Button addReminderButton = getAddReminderButton(reminderListFragment);
         assertTrue(addReminderButton.isEnabled());
     }
 
     @Test
     public void givenTheReminderTextIsSetWhenTheTextIsClearedThenTheAddReminderButtonIsDisabled() {
+        AddReminderFragment reminderListFragment = getAddReminderFragmentFromOnCreateView();
+        EditText reminderText = getReminderText(reminderListFragment);
+
+        reminderText.setText("test");
+        reminderText.setText("");
+
+        Button addReminderButton = getAddReminderButton(reminderListFragment);
+        assertFalse(addReminderButton.isEnabled());
+    }
+
+    @Test
+    public void whenTheReminderTextIsSetToWhitespaceThenTheAddReminderButtonIsDisabled() {
+        AddReminderFragment reminderListFragment = getAddReminderFragmentFromOnCreateView();
+        EditText reminderText = getReminderText(reminderListFragment);
+
+        reminderText.setText(" ");
+
+        Button addReminderButton = getAddReminderButton(reminderListFragment);
+        assertFalse(addReminderButton.isEnabled());
+    }
+
+    private Button getAddReminderButton(AddReminderFragment reminderListFragment) {
+        return (Button)reminderListFragment.getView().findViewById(R.id.add_reminder_button);
+    }
+
+    private EditText getReminderText(AddReminderFragment reminderListFragment) {
+        return (EditText)reminderListFragment.getView().findViewById(R.id.add_reminder_edit);
+    }
+
+    private AddReminderFragment getAddReminderFragmentFromOnCreateView() {
         AddReminderFragment reminderListFragment = AddReminderFragment.newInstance();
         startFragment(activity, reminderListFragment);
         reminderListFragment.onAttach(activity);
         reminderListFragment.onCreate(new Bundle());
-        reminderListFragment.onCreateView(LayoutInflater.from(activity), (ViewGroup)activity.findViewById(R.id.fragment_container), null);
-        EditText reminderText = (EditText)reminderListFragment.getView().findViewById(R.id.add_reminder_edit);
-        reminderText.setText("test");
-        reminderText.setText("");
-        Button addReminderButton = (Button)reminderListFragment.getView().findViewById(R.id.add_reminder_button);
-        assertFalse(addReminderButton.isEnabled());
+        reminderListFragment.onCreateView(LayoutInflater.from(activity),
+                (ViewGroup)activity.findViewById(R.id.fragment_container), null);
+
+        return reminderListFragment;
     }
 }

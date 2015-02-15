@@ -36,7 +36,7 @@ public class AddReminderFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Button addReminderButton = (Button)view.findViewById(R.id.add_reminder_button);
-                boolean enableAddReminderButton = s.length() > 0 ? true : false;
+                boolean enableAddReminderButton = s.toString().trim().length() > 0 ? true : false;
                 addReminderButton.setEnabled(enableAddReminderButton);
             }
 
