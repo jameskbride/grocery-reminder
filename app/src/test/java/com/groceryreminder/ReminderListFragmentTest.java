@@ -14,20 +14,17 @@ import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.spy;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class ReminderListFragmentTest extends RobolectricTestBase {
 
     private MainActivity activity;
-    private MainActivity mainActivitySpy;
 
     @Before
     public void setUp() {
         super.setUp();
         this.activity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
-        this.mainActivitySpy = spy(activity);
     }
 
     @Test
