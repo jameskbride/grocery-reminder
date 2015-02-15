@@ -3,9 +3,6 @@ package com.groceryreminder.views;
 import android.util.Log;
 import android.view.View;
 
-/**
-* Created by jim on 2/14/15.
-*/
 class RequestAddReminderClickListener implements View.OnClickListener {
     private final OnAddReminderRequestListener onAddReminderRequestListener;
 
@@ -15,7 +12,7 @@ class RequestAddReminderClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.d("FAB", "In the click listener: " + onAddReminderRequestListener.toString());
+        Log.d("RequestAddReminderClickListener", "In the click listener: " + onAddReminderRequestListener.toString());
         onAddReminderRequestListener.requestNewReminder();
     }
 }

@@ -27,7 +27,7 @@ public class MainActivityEspressoTest extends ActivityInstrumentationTestCase2<M
         getActivity();
     }
 
-    public void testWhenAReminderIsAddedThenIsIsDisplayedInTheList() {
+    public void testWhenAReminderIsAddedThenItIsDisplayedInTheList() {
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.add_reminder_edit)).perform(typeText("test"));
         onView(withId(R.id.add_reminder_button)).perform(click());
