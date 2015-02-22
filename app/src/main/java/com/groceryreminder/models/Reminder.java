@@ -1,4 +1,4 @@
-package com.groceryreminder;
+package com.groceryreminder.models;
 
 import java.io.Serializable;
 
@@ -10,6 +10,11 @@ public class Reminder implements Serializable {
     }
 
     public String getText() {
+        return text;
+    }
+
+    @Override
+    public String toString() {
         return text;
     }
 }

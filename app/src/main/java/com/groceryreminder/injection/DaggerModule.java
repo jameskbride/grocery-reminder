@@ -1,4 +1,6 @@
-package com.groceryreminder;
+package com.groceryreminder.injection;
+
+import com.groceryreminder.views.MainActivity;
 
 import dagger.Module;
 

@@ -1,13 +1,12 @@
-package com.groceryreminder;
+package com.groceryreminder.views;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.ListView;
 
-import com.melnykov.fab.FloatingActionButton;
+import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.models.Reminder;
+import com.groceryreminder.views.MainActivity;
+import com.groceryreminder.views.OnAddReminderRequestListener;
+import com.groceryreminder.views.ReminderListFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,36 +14,23 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.util.FragmentTestUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class ReminderListFragmentTest {
+public class ReminderListFragmentTest extends RobolectricTestBase {
 
     private MainActivity activity;
-    private MainActivity mainActivitySpy;
 
     @Before
     public void setUp() {
+        super.setUp();
         this.activity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
-        this.mainActivitySpy = spy(activity);
-    }
-
-    private void startFragment(FragmentActivity parentActivity, Fragment fragment) {
-        FragmentManager fragmentManager = parentActivity.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add( fragment, null );
-        fragmentTransaction.commit();
-        fragmentManager.executePendingTransactions();
     }
 
     @Test
@@ -73,15 +59,15 @@ public class ReminderListFragmentTest {
     }
 
     @Test
-    public void givenTheAddReminderListenerIsSetWhenTheAddReminderButtonIsTappedThenTheOnAddReminderListenerIsCalled() {
+    public void whenAReminderIsAddedThenTheReminderListIsUpdated() {
         List<Reminder> reminders = new ArrayList<Reminder>();
         ReminderListFragment reminderListFragment = ReminderListFragment.newInstance(reminders);
         startFragment(activity, reminderListFragment);
 
-        FragmentTestUtil.startVisibleFragment(reminderListFragment);
-        FloatingActionButton floatingActionButton = (FloatingActionButton)activity.findViewById(R.id.fab);
-        floatingActionButton.performClick();
+        reminderListFragment.addReminder(new Reminder("new reminder"));
 
-        verify(mainActivitySpy, atLeastOnce()).requestNewReminder();
+        ListView reminderListView = reminderListFragment.getListView();
+        Reminder actualReminder = (Reminder)reminderListView.getAdapter().getItem(0);
+        assertEquals("new reminder", actualReminder.getText());
     }
 }
