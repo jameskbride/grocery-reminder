@@ -1,5 +1,6 @@
 package com.groceryreminder.espresso;
 
+import android.content.pm.ActivityInfo;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -17,6 +18,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @LargeTest
 public class MainActivityEspressoTest extends ActivityInstrumentationTestCase2<MainActivity>{
 
+    private MainActivity mainActivity;
+
     public MainActivityEspressoTest() {
         super(MainActivity.class);
     }
@@ -24,13 +27,23 @@ public class MainActivityEspressoTest extends ActivityInstrumentationTestCase2<M
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        getActivity();
+        mainActivity = getActivity();
     }
 
     public void testWhenAReminderIsAddedThenItIsDisplayedInTheList() {
+        addArbitraryReminder();
+        onView(withText("test")).check(ViewAssertions.matches(isDisplayed()));
+    }
+
+    public void testGivenAReminderHasBeenAddedWhenTheDeviceIsRotatedItIsStillDisplayed() {
+        addArbitraryReminder();
+        mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        onView(withText("test")).check(ViewAssertions.matches(isDisplayed()));
+    }
+
+    private void addArbitraryReminder() {
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.add_reminder_edit)).perform(typeText("test"));
         onView(withId(R.id.add_reminder_button)).perform(click());
-        onView(withText("test")).check(ViewAssertions.matches(isDisplayed()));
     }
 }
