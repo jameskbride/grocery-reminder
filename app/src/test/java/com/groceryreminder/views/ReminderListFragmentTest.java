@@ -1,7 +1,10 @@
 package com.groceryreminder.views;
 
+import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.Reminder;
 import com.groceryreminder.views.MainActivity;
@@ -34,7 +37,7 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenNoRemindersWhenTheFragmentIsCreatedThenTheViewShouldBePopulated() {
+    public void givenRemindersWhenTheFragmentIsCreatedThenTheViewShouldBePopulated() {
         Reminder reminder = new Reminder("test");
         List<Reminder> reminders = new ArrayList<Reminder>();
         reminders.add(reminder);
@@ -42,9 +45,11 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
         ReminderListFragment reminderListFragment = ReminderListFragment.newInstance(reminders);
         startFragment(activity, reminderListFragment);
 
-        ListView reminderListView = reminderListFragment.getListView();
-        Reminder actualReminder = (Reminder)reminderListView.getAdapter().getItem(0);
-        assertEquals("test", actualReminder.getText());
+        RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment);
+        ReminderListViewHolder reminderListViewHolder = (ReminderListViewHolder)reminderRecyclerView.findViewHolderForPosition(0);
+
+        TextView reminderText = (TextView)reminderListViewHolder.itemView.findViewById(R.id.reminders_text_view);
+        assertEquals(reminderText.getText(), "test");
     }
 
     @Test
@@ -52,6 +57,7 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
         List<Reminder> reminders = new ArrayList<Reminder>();
         ReminderListFragment reminderListFragment = ReminderListFragment.newInstance(reminders);
         startFragment(activity, reminderListFragment);
+
         reminderListFragment.onAttach(activity);
 
         OnAddReminderRequestListener onAddReminderRequestListener = reminderListFragment.getOnAddReminderRequestListener();
@@ -66,8 +72,15 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
 
         reminderListFragment.addReminder(new Reminder("new reminder"));
 
-        ListView reminderListView = reminderListFragment.getListView();
-        Reminder actualReminder = (Reminder)reminderListView.getAdapter().getItem(0);
-        assertEquals("new reminder", actualReminder.getText());
+        RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment);
+        ReminderListViewHolder reminderListViewHolder = (ReminderListViewHolder)reminderRecyclerView.findViewHolderForPosition(0);
+        TextView reminderText = (TextView)reminderListViewHolder.itemView.findViewById(R.id.reminders_text_view);
+        assertEquals(reminderText.getText(), "new reminder");
+    }
+
+    private RecyclerView getRecyclerView(ReminderListFragment reminderListFragment) {
+        RecyclerView reminderRecyclerView = (RecyclerView)reminderListFragment.getView().findViewById(R.id.reminders_recycler_view);
+        performRobolectricMeasureAndLayoutHack(reminderRecyclerView);
+        return reminderRecyclerView;
     }
 }

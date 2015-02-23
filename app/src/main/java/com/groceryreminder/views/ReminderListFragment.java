@@ -1,8 +1,11 @@
 package com.groceryreminder.views;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +19,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
-public class ReminderListFragment extends ListFragment {
+public class ReminderListFragment extends Fragment {
 
     private static final String REMINDERS_KEY = "REMINDERS_KEY";
     private List<Reminder> reminders;
@@ -51,8 +54,8 @@ public class ReminderListFragment extends ListFragment {
         Log.d("ReminderListFragment","In onCreateView");
         // TODO: Change Adapter to display your content
         View root = inflater.inflate(R.layout.reminder_list_fragment, container, false);
-        ListView list = wireListView(root);
-        wireAddReminderRequestButton(root, list);
+        RecyclerView recyclerView = wireListView(root);
+        wireAddReminderRequestButton(root, recyclerView);
 
         return root;
     }
@@ -64,16 +67,16 @@ public class ReminderListFragment extends ListFragment {
         onAddReminderRequestListener = (OnAddReminderRequestListener)activity;
     }
 
-    private ListView wireListView(View root) {
-        ListView list = (ListView)root.findViewById(android.R.id.list);
-        list.setAdapter(new ArrayAdapter<Reminder>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, reminders));
+    private RecyclerView wireListView(View root) {
+        RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
+        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        list.setAdapter(new RemindersRecyclerViewAdapter(reminders));
         return list;
     }
 
-    private void wireAddReminderRequestButton(View root, ListView list) {
+    private void wireAddReminderRequestButton(View root, RecyclerView list) {
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab);
-        fab.attachToListView(list);
+        fab.attachToRecyclerView(list);
         fab.setOnClickListener(new RequestAddReminderClickListener(this.onAddReminderRequestListener));
     }
 

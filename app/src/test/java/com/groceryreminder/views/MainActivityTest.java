@@ -1,11 +1,14 @@
 package com.groceryreminder.views;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.groceryreminder.R;
+import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.Reminder;
 import com.groceryreminder.views.AddReminderFragment;
 import com.groceryreminder.views.MainActivity;
@@ -24,7 +27,7 @@ import static org.junit.Assert.assertFalse;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class MainActivityTest {
+public class MainActivityTest extends RobolectricTestBase {
 
     private MainActivity activity;
 
@@ -42,7 +45,7 @@ public class MainActivityTest {
     public void whenTheActivityIsCreatedThenTheReminderListShouldBeDisplayed() {
         ReminderListFragment reminderListFragment = getReminderListFragment();
 
-        ListView listView = (ListView)reminderListFragment.getView().findViewById(android.R.id.list);
+        RecyclerView listView = (RecyclerView)reminderListFragment.getView().findViewById(R.id.reminders_recycler_view);
         assertEquals(View.VISIBLE, listView.getVisibility());
     }
 
@@ -60,16 +63,17 @@ public class MainActivityTest {
         clickAddReminderRequestButton();
         AddReminderFragment addReminderFragment = getAddReminderFragment();
         EditText addReminderEditText = (EditText)addReminderFragment.getView().findViewById(R.id.add_reminder_edit);
-        addReminderEditText.setText("a reminder");
+        String expectedText = "a reminder";
+        addReminderEditText.setText(expectedText);
 
         clickAddReminderButton(addReminderFragment);
 
         ReminderListFragment reminderListFragment = getReminderListFragment();
 
-        ListView listView = (ListView)reminderListFragment.getView().findViewById(android.R.id.list);
-
-        Reminder actualReminder = (Reminder)listView.getAdapter().getItem(0);
-        assertEquals("a reminder", actualReminder.getText());
+        RecyclerView listView = (RecyclerView)reminderListFragment.getView().findViewById(R.id.reminders_recycler_view);
+        performRobolectricMeasureAndLayoutHack(listView);
+        TextView reminderText = (TextView)listView.findViewHolderForPosition(0).itemView.findViewById(R.id.reminders_text_view);
+        assertEquals(reminderText.getText(), expectedText);
     }
 
     private ReminderListFragment getReminderListFragment() {
