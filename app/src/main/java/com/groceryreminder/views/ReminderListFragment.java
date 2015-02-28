@@ -16,6 +16,8 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
+import brnunes.swipeablecardview.SwipeableRecyclerViewTouchListener;
+
 public class ReminderListFragment extends Fragment {
 
     private static final String REMINDERS_KEY = "REMINDERS_KEY";
@@ -68,6 +70,10 @@ public class ReminderListFragment extends Fragment {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(new RemindersRecyclerViewAdapter(reminders));
+
+        ReminderSwipeListener swipeListener = new ReminderSwipeListener(reminders, list.getAdapter());
+        SwipeableRecyclerViewTouchListener swipeableRecyclerViewTouchListener = new SwipeableRecyclerViewTouchListener(list, swipeListener);
+        list.addOnItemTouchListener(swipeableRecyclerViewTouchListener);
 
         return list;
     }
