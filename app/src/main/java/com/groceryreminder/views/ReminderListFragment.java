@@ -70,12 +70,15 @@ public class ReminderListFragment extends Fragment {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(new RemindersRecyclerViewAdapter(reminders));
+        setReminderListOnTouchListener(list);
 
+        return list;
+    }
+
+    private void setReminderListOnTouchListener(RecyclerView list) {
         ReminderSwipeListener swipeListener = new ReminderSwipeListener(reminders, list.getAdapter());
         SwipeableRecyclerViewTouchListener swipeableRecyclerViewTouchListener = new SwipeableRecyclerViewTouchListener(list, swipeListener);
         list.addOnItemTouchListener(swipeableRecyclerViewTouchListener);
-
-        return list;
     }
 
     private void wireAddReminderRequestButton(View root, RecyclerView list) {
