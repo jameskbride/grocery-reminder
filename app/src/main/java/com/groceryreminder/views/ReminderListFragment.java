@@ -1,17 +1,14 @@
 package com.groceryreminder.views;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.models.Reminder;
@@ -71,6 +68,7 @@ public class ReminderListFragment extends Fragment {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(new RemindersRecyclerViewAdapter(reminders));
+
         return list;
     }
 
