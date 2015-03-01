@@ -3,6 +3,8 @@ package com.groceryreminder.injection;
 import android.content.Context;
 import android.location.LocationManager;
 
+import com.groceryreminder.views.MainActivity;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -10,7 +12,9 @@ import dagger.Provides;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-@Module(library = true)
+@Module(library = true,
+    injects = {MainActivity.class}
+)
 public class AndroidModule {
 
     private ReminderApplication application;
