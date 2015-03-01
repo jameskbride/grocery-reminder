@@ -17,6 +17,8 @@ import se.walkercrou.places.Types;
 
 public class GroceryLocatorService extends IntentService {
 
+    public static final double FIVE_MILES_IN_METERS = 8046.72;
+
     @Inject
     GooglePlacesInterface googlePlaces;
 
@@ -34,6 +36,6 @@ public class GroceryLocatorService extends IntentService {
 
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
         Param[] params = new Param[] {groceryStoreType};
-        googlePlaces.getPlacesByRadar(location.getLatitude(), location.getLongitude(), 0, 50, params);
+        googlePlaces.getPlacesByRadar(location.getLatitude(), location.getLongitude(), FIVE_MILES_IN_METERS, 50, params);
     }
 }
