@@ -1,5 +1,9 @@
 package com.groceryreminder.injection;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+
 import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.MainActivity;
 
@@ -20,9 +24,28 @@ import se.walkercrou.places.GooglePlacesInterface;
 )
 public class ReminderModule {
 
+    private ReminderApplication reminderApplication;
+
+    public ReminderModule(ReminderApplication reminderApplication) {
+        this.reminderApplication = reminderApplication;
+    }
+
     @Provides
     @Singleton
     public GooglePlacesInterface getGooglePlaces() {
-        return new GooglePlaces("test");
+
+        String apiKey;
+        try {
+            ApplicationInfo applicationInfo = reminderApplication.getPackageManager()
+                    .getApplicationInfo(reminderApplication.getPackageName(),
+                            PackageManager.GET_META_DATA);
+            Bundle bundle = applicationInfo.metaData;
+            apiKey = bundle.getString("google_places_api_key");
+            return new GooglePlaces(apiKey);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

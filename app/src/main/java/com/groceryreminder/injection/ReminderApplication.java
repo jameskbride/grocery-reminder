@@ -21,7 +21,7 @@ public class ReminderApplication extends Application {
     protected List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(new AndroidModule(this));
-        modules.add(new ReminderModule());
+        modules.add(new ReminderModule(this));
 
         return modules;
     }

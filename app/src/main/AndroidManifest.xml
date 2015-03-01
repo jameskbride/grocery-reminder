@@ -20,6 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data android:name="google-places-api-key"
+            android:value="@string/google_places_api_key"></meta-data>
     </application>
 
 </manifest>
