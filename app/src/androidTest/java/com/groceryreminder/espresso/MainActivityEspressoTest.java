@@ -37,7 +37,7 @@ public class MainActivityEspressoTest extends ActivityInstrumentationTestCase2<M
 
     public void testWhenAReminderIsAddedThenItIsDisplayedInTheList() {
         addArbitraryReminder();
-        onView(withText("test")).check(ViewAssertions.matches(isDisplayed()));
+        onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.matches(isDisplayed()));
     }
 
     public void testGivenAReminderHasBeenAddedWhenTheDeviceIsRotatedItIsStillDisplayed() {
