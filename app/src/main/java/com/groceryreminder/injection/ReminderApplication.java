@@ -9,7 +9,7 @@ import dagger.ObjectGraph;
 
 public class ReminderApplication extends Application {
 
-    private ObjectGraph graph;
+    protected ObjectGraph graph;
 
     @Override
     public void onCreate() {
@@ -21,7 +21,7 @@ public class ReminderApplication extends Application {
     protected List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(new AndroidModule(this));
-        modules.add(new DaggerModule());
+        modules.add(new ReminderModule());
 
         return modules;
     }

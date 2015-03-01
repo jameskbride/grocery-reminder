@@ -22,13 +22,13 @@ public class AndroidModule {
     @Provides
     @Singleton
     @ForApplication
-    public Context provideApplicationContext() {
+    public Context getApplicationContext() {
         return application;
     }
 
     @Provides
     @Singleton
-    public LocationManager provideLocationManager() {
+    public LocationManager getLocationManager() {
         return (LocationManager) application.getSystemService(LOCATION_SERVICE);
     }
 }

@@ -6,6 +6,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 
+import com.groceryreminder.injection.TestAndroidModule;
+import com.groceryreminder.injection.TestReminderApplication;
+import com.groceryreminder.injection.TestReminderModule;
+
+import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowLog;
 
 public class RobolectricTestBase {
@@ -24,5 +29,13 @@ public class RobolectricTestBase {
     public void performRobolectricMeasureAndLayoutHack(RecyclerView reminderRecyclerView) {
         reminderRecyclerView.measure(0, 0);
         reminderRecyclerView.layout(0, 0, 100, 10000);
+    }
+
+    protected TestReminderModule getTestReminderModule() {
+        return ((TestReminderApplication) Robolectric.application).getTestReminderModule();
+    }
+
+    protected TestAndroidModule getTestAndroidModule() {
+        return ((TestReminderApplication)Robolectric.application).getTestAndroidModule();
     }
 }
