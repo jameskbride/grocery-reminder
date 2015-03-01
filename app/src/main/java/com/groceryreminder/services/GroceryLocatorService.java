@@ -2,6 +2,9 @@ package com.groceryreminder.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
+import android.util.Log;
 
 import com.groceryreminder.injection.ReminderApplication;
 
@@ -17,6 +20,9 @@ public class GroceryLocatorService extends IntentService {
     @Inject
     GooglePlacesInterface googlePlaces;
 
+    @Inject
+    LocationManager locationManager;
+
     public GroceryLocatorService(String name) {
         super(name);
         ((ReminderApplication)getApplication()).inject(this);
@@ -24,8 +30,10 @@ public class GroceryLocatorService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Location location = locationManager.getLastKnownLocation("provider");
+
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
         Param[] params = new Param[] {groceryStoreType};
-        googlePlaces.getPlacesByRadar(0, 0, 0, 50, params);
+        googlePlaces.getPlacesByRadar(location.getLatitude(), location.getLongitude(), 0, 50, params);
     }
 }
