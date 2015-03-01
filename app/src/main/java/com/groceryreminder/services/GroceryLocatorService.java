@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.groceryreminder.injection.ReminderApplication;
 
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 
 import se.walkercrou.places.GooglePlacesInterface;
 import se.walkercrou.places.Param;
-import se.walkercrou.places.TypeParam;
 import se.walkercrou.places.Types;
 
 public class GroceryLocatorService extends IntentService {
