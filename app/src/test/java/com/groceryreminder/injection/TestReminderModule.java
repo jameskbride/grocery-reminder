@@ -1,6 +1,7 @@
 package com.groceryreminder.injection;
 
 import com.groceryreminder.services.GroceryLocatorService;
+import com.groceryreminder.views.MainActivity;
 
 import javax.inject.Singleton;
 
@@ -12,8 +13,10 @@ import static org.mockito.Mockito.mock;
 
 @Module(
         overrides = true,
-        includes = ReminderModule.class,
+        includes = {TestAndroidModule.class},
+        complete = false,
         injects = {
+                MainActivity.class,
                 GroceryLocatorService.class
         }
 )

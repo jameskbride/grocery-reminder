@@ -11,7 +11,9 @@ import se.walkercrou.places.GooglePlaces;
 import se.walkercrou.places.GooglePlacesInterface;
 
 @Module(
+    includes = {AndroidModule.class},
     injects = {
+      MainActivity.class,
       GroceryLocatorService.class
     },
     complete = false

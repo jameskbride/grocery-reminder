@@ -26,7 +26,6 @@ public class TestReminderApplication extends ReminderApplication {
         List<Object> modules = new ArrayList<Object>();
         modules.add(getTestReminderModule());
         modules.add(TestAndroidModule.class);
-        modules.add(new AndroidModule(this));
         return modules;
     }
 
@@ -40,7 +39,7 @@ public class TestReminderApplication extends ReminderApplication {
 
     public TestAndroidModule getTestAndroidModule() {
         if (testAndroidModule == null) {
-            testAndroidModule = (TestAndroidModule)graph.get(TestAndroidModule.class);
+            testAndroidModule = new TestAndroidModule();
         }
 
         return testAndroidModule;
