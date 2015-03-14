@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.groceryreminder.testUtils.LocationValuesBuilder;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +47,7 @@ public class ReminderDBHelperTest {
         assertTrue(cursor.moveToNext());
         assertEquals(1, cursor.getInt(0));
         assertEquals(ReminderContract.Locations.NAME, cursor.getString(1));
-        assertEquals(ReminderContract.Locations.PLACES_ID, cursor.getString(2));
+        assertTrue(cursor.getString(2).contains(ReminderContract.Locations.PLACES_ID));
         assertEquals(ReminderContract.Locations.LATITUDE, cursor.getString(3));
         assertEquals(ReminderContract.Locations.LONGITUDE, cursor.getString(4));
     }
@@ -71,11 +73,6 @@ public class ReminderDBHelperTest {
     }
 
     private ContentValues createDefaultLocationValues() {
-        ContentValues values = new ContentValues();
-        values.put(ReminderContract.Locations.NAME, "location_name");
-        values.put(ReminderContract.Locations.PLACES_ID, "places_id");
-        values.put(ReminderContract.Locations.LATITUDE, "latitude");
-        values.put(ReminderContract.Locations.LONGITUDE, "longitude");
-        return values;
+        return new LocationValuesBuilder().createDefaultLocationValues().build();
     }
 }
