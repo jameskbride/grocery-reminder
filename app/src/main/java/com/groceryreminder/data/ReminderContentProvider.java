@@ -40,7 +40,14 @@ public class ReminderContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase writableDatabase = reminderDBHelper.getWritableDatabase();
+
+        String id = uri.getLastPathSegment();
+        String whereCaluse = ReminderContract.Locations._ID + " = " + id;
+
+        int deletedCount = writableDatabase.delete(DBSchema.LOCATIONS, whereCaluse, selectionArgs);
+
+        return deletedCount;
     }
 
     @Override

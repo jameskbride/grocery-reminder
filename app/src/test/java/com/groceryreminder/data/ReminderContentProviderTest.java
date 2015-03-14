@@ -4,6 +4,8 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.net.Uri;
 
+import com.groceryreminder.models.Reminder;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +59,16 @@ public class ReminderContentProviderTest {
 
         List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
         assertThat(notifiedUriList.get(0).uri, is(expectedUri));
+    }
+
+    @Test
+    public void givenALocationExistsWhenTheLocationIsDeletedThenOneDeletionShouldHaveOccurred() {
+        ContentValues values = createDefaultLocationValues();
+        Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        int count = provider.delete(expectedUri, "", null);
+
+        assertEquals(1, count);
     }
 
     private ContentValues createDefaultLocationValues() {
