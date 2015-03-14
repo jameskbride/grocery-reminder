@@ -7,9 +7,15 @@ import android.net.Uri;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowContentResolver;
 
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -40,6 +46,17 @@ public class ReminderContentProviderTest {
 
         assertNotNull(expectedUri);
         assertEquals(1, ContentUris.parseId(expectedUri));
+    }
+
+    @Test
+    public void givenALocationContentTypeAndContentValuesWhenARecordIsInsertedThenObserversAreNotified()
+    {
+        ContentValues values = createDefaultLocationValues();
+        ShadowContentResolver contentResolver = Robolectric.shadowOf(provider.getContext().getContentResolver());
+        Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
+        assertThat(notifiedUriList.get(0).uri, is(expectedUri));
     }
 
     private ContentValues createDefaultLocationValues() {

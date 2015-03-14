@@ -33,6 +33,7 @@ public class ReminderContentProvider extends ContentProvider {
         long id = writableDatabase.insert(DBSchema.LOCATIONS, null, values);
 
         Uri insertedUri = ContentUris.withAppendedId(uri, id);
+        getContext().getContentResolver().notifyChange(insertedUri, null);
 
         return insertedUri;
     }
