@@ -16,18 +16,25 @@ public class ReminderDBHelper extends SQLiteOpenHelper{
             " longitude varchar(200) " +
             " )";
 
+    private static final String DROP_LOCATIONS_TABLE = "DROP TABLE IF EXISTS locations";
+    private static final String TAG = "ReminderDBHelper";
+
     public ReminderDBHelper(Context applicationContext) {
         super(applicationContext, DATABASE_NAME, null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("ReminderDBHelper", "Creating the locations table.");
+        Log.d(TAG, "Creating the locations table.");
         db.execSQL(CREATE_LOCATIONS_TABLE_SQL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG, "Dropping the locations table: " + DROP_LOCATIONS_TABLE);
+        db.execSQL(DROP_LOCATIONS_TABLE);
 
+        Log.d(TAG, "Recreating the locations table: " + CREATE_LOCATIONS_TABLE_SQL);
+        db.execSQL(CREATE_LOCATIONS_TABLE_SQL);
     }
 }

@@ -13,6 +13,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
@@ -50,9 +51,24 @@ public class ReminderDBHelperTest {
         assertEquals(ReminderContract.Locations.LONGITUDE, cursor.getString(4));
     }
 
-    private void insertValues(ContentValues values) {
+    @Test
+    public void whenTheDBHelperIsUpgradedThenTheLocationsTableIsRecreated() {
+        ContentValues values = createDefaultLocationValues();
+        SQLiteDatabase writableDatabase = insertValues(values);
+
+        dbHelper.onUpgrade(writableDatabase, 0, 0);
+
+        SQLiteDatabase readableDatabase = dbHelper.getReadableDatabase();
+        Cursor cursor = readableDatabase.query(LOCATIONS_TABLE, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
+
+        assertFalse(cursor.moveToNext());
+    }
+
+    private SQLiteDatabase insertValues(ContentValues values) {
         SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
         writableDatabase.insert(LOCATIONS_TABLE, "", values);
+
+        return writableDatabase;
     }
 
     private ContentValues createDefaultLocationValues() {
