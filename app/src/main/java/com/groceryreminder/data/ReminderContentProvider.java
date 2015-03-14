@@ -46,6 +46,7 @@ public class ReminderContentProvider extends ContentProvider {
         String whereCaluse = ReminderContract.Locations._ID + " = " + id;
 
         int deletedCount = writableDatabase.delete(DBSchema.LOCATIONS, whereCaluse, selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
 
         return deletedCount;
     }

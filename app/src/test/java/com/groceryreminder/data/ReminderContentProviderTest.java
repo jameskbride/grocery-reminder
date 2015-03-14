@@ -71,6 +71,18 @@ public class ReminderContentProviderTest {
         assertEquals(1, count);
     }
 
+    @Test
+    public void whenALocationIsDeletedThenObserversAreNotified() {
+        ContentValues values = createDefaultLocationValues();
+        Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        ShadowContentResolver contentResolver = Robolectric.shadowOf(provider.getContext().getContentResolver());
+        provider.delete(expectedUri, "", null);
+
+        List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
+        assertThat(notifiedUriList.get(1).uri, is(expectedUri));
+    }
+
     private ContentValues createDefaultLocationValues() {
         ContentValues values = new ContentValues();
         values.put(ReminderContract.Locations.NAME, "location_name");
