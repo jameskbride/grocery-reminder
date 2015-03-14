@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 public class ReminderDBHelperTest {
 
     private static final String REMINDER_DATABASE_NAME = "grocery_reminder.sqlite";
-    private static final String LOCATIONS_TABLE = "locations";
     private ReminderDBHelper dbHelper;
 
     @Before
@@ -41,7 +40,7 @@ public class ReminderDBHelperTest {
         insertValues(values);
 
         SQLiteDatabase readableDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = readableDatabase.query(LOCATIONS_TABLE, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
+        Cursor cursor = readableDatabase.query(DBSchema.LOCATIONS, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
 
         assertTrue(cursor.moveToNext());
         assertEquals(1, cursor.getInt(0));
@@ -59,14 +58,14 @@ public class ReminderDBHelperTest {
         dbHelper.onUpgrade(writableDatabase, 0, 0);
 
         SQLiteDatabase readableDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = readableDatabase.query(LOCATIONS_TABLE, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
+        Cursor cursor = readableDatabase.query(DBSchema.LOCATIONS, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
 
         assertFalse(cursor.moveToNext());
     }
 
     private SQLiteDatabase insertValues(ContentValues values) {
         SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
-        writableDatabase.insert(LOCATIONS_TABLE, "", values);
+        writableDatabase.insert(DBSchema.LOCATIONS, "", values);
 
         return writableDatabase;
     }
