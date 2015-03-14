@@ -1,13 +1,13 @@
 package com.groceryreminder.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class ReminderContract {
 
-
-    private static final String AUTHORITY = "com.groceryreminder.reminders";
-    private static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final String AUTHORITY = "com.groceryreminder.reminders";
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     public static final class Locations implements BaseColumns {
 
@@ -18,5 +18,9 @@ public class ReminderContract {
         public static final String[] PROJECT_ALL = {_ID, NAME, PLACES_ID, LATITUDE, LONGITUDE};
         public static final String SORT_ORDER_DEFAULT = "";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ReminderContract.CONTENT_URI, "locations");
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+                "/com.groceryreminder.reminders_locations";
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+                "/com.groceryreminder.reminders_locations";
     }
 }

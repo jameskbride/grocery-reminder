@@ -3,11 +3,23 @@ package com.groceryreminder.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public class ReminderContentProvider extends ContentProvider {
+
+    private static final int LOCATION_LIST = 1;
+    private static final int LOCATION_ITEM_ID = 2;
+    private static final UriMatcher URI_MATCHER;
+    private static final String LOCATIONS_URI_LIST_PATH = "locations";
+
+    static {
+        URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+        URI_MATCHER.addURI(ReminderContract.AUTHORITY, LOCATIONS_URI_LIST_PATH, LOCATION_LIST);
+        URI_MATCHER.addURI(ReminderContract.AUTHORITY, "locations/#", LOCATION_ITEM_ID);
+    }
 
     private ReminderDBHelper reminderDBHelper;
 
@@ -41,12 +53,24 @@ public class ReminderContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase writableDatabase = reminderDBHelper.getWritableDatabase();
+        int deletedCount = 0;
 
-        String id = uri.getLastPathSegment();
-        String whereCaluse = ReminderContract.Locations._ID + " = " + id;
+        switch(URI_MATCHER.match(uri))
+        {
+            case LOCATION_LIST:
+                deletedCount = writableDatabase.delete(DBSchema.LOCATIONS, selection, selectionArgs);
+                break;
 
-        int deletedCount = writableDatabase.delete(DBSchema.LOCATIONS, whereCaluse, selectionArgs);
+            case LOCATION_ITEM_ID:
+                String id = uri.getLastPathSegment();
+                String whereClause = ReminderContract.Locations._ID + " = " + id;
+
+                deletedCount = writableDatabase.delete(DBSchema.LOCATIONS, whereClause, selectionArgs);
+                break;
+        }
+
         getContext().getContentResolver().notifyChange(uri, null);
+
 
         return deletedCount;
     }

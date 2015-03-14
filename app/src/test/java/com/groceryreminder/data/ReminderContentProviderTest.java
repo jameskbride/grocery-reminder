@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.net.Uri;
 
 import com.groceryreminder.models.Reminder;
+import com.groceryreminder.testUtils.LocationValuesBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +28,13 @@ import static org.junit.Assert.assertTrue;
 public class ReminderContentProviderTest {
 
     private ReminderContentProvider provider;
+    private LocationValuesBuilder locationValuesBuilder;
 
     @Before
     public void setUp() {
         provider = new ReminderContentProvider();
         provider.onCreate();
+        locationValuesBuilder = new LocationValuesBuilder();
     }
 
     @Test
@@ -83,12 +86,18 @@ public class ReminderContentProviderTest {
         assertThat(notifiedUriList.get(1).uri, is(expectedUri));
     }
 
+    @Test
+    public void whenMultipleLocationsAreDeletedThenMultipleDeletionsShouldHaveOccurred() {
+        ContentValues values = createDefaultLocationValues();
+        provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+        provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        int count = provider.delete(ReminderContract.Locations.CONTENT_URI, "", null);
+
+        assertEquals(2, count);
+    }
+
     private ContentValues createDefaultLocationValues() {
-        ContentValues values = new ContentValues();
-        values.put(ReminderContract.Locations.NAME, "location_name");
-        values.put(ReminderContract.Locations.PLACES_ID, "places_id");
-        values.put(ReminderContract.Locations.LATITUDE, "latitude");
-        values.put(ReminderContract.Locations.LONGITUDE, "longitude");
-        return values;
+        return locationValuesBuilder.createDefaultLocationValues().build();
     }
 }
