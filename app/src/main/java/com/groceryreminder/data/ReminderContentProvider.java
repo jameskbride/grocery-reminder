@@ -69,7 +69,9 @@ public class ReminderContentProvider extends ContentProvider {
                 break;
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        if (deletedCount > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
 
 
         return deletedCount;

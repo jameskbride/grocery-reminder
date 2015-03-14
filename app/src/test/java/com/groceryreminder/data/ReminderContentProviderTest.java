@@ -65,7 +65,7 @@ public class ReminderContentProviderTest {
     }
 
     @Test
-    public void givenALocationExistsWhenTheLocationIsDeletedThenOneDeletionShouldHaveOccurred() {
+    public void givenALocationExistsWhenTheLocationIsDeletedThenOneDeletionWillOccur() {
         ContentValues values = createDefaultLocationValues();
         Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, values);
 
@@ -84,6 +84,38 @@ public class ReminderContentProviderTest {
 
         List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
         assertThat(notifiedUriList.get(1).uri, is(expectedUri));
+    }
+
+    @Test
+    public void givenASelectionIsProvidedWhenALocationIsDeletedThenADeletionWillOccur() {
+        String testName = "test";
+        ContentValues values = locationValuesBuilder.createDefaultLocationValues().withName(testName).build();
+
+        provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        String selection = ReminderContract.Locations.NAME + " = ? ";
+        String[] selectionArgs = new String[] {testName};
+        int count = provider.delete(ReminderContract.Locations.CONTENT_URI, selection, selectionArgs);
+
+        assertEquals(1, count);
+    }
+
+    @Test
+    public void whenNoLocationsAreDeletedThenNoObserversAreNotified() {
+        String testName = "test";
+        ContentValues values = locationValuesBuilder.createDefaultLocationValues().withName(testName).build();
+
+        ShadowContentResolver contentResolver = Robolectric.shadowOf(provider.getContext().getContentResolver());
+        provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+        List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
+        assertEquals(1, notifiedUriList.size());
+
+        String selection = ReminderContract.Locations.NAME + " = ? ";
+        String[] selectionArgs = new String[] {"wrong name"};
+        provider.delete(ReminderContract.Locations.CONTENT_URI, selection, selectionArgs);
+
+        notifiedUriList = contentResolver.getNotifiedUris();
+        assertEquals(1, notifiedUriList.size());
     }
 
     @Test
