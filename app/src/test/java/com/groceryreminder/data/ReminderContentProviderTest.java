@@ -15,6 +15,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
+import org.robolectric.shadows.ShadowCursorWrapper;
 
 import java.util.List;
 
@@ -140,7 +141,57 @@ public class ReminderContentProviderTest {
         assertEquals(0, cursor.getColumnIndex(ReminderContract.Locations._ID));
     }
 
+    @Test
+    public void whenLocationsAreQueriedThenTheRequestedSelectionShouldBeUsed() {
+        ContentValues otherRecord = new LocationValuesBuilder().createDefaultLocationValues().build();
+        String expectedName = "test";
+        ContentValues recordToQuery = new LocationValuesBuilder().createDefaultLocationValues().withName(expectedName).build();
+        provider.insert(ReminderContract.Locations.CONTENT_URI, otherRecord);
+        provider.insert(ReminderContract.Locations.CONTENT_URI, recordToQuery);
+
+        String selection = ReminderContract.Locations.NAME + " = 'test'";
+        Cursor cursor = provider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, selection, null, null);
+
+        assertEquals(1, cursor.getCount());
+        assertTrue(cursor.moveToNext());
+        assertEquals(expectedName, cursor.getString(1));
+    }
+
+    @Test
+    public void whenLocationsAreQueriedThenTheRequestedSelectionArgsShouldBeUsed() {
+        ContentValues otherRecord = new LocationValuesBuilder().createDefaultLocationValues().build();
+        String expectedName = "test";
+        ContentValues recordToQuery = new LocationValuesBuilder().createDefaultLocationValues().withName(expectedName).build();
+        provider.insert(ReminderContract.Locations.CONTENT_URI, otherRecord);
+        provider.insert(ReminderContract.Locations.CONTENT_URI, recordToQuery);
+
+        String selection = ReminderContract.Locations.NAME + " = ?";
+        String[] selectionArgs = new String[] {expectedName};
+        Cursor cursor = provider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, selection, selectionArgs, null);
+
+        assertEquals(1, cursor.getCount());
+        assertTrue(cursor.moveToNext());
+        assertEquals(expectedName, cursor.getString(1));
+    }
+
+    @Test
+    public void whenLocationsAreQueriedThenTheRequestedSortOrderShouldBeUsed() {
+        String secondExpectedName = "bananas";
+        ContentValues secondRecord = new LocationValuesBuilder().createDefaultLocationValues().withName(secondExpectedName).build();
+        String firstExpectedName = "apples";
+        ContentValues recordToQuery = new LocationValuesBuilder().createDefaultLocationValues().withName(firstExpectedName).build();
+        provider.insert(ReminderContract.Locations.CONTENT_URI, secondRecord);
+        provider.insert(ReminderContract.Locations.CONTENT_URI, recordToQuery);
+
+        Cursor cursor = provider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, null, null, ReminderContract.Locations.NAME + " asc");
+
+        assertTrue(cursor.moveToNext());
+        assertEquals(firstExpectedName, cursor.getString(1));
+        assertTrue(cursor.moveToNext());
+        assertEquals(secondExpectedName, cursor.getString(1));
+    }
+
     private ContentValues createDefaultLocationValues() {
-        return locationValuesBuilder.createDefaultLocationValues().build();
+        return new LocationValuesBuilder().createDefaultLocationValues().build();
     }
 }
