@@ -2,6 +2,7 @@ package com.groceryreminder.data;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 
 import com.groceryreminder.models.Reminder;
@@ -127,6 +128,16 @@ public class ReminderContentProviderTest {
         int count = provider.delete(ReminderContract.Locations.CONTENT_URI, "", null);
 
         assertEquals(2, count);
+    }
+
+    @Test
+    public void whenLocationsAreQueriedThenTheRequestedProjectsShouldBeReturned() {
+        ContentValues values = createDefaultLocationValues();
+        provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        Cursor cursor = provider.query(ReminderContract.Locations.CONTENT_URI, new String[] {ReminderContract.Locations._ID}, "", null, null);
+
+        assertEquals(0, cursor.getColumnIndex(ReminderContract.Locations._ID));
     }
 
     private ContentValues createDefaultLocationValues() {

@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class ReminderContentProvider extends ContentProvider {
@@ -31,7 +32,27 @@ public class ReminderContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+//        switch (URI_MATCHER.match(uri)) {
+//            case MEAL_LIST:
+//                queryBuilder.setTables(DBSchema.MEALS);
+//                break;
+//            case MEAL_ITEM_ID:
+//                queryBuilder.setTables(DBSchema.MEALS);
+//                queryBuilder.appendWhere(SkwPlanContract.Meals._ID + " = " + uri.getLastPathSegment());
+//                break;
+//            default:
+//                throw new IllegalArgumentException("Unsupported URI: " + uri);
+//        }
+//
+//        Cursor cursor = queryBuilder.query(planDBHelper.getReadableDatabase(), projection,
+//                selection, selectionArgs, null, null, sortOrder);
+//        cursor.setNotificationUri(getContext().getContentResolver(), SkwPlanContract.Meals.CONTENT_URI);
+        queryBuilder.setTables(DBSchema.LOCATIONS);
+        Cursor cursor = queryBuilder.query(reminderDBHelper.getReadableDatabase(), projection, null, null, null, null, null);
+
+        return cursor;
     }
 
     @Override
