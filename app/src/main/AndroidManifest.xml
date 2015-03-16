@@ -22,6 +22,11 @@
         </activity>
         <meta-data android:name="google-places-api-key"
             android:value="@string/google_places_api_key"></meta-data>
+        <provider android:name=".data.ReminderContentProvider"
+            android:authorities="com.groceryreminder.reminders"
+            android:enabled="true"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>
