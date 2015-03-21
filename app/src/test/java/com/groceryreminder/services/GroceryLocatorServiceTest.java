@@ -2,6 +2,7 @@ package com.groceryreminder.services;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -28,6 +29,8 @@ import se.walkercrou.places.Place;
 import se.walkercrou.places.Types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
@@ -115,6 +118,26 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
         assertEquals(1, cursor.getCount());
     }
+
+    @Test
+    public void whenTheLastKnownLocationIsRequestedThenTheBestProviderIsDeterminedByCriteria() {
+        groceryLocatorService.onHandleIntent(new Intent());
+
+        Criteria actualCriteria = shadowLocationManager.getLastBestProviderCriteria();
+
+        assertTrue(actualCriteria.isCostAllowed());
+        assertTrue(actualCriteria.isSpeedRequired());
+        assertFalse(actualCriteria.isAltitudeRequired());
+        assertFalse(actualCriteria.isBearingRequired());
+        assertEquals(Criteria.ACCURACY_FINE, actualCriteria.getAccuracy());
+        assertEquals(Criteria.ACCURACY_HIGH, actualCriteria.getHorizontalAccuracy());
+        assertEquals(Criteria.ACCURACY_LOW, actualCriteria.getSpeedAccuracy());
+        assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getPowerRequirement());
+        assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getVerticalAccuracy());
+    }
+
+
+
 
     private Place createDefaultGooglePlace() {
         Place place = new Place();
