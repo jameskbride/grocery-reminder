@@ -10,10 +10,8 @@ import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.ReminderApplication;
-import com.groceryreminder.models.Reminder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +24,7 @@ import se.walkercrou.places.Types;
 public class GroceryLocatorService extends IntentService {
 
     public static final double FIVE_MILES_IN_METERS = 8046.72;
+    private static final String TAG = "GroceryLocatorService";
 
     @Inject
     GooglePlacesInterface googlePlaces;
@@ -43,8 +42,8 @@ public class GroceryLocatorService extends IntentService {
         Criteria expectedCriteria = createLocationSearchCriteria();
 
         String provider = locationManager.getBestProvider(expectedCriteria, true);
-
-        Location location = locationManager.getLastKnownLocation("provider");
+        Log.d(TAG, "Best provider is: " + provider);
+        Location location = locationManager.getLastKnownLocation(provider);
 
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
         List<Place> places = googlePlaces.getPlacesByRadar(location.getLatitude(), location.getLongitude(), FIVE_MILES_IN_METERS, 50, groceryStoreType);
@@ -52,7 +51,7 @@ public class GroceryLocatorService extends IntentService {
         List<ContentValues> contentValuesList = new ArrayList<ContentValues>();
 
         for (Place place : places) {
-            Log.d("GroceryLocatorService", "Found places");
+            Log.d(TAG, "Found places");
             ContentValues values = new ContentValues();
             values.put(ReminderContract.Locations.NAME, place.getName());
             values.put(ReminderContract.Locations.PLACES_ID, place.getPlaceId());

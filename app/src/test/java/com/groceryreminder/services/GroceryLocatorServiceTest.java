@@ -31,12 +31,14 @@ import se.walkercrou.places.Types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
@@ -44,11 +46,13 @@ import static org.mockito.Mockito.verify;
 public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     private static final String ARBITRARY_SERVICE_NAME = "test";
+
     private GroceryLocatorService groceryLocatorService;
     private GooglePlacesInterface googlePlacesMock;
     private LocationManager locationManager;
     private ShadowLocationManager shadowLocationManager;
-    private Location defaultLastKnownLocation;
+
+    private Location defaultGPSLocation;
     private ReminderContentProvider reminderProvider;
     private ShadowContentResolver shadowContentResolver;
 
@@ -61,13 +65,19 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         this.googlePlacesMock = getTestReminderModule().getGooglePlaces();
         this.locationManager = getTestAndroidModule().getLocationManager();
         this.shadowLocationManager = Robolectric.shadowOf(locationManager);
-        this.defaultLastKnownLocation = createDefaultLocation();
-        shadowLocationManager.setLastKnownLocation("provider", defaultLastKnownLocation);
+        try {
+            assertTrue(shadowLocationManager.setBestProvider(LocationManager.GPS_PROVIDER, true, new ArrayList<Criteria>()));
+        } catch (Exception e) {
+            fail("Unable to set the best provider.");
+        }
+
+        this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
+        shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
+
         reminderProvider = new ReminderContentProvider();
         reminderProvider.onCreate();
         shadowContentResolver = Robolectric.shadowOf(groceryLocatorService.getContentResolver());
         shadowContentResolver.registerProvider(ReminderContract.AUTHORITY, reminderProvider);
-
     }
 
     @Test
@@ -101,7 +111,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     public void givenAnIntentWhenTheIntentIsHandledThenTheCurrentLocationShouldBePassedToTheGooglePlacesSearch() {
         groceryLocatorService.onHandleIntent(new Intent());
 
-        verify(googlePlacesMock).getPlacesByRadar(eq(defaultLastKnownLocation.getLatitude()), eq(defaultLastKnownLocation.getLongitude()), anyDouble(), anyInt(), any(Param[].class));
+        verify(googlePlacesMock).getPlacesByRadar(eq(defaultGPSLocation.getLatitude()), eq(defaultGPSLocation.getLongitude()), anyDouble(), anyInt(), any(Param[].class));
     }
 
     @Test
@@ -113,7 +123,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         doReturn(places).when(googlePlacesMock).getPlacesByRadar(anyDouble(), anyDouble(), anyDouble(), anyInt(), any(Param[].class));
 
         groceryLocatorService.onHandleIntent(new Intent());
-        verify(googlePlacesMock).getPlacesByRadar(anyDouble(), anyDouble(), anyDouble(), anyInt(), (Param[])anyVararg());
+        verify(googlePlacesMock).getPlacesByRadar(anyDouble(), anyDouble(), anyDouble(), anyInt(), (Param[]) anyVararg());
 
         Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
         assertEquals(1, cursor.getCount());
@@ -122,7 +132,6 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     @Test
     public void whenTheLastKnownLocationIsRequestedThenTheBestProviderIsDeterminedByCriteria() {
         groceryLocatorService.onHandleIntent(new Intent());
-
         Criteria actualCriteria = shadowLocationManager.getLastBestProviderCriteria();
 
         assertTrue(actualCriteria.isCostAllowed());
@@ -136,9 +145,6 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getVerticalAccuracy());
     }
 
-
-
-
     private Place createDefaultGooglePlace() {
         Place place = new Place();
         place.setName("test");
@@ -148,8 +154,8 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         return place;
     }
 
-    private Location createDefaultLocation() {
-        Location location = new Location("provider");
+    private Location createDefaultLocation(String provider) {
+        Location location = new Location(provider);
         location.setLatitude(1);
         location.setLongitude(2);
         return location;
