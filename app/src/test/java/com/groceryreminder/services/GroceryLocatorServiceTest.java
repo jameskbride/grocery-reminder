@@ -61,8 +61,12 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         super.setUp();
         groceryLocatorService = new GroceryLocatorService(ARBITRARY_SERVICE_NAME);
         groceryLocatorService.onCreate();
-
         this.googlePlacesMock = getTestReminderModule().getGooglePlaces();
+        setupLocationManager();
+        setupReminderContentprovider();
+    }
+
+    private void setupLocationManager() {
         this.locationManager = getTestAndroidModule().getLocationManager();
         this.shadowLocationManager = Robolectric.shadowOf(locationManager);
         try {
@@ -73,11 +77,29 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
         this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
+    }
 
+    private void setupReminderContentprovider() {
         reminderProvider = new ReminderContentProvider();
         reminderProvider.onCreate();
         shadowContentResolver = Robolectric.shadowOf(groceryLocatorService.getContentResolver());
         shadowContentResolver.registerProvider(ReminderContract.AUTHORITY, reminderProvider);
+    }
+
+    private Place createDefaultGooglePlace() {
+        Place place = new Place();
+        place.setName("test");
+        place.setLatitude(0.0);
+        place.setLongitude(1.1);
+        place.setPlaceId("test_id");
+        return place;
+    }
+
+    private Location createDefaultLocation(String provider) {
+        Location location = new Location(provider);
+        location.setLatitude(1);
+        location.setLongitude(2);
+        return location;
     }
 
     @Test
@@ -145,19 +167,6 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getVerticalAccuracy());
     }
 
-    private Place createDefaultGooglePlace() {
-        Place place = new Place();
-        place.setName("test");
-        place.setLatitude(0.0);
-        place.setLongitude(1.1);
-        place.setPlaceId("test_id");
-        return place;
-    }
 
-    private Location createDefaultLocation(String provider) {
-        Location location = new Location(provider);
-        location.setLatitude(1);
-        location.setLongitude(2);
-        return location;
-    }
+
 }

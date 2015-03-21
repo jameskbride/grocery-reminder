@@ -39,7 +39,7 @@ public class GroceryLocatorService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Criteria expectedCriteria = createLocationSearchCriteria();
+        Criteria expectedCriteria = buildLocationSearchCriteria();
 
         String provider = locationManager.getBestProvider(expectedCriteria, true);
         Log.d(TAG, "Best provider is: " + provider);
@@ -52,18 +52,24 @@ public class GroceryLocatorService extends IntentService {
 
         for (Place place : places) {
             Log.d(TAG, "Found places");
-            ContentValues values = new ContentValues();
-            values.put(ReminderContract.Locations.NAME, place.getName());
-            values.put(ReminderContract.Locations.PLACES_ID, place.getPlaceId());
-            values.put(ReminderContract.Locations.LATITUDE, place.getLatitude());
-            values.put(ReminderContract.Locations.LONGITUDE, place.getLongitude());
+            ContentValues values = BuildLocationContentValues(place);
             contentValuesList.add(values);
         }
 
         getContentResolver().bulkInsert(ReminderContract.Locations.CONTENT_URI, contentValuesList.toArray(new ContentValues[contentValuesList.size()]));
     }
 
-    private Criteria createLocationSearchCriteria() {
+    private ContentValues BuildLocationContentValues(Place place) {
+        ContentValues values = new ContentValues();
+        values.put(ReminderContract.Locations.NAME, place.getName());
+        values.put(ReminderContract.Locations.PLACES_ID, place.getPlaceId());
+        values.put(ReminderContract.Locations.LATITUDE, place.getLatitude());
+        values.put(ReminderContract.Locations.LONGITUDE, place.getLongitude());
+
+        return values;
+    }
+
+    private Criteria buildLocationSearchCriteria() {
         Criteria expectedCriteria = new Criteria();
         expectedCriteria.setCostAllowed(true);
         expectedCriteria.setSpeedRequired(true);
