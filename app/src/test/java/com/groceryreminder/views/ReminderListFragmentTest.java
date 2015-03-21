@@ -25,7 +25,7 @@ import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@Config(emulateSdk = 18, reportSdk = 18)
 public class ReminderListFragmentTest extends RobolectricTestBase {
 
     private MainActivity activity;
