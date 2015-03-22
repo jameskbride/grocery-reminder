@@ -1,6 +1,7 @@
 package com.groceryreminder.injection;
 
 import android.app.Application;
+import android.content.Context;
 import android.location.LocationManager;
 
 import org.robolectric.Robolectric;
@@ -19,5 +20,11 @@ public class TestAndroidModule {
     @Singleton
     public LocationManager getLocationManager() {
         return (LocationManager) Robolectric.application.getSystemService(Application.LOCATION_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    public Context getApplicationContext() {
+        return Robolectric.application.getApplicationContext();
     }
 }
