@@ -1,5 +1,9 @@
 package com.groceryreminder.injection;
 
+import android.util.Log;
+
+import com.groceryreminder.domain.GroceryStoreManager;
+import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.MainActivity;
 
@@ -17,7 +21,8 @@ import static org.mockito.Mockito.mock;
         complete = false,
         injects = {
                 MainActivity.class,
-                GroceryLocatorService.class
+                GroceryLocatorService.class,
+                GroceryStoreManager.class
         }
 )
 public class TestReminderModule {
@@ -28,5 +33,12 @@ public class TestReminderModule {
     @Singleton
     public GooglePlacesInterface getGooglePlaces() {
         return googlePlacesMock;
+    }
+
+    @Provides
+    @Singleton
+    public GroceryStoreManagerInterface getGroceryStoreManager(GroceryStoreManager groceryStoreManager) {
+        Log.d("ReminderModule", "Providing the GroceryStoreManager");
+        return groceryStoreManager;
     }
 }

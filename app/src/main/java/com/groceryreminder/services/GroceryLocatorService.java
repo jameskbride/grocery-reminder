@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.injection.ReminderApplication;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import se.walkercrou.places.Types;
 
 public class GroceryLocatorService extends IntentService {
 
-    public static final double FIVE_MILES_IN_METERS = 8046.72;
+
     private static final String TAG = "GroceryLocatorService";
 
     @Inject
@@ -32,6 +33,10 @@ public class GroceryLocatorService extends IntentService {
     @Inject
     LocationManager locationManager;
 
+    @Inject
+    GroceryStoreManagerInterface groceryStoreManager;
+
+
     public GroceryLocatorService(String name) {
         super(name);
         ((ReminderApplication)getApplication()).inject(this);
@@ -39,17 +44,10 @@ public class GroceryLocatorService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Criteria expectedCriteria = buildLocationSearchCriteria();
-
-        String provider = locationManager.getBestProvider(expectedCriteria, true);
-        Log.d(TAG, "Best provider is: " + provider);
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
-        List<Place> places = googlePlaces.getPlacesByRadar(location.getLatitude(), location.getLongitude(), FIVE_MILES_IN_METERS, 50, groceryStoreType);
+        Location location = getLastKnownLocation();
+        List<Place> places = groceryStoreManager.findStoresByLocation(location);
 
         List<ContentValues> contentValuesList = new ArrayList<ContentValues>();
-
         for (Place place : places) {
             Log.d(TAG, "Found places");
             ContentValues values = BuildLocationContentValues(place);
@@ -57,6 +55,13 @@ public class GroceryLocatorService extends IntentService {
         }
 
         getContentResolver().bulkInsert(ReminderContract.Locations.CONTENT_URI, contentValuesList.toArray(new ContentValues[contentValuesList.size()]));
+    }
+
+    private Location getLastKnownLocation() {
+        Criteria expectedCriteria = buildLocationSearchCriteria();
+        String provider = locationManager.getBestProvider(expectedCriteria, true);
+        Log.d(TAG, "Best provider is: " + provider);
+        return locationManager.getLastKnownLocation(provider);
     }
 
     private ContentValues BuildLocationContentValues(Place place) {

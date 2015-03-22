@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContentProvider;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.domain.GroceryReminderConstants;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -113,7 +114,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     public void givenAnIntentWhenTheIntentIsHandledThenARadarSearchIsLimitedToFiveMiles() {
         groceryLocatorService.onHandleIntent(new Intent());
 
-        verify(googlePlacesMock).getPlacesByRadar(anyDouble(), anyDouble(), eq(GroceryLocatorService.FIVE_MILES_IN_METERS), anyInt(), any(Param[].class));
+        verify(googlePlacesMock).getPlacesByRadar(anyDouble(), anyDouble(), eq(GroceryReminderConstants.FIVE_MILES_IN_METERS), anyInt(), any(Param[].class));
     }
 
     @Test

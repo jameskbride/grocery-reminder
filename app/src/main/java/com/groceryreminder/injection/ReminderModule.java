@@ -3,7 +3,10 @@ package com.groceryreminder.injection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.groceryreminder.domain.GroceryStoreManager;
+import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.MainActivity;
 
@@ -18,7 +21,8 @@ import se.walkercrou.places.GooglePlacesInterface;
     includes = {AndroidModule.class},
     injects = {
       MainActivity.class,
-      GroceryLocatorService.class
+      GroceryLocatorService.class,
+      GroceryStoreManager.class
     },
     complete = false
 )
@@ -47,5 +51,12 @@ public class ReminderModule {
         }
 
         return null;
+    }
+
+    @Provides
+    @Singleton
+    public GroceryStoreManagerInterface getGroceryStoreManager(GroceryStoreManager groceryStoreManager) {
+        Log.d("ReminderModule", "Providing the GroceryStoreManager");
+        return groceryStoreManager;
     }
 }
