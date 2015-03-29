@@ -5,7 +5,7 @@ import android.util.Log;
 import com.groceryreminder.domain.GroceryStoreManager;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
-import com.groceryreminder.views.MainActivity;
+import com.groceryreminder.views.RemindersActivity;
 
 import javax.inject.Singleton;
 
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
         includes = {TestAndroidModule.class},
         complete = false,
         injects = {
-                MainActivity.class,
+                RemindersActivity.class,
                 GroceryLocatorService.class,
                 GroceryStoreManager.class
         }

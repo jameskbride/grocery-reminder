@@ -6,7 +6,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.groceryreminder.R;
-import com.groceryreminder.views.MainActivity;
+import com.groceryreminder.views.RemindersActivity;
 
 import java.lang.String;
 
@@ -20,19 +20,19 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @LargeTest
-public class MainActivityEspressoTest extends ActivityInstrumentationTestCase2<MainActivity>{
+public class MainActivityEspressoTest extends ActivityInstrumentationTestCase2<RemindersActivity>{
 
     private static final String ARBITRARY_REMINDER = "test";
-    private MainActivity mainActivity;
+    private RemindersActivity remindersActivity;
 
     public MainActivityEspressoTest() {
-        super(MainActivity.class);
+        super(RemindersActivity.class);
     }
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        mainActivity = getActivity();
+        remindersActivity = getActivity();
     }
 
     public void testWhenAReminderIsAddedThenItIsDisplayedInTheList() {
@@ -42,7 +42,7 @@ public class MainActivityEspressoTest extends ActivityInstrumentationTestCase2<M
 
     public void testGivenAReminderHasBeenAddedWhenTheDeviceIsRotatedItIsStillDisplayed() {
         addArbitraryReminder();
-        mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        remindersActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.matches(isDisplayed()));
     }
 

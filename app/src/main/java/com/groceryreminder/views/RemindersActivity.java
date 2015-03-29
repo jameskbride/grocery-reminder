@@ -15,7 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class MainActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnAddReminderListener {
+public class RemindersActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnAddReminderListener {
 
     public static final String REMINDER_LIST_FRAGMENT = "REMINDER_LIST_FRAGMENT";
     @Inject

@@ -25,12 +25,12 @@ import static org.junit.Assert.assertNotNull;
 public class RemindersRecyclerViewAdapterTest {
 
     private static final String ARBITRARY_REMINDER_TEXT = "test";
-    private MainActivity activity;
+    private RemindersActivity activity;
     private List<Reminder> reminders;
 
     @Before
     public void setUp() {
-        this.activity = Robolectric.buildActivity(MainActivity.class).create().start().get();
+        this.activity = Robolectric.buildActivity(RemindersActivity.class).create().start().get();
         this.reminders = new ArrayList<Reminder>();
     }
 

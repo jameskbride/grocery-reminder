@@ -4,15 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
-import com.groceryreminder.models.Reminder;
-import com.groceryreminder.views.AddReminderFragment;
-import com.groceryreminder.views.MainActivity;
-import com.groceryreminder.views.ReminderListFragment;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.junit.Before;
@@ -27,13 +22,13 @@ import static org.junit.Assert.assertFalse;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class MainActivityTest extends RobolectricTestBase {
+public class RemindersActivityTest extends RobolectricTestBase {
 
-    private MainActivity activity;
+    private RemindersActivity activity;
 
     @Before
     public void setUp() {
-        activity = Robolectric.buildActivity(MainActivity.class).create().start().get();
+        activity = Robolectric.buildActivity(RemindersActivity.class).create().start().get();
     }
 
     @Test

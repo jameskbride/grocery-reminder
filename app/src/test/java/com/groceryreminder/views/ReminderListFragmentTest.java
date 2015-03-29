@@ -1,15 +1,11 @@
 package com.groceryreminder.views;
 
 import android.support.v7.widget.RecyclerView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.Reminder;
-import com.groceryreminder.views.MainActivity;
-import com.groceryreminder.views.OnAddReminderRequestListener;
-import com.groceryreminder.views.ReminderListFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +24,12 @@ import static org.junit.Assert.assertEquals;
 @Config(emulateSdk = 18, reportSdk = 18)
 public class ReminderListFragmentTest extends RobolectricTestBase {
 
-    private MainActivity activity;
+    private RemindersActivity activity;
 
     @Before
     public void setUp() {
         super.setUp();
-        this.activity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
+        this.activity = Robolectric.buildActivity(RemindersActivity.class).create().start().visible().get();
     }
 
     @Test

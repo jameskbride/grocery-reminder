@@ -16,19 +16,17 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class ReminderListViewHolderTest {
 
-    private MainActivity activity;
+    private RemindersActivity activity;
 
     @Before
     public void setUp() {
-        this.activity = Robolectric.buildActivity(MainActivity.class).create().start().get();
+        this.activity = Robolectric.buildActivity(RemindersActivity.class).create().start().get();
     }
 
     @Test
