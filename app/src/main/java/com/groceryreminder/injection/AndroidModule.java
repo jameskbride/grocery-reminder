@@ -3,7 +3,7 @@ package com.groceryreminder.injection;
 import android.content.Context;
 import android.location.LocationManager;
 
-import com.groceryreminder.views.RemindersActivity;
+import com.groceryreminder.views.reminders.RemindersActivity;
 
 import javax.inject.Singleton;
 

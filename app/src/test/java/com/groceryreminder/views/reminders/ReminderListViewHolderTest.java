@@ -1,4 +1,4 @@
-package com.groceryreminder.views;
+package com.groceryreminder.views.reminders;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.models.Reminder;
+import com.groceryreminder.views.reminders.ReminderListViewHolder;
+import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.Before;
 import org.junit.Test;

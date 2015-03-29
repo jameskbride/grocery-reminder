@@ -1,4 +1,4 @@
-package com.groceryreminder.views;
+package com.groceryreminder.views.reminders;
 
 import android.util.Log;
 import android.view.View;

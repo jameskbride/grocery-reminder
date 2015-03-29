@@ -8,7 +8,7 @@ import android.util.Log;
 import com.groceryreminder.domain.GroceryStoreManager;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
-import com.groceryreminder.views.RemindersActivity;
+import com.groceryreminder.views.reminders.RemindersActivity;
 
 import javax.inject.Singleton;
 

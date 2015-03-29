@@ -1,4 +1,4 @@
-package com.groceryreminder.views;
+package com.groceryreminder.views.reminders;
 
 import android.support.v7.widget.RecyclerView;
 

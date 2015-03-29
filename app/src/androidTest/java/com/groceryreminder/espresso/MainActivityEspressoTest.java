@@ -6,7 +6,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.groceryreminder.R;
-import com.groceryreminder.views.RemindersActivity;
+import com.groceryreminder.views.reminders.RemindersActivity;
 
 import java.lang.String;
 

@@ -1,4 +1,4 @@
-package com.groceryreminder.views;
+package com.groceryreminder.views.reminders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.views.reminders.AddReminderFragment;
+import com.groceryreminder.views.reminders.ReminderListFragment;
+import com.groceryreminder.views.reminders.RemindersActivity;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.junit.Before;
