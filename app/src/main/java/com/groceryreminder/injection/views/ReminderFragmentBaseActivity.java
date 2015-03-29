@@ -11,6 +11,12 @@ public class ReminderFragmentBaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((ReminderApplication)getApplication()).inject(this);
+        if (shouldInject()) {
+            ((ReminderApplication)getApplication()).inject(this);
+        }
+    }
+
+    protected boolean shouldInject() {
+        return true;
     }
 }

@@ -38,4 +38,10 @@ public class RobolectricTestBase {
     protected TestAndroidModule getTestAndroidModule() {
         return ((TestReminderApplication)Robolectric.application).getTestAndroidModule();
     }
+
+    protected RecyclerView getRecyclerView(Fragment fragment, int viewId) {
+        RecyclerView reminderRecyclerView = (RecyclerView)fragment.getView().findViewById(viewId);
+        performRobolectricMeasureAndLayoutHack(reminderRecyclerView);
+        return reminderRecyclerView;
+    }
 }

@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
-import com.groceryreminder.views.reminders.AddReminderFragment;
-import com.groceryreminder.views.reminders.ReminderListFragment;
-import com.groceryreminder.views.reminders.RemindersActivity;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.junit.Before;
@@ -68,8 +65,7 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
         ReminderListFragment reminderListFragment = getReminderListFragment();
 
-        RecyclerView listView = (RecyclerView)reminderListFragment.getView().findViewById(R.id.reminders_recycler_view);
-        performRobolectricMeasureAndLayoutHack(listView);
+        RecyclerView listView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
         TextView reminderText = (TextView)listView.findViewHolderForPosition(0).itemView.findViewById(R.id.reminders_text_view);
         assertEquals(reminderText.getText(), expectedText);
     }

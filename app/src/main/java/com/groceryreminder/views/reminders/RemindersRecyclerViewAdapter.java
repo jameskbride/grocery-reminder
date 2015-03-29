@@ -20,7 +20,7 @@ public class RemindersRecyclerViewAdapter extends RecyclerView.Adapter<ReminderL
 
     @Override
     public ReminderListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipelist_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.reminders_swipelist, parent, false);
         return new ReminderListViewHolder(view);
     }
 

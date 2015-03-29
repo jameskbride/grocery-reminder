@@ -8,8 +8,6 @@ import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.models.Reminder;
-import com.groceryreminder.views.reminders.ReminderListViewHolder;
-import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +32,7 @@ public class ReminderListViewHolderTest {
     @Test
     public void givenRemindersListViewWhenAReminderIsBoundThenTheReminderTextIsSet() {
         RecyclerView recyclerView = getRecyclerView();
-        View view = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.swipelist_view, recyclerView, false);
+        View view = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.reminders_swipelist, recyclerView, false);
         Reminder reminder = new Reminder("test");
 
         ReminderListViewHolder viewHolder = new ReminderListViewHolder(view);

@@ -6,9 +6,6 @@ import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.models.Reminder;
-import com.groceryreminder.views.reminders.ReminderListViewHolder;
-import com.groceryreminder.views.reminders.RemindersActivity;
-import com.groceryreminder.views.reminders.RemindersRecyclerViewAdapter;
 
 import org.junit.Before;
 import org.junit.Test;

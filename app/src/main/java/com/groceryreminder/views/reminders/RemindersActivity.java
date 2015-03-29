@@ -24,7 +24,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.reminders_activity);
 
         List<Reminder> reminders = new ArrayList<Reminder>();
         getSupportFragmentManager().beginTransaction()

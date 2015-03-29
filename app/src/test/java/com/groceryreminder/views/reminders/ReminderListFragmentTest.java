@@ -6,10 +6,6 @@ import android.widget.TextView;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.Reminder;
-import com.groceryreminder.views.reminders.OnAddReminderRequestListener;
-import com.groceryreminder.views.reminders.ReminderListFragment;
-import com.groceryreminder.views.reminders.ReminderListViewHolder;
-import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +41,7 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
         ReminderListFragment reminderListFragment = ReminderListFragment.newInstance(reminders);
         startFragment(activity, reminderListFragment);
 
-        RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment);
+        RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
         ReminderListViewHolder reminderListViewHolder = (ReminderListViewHolder)reminderRecyclerView.findViewHolderForPosition(0);
 
         TextView reminderText = (TextView)reminderListViewHolder.itemView.findViewById(R.id.reminders_text_view);
@@ -72,15 +68,10 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
 
         reminderListFragment.addReminder(new Reminder("new reminder"));
 
-        RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment);
+        RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
         ReminderListViewHolder reminderListViewHolder = (ReminderListViewHolder)reminderRecyclerView.findViewHolderForPosition(0);
         TextView reminderText = (TextView)reminderListViewHolder.itemView.findViewById(R.id.reminders_text_view);
         assertEquals(reminderText.getText(), "new reminder");
     }
 
-    private RecyclerView getRecyclerView(ReminderListFragment reminderListFragment) {
-        RecyclerView reminderRecyclerView = (RecyclerView)reminderListFragment.getView().findViewById(R.id.reminders_recycler_view);
-        performRobolectricMeasureAndLayoutHack(reminderRecyclerView);
-        return reminderRecyclerView;
-    }
 }
