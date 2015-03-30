@@ -18,6 +18,7 @@ import java.util.List;
 public class GroceryStoreListFragment extends Fragment {
 
     public static final String STORES_KEY = "grocery_stores";
+    private static final String TAG = "StoreListFragment";
     private List<GroceryStore> stores;
 
     public static GroceryStoreListFragment newInstance(List<GroceryStore> stores) {
@@ -34,7 +35,7 @@ public class GroceryStoreListFragment extends Fragment {
         if (getArguments() != null) {
             this.stores = (List<GroceryStore>)getArguments().getSerializable(STORES_KEY);
         }
-        Log.d("ReminderListFragment", "In onCreateView");
+        Log.d(TAG, "In onCreateView");
         // TODO: Change Adapter to display your content
         View root = inflater.inflate(R.layout.grocery_stores_list_fragment, container, false);
         wireListView(root);

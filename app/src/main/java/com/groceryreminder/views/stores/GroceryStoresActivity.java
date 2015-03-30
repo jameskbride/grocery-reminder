@@ -1,18 +1,27 @@
 package com.groceryreminder.views.stores;
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.groceryreminder.R;
+import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 
-public class GroceryStoresActivity extends ReminderFragmentBaseActivity {
+public class GroceryStoresActivity extends ReminderFragmentBaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final String TAG = "StoresActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_stores_activity);
+        getSupportLoaderManager().initLoader(0, savedInstanceState, this);
     }
 
     @Override
@@ -40,5 +49,28 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Log.d(TAG, "in onCreateLoader");
+        CursorLoader loader = new CursorLoader(this,
+                ReminderContract.Locations.CONTENT_URI,
+                ReminderContract.Locations.PROJECT_ALL,
+                null,
+                null,
+                ReminderContract.Locations.SORT_ORDER_DEFAULT);
+
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+
     }
 }
