@@ -41,4 +41,13 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         assertNull(cursorLoader.getSelection());
         assertNull(cursorLoader.getSelectionArgs());
     }
+
+    @Test
+    public void whenTheActivityIsCreatedThenTheGroceryStoreListFragmentShouldBeCreated() {
+        GroceryStoreListFragment groceryStoreListFragment =
+                (GroceryStoreListFragment)activity.getSupportFragmentManager()
+                        .findFragmentByTag(GroceryStoresActivity.STORE_LIST_FRAGMENT_TAG);
+
+        assertNotNull(groceryStoreListFragment);
+    }
 }

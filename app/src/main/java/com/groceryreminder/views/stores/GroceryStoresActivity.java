@@ -12,15 +12,21 @@ import android.view.MenuItem;
 import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
+import com.groceryreminder.models.GroceryStore;
+
+import java.util.ArrayList;
 
 public class GroceryStoresActivity extends ReminderFragmentBaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "StoresActivity";
+    public static final String STORE_LIST_FRAGMENT_TAG = "StoreListFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_stores_activity);
+        GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(new ArrayList<GroceryStore>());
+        getSupportFragmentManager().beginTransaction().add(groceryStoreListFragment, STORE_LIST_FRAGMENT_TAG).commit();
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
     }
 

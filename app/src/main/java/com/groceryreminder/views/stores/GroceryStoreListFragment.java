@@ -36,7 +36,6 @@ public class GroceryStoreListFragment extends Fragment {
             this.stores = (List<GroceryStore>)getArguments().getSerializable(STORES_KEY);
         }
         Log.d(TAG, "In onCreateView");
-        // TODO: Change Adapter to display your content
         View root = inflater.inflate(R.layout.grocery_stores_list_fragment, container, false);
         wireListView(root);
 
