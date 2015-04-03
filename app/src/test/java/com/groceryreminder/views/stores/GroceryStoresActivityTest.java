@@ -77,6 +77,32 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         assertEquals(store.getName(), storeNameText.getText());
     }
 
+    @Test
+    public void whenTheCursorIsResetThenTheGroceryStoreListFragmentShouldContainNoStores() {
+        loadGroceryStoreListFragment();
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoaderReset(cursorLoader);
+
+        GroceryStoreListFragment groceryStoreListFragment = getGroceryStoreListFragment();
+        assertNotNull(groceryStoreListFragment);
+
+        RecyclerView listView = getRecyclerView(groceryStoreListFragment, R.id.stores_recycler_view);
+        assertEquals(0, listView.getAdapter().getItemCount());
+    }
+
+    private void loadGroceryStoreListFragment() {
+        GroceryStore store = new GroceryStore("test");
+        Cursor mockCursor = mock(Cursor.class);
+        when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
+        when(mockCursor.getString(1)).thenReturn(store.getName());
+        ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
+        wrapper.__constructor__(mockCursor);
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoadFinished(cursorLoader, wrapper);
+    }
+
     private GroceryStoreListFragment getGroceryStoreListFragment() {
         return (GroceryStoreListFragment)activity.getSupportFragmentManager()
                 .findFragmentByTag(GroceryStoresActivity.STORE_LIST_FRAGMENT_TAG);
