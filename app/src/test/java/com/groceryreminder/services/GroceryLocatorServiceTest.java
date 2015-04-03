@@ -46,8 +46,6 @@ import static org.mockito.Mockito.verify;
 @Config(emulateSdk = 18)
 public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
-    private static final String ARBITRARY_SERVICE_NAME = "test";
-
     private GroceryLocatorService groceryLocatorService;
     private GooglePlacesInterface googlePlacesMock;
     private LocationManager locationManager;
@@ -60,7 +58,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     @Before
     public void setUp() {
         super.setUp();
-        groceryLocatorService = new GroceryLocatorService(ARBITRARY_SERVICE_NAME);
+        groceryLocatorService = new GroceryLocatorService();
         groceryLocatorService.onCreate();
         this.googlePlacesMock = getTestReminderModule().getGooglePlaces();
         setupLocationManager();

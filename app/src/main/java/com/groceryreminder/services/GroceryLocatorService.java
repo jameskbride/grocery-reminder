@@ -27,9 +27,13 @@ public class GroceryLocatorService extends IntentService {
     @Inject
     GroceryStoreManagerInterface groceryStoreManager;
 
+    public GroceryLocatorService() {
+        super("GroceryLocatorService");
+    }
 
-    public GroceryLocatorService(String name) {
-        super(name);
+    @Override
+    public void onCreate() {
+        super.onCreate();
         ((ReminderApplication)getApplication()).inject(this);
     }
 

@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
     <application
         android:name=".injection.ReminderApplication"
         android:allowBackup="true"
@@ -31,6 +32,13 @@
             android:enabled="true"
             android:exported="false">
         </provider>
+        <service android:name=".services.GroceryLocatorService"
+            android:exported="false"/>
+        <receiver android:name=".services.BootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
