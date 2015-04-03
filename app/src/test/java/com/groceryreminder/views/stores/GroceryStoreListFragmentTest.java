@@ -44,6 +44,28 @@ public class GroceryStoreListFragmentTest extends RobolectricTestBase {
         GroceryStoreListViewHolder groceryStoreListViewHolder = (GroceryStoreListViewHolder)groceryStoreRecyclerView.findViewHolderForPosition(0);
 
         TextView reminderText = (TextView)groceryStoreListViewHolder.itemView.findViewById(R.id.stores_text_view);
-        assertEquals(reminderText.getText(), "test");
+        assertEquals(groceryStore.getName(), reminderText.getText());
+    }
+
+    @Test
+    public void givenGroceryStoresWhenFragmentSetsStoresThenTheViewShouldBeUpdated() {
+        List<GroceryStore> stores = new ArrayList<GroceryStore>();
+        GroceryStore groceryStore = new GroceryStore("test");
+        stores.add(groceryStore);
+
+        GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(stores);
+        startFragment(activity, groceryStoreListFragment);
+
+        List<GroceryStore> updatedStores = new ArrayList<GroceryStore>();
+        GroceryStore updatedStore = new GroceryStore("update");
+        updatedStores.add(updatedStore);
+
+        groceryStoreListFragment.setStores(updatedStores);
+
+        RecyclerView groceryStoreRecyclerView = getRecyclerView(groceryStoreListFragment, R.id.stores_recycler_view);
+        GroceryStoreListViewHolder groceryStoreListViewHolder = (GroceryStoreListViewHolder)groceryStoreRecyclerView.findViewHolderForPosition(0);
+
+        TextView reminderText = (TextView)groceryStoreListViewHolder.itemView.findViewById(R.id.stores_text_view);
+        assertEquals(updatedStore.getName(), reminderText.getText());
     }
 }

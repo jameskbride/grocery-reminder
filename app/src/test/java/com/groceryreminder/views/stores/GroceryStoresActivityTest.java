@@ -1,9 +1,15 @@
 package com.groceryreminder.views.stores;
 
+import android.database.Cursor;
 import android.support.v4.content.CursorLoader;
+import android.support.v7.widget.RecyclerView;
+import android.test.mock.MockCursor;
+import android.widget.TextView;
 
+import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.models.GroceryStore;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +17,14 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowCursorWrapper;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
@@ -44,10 +53,32 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
 
     @Test
     public void whenTheActivityIsCreatedThenTheGroceryStoreListFragmentShouldBeCreated() {
-        GroceryStoreListFragment groceryStoreListFragment =
-                (GroceryStoreListFragment)activity.getSupportFragmentManager()
-                        .findFragmentByTag(GroceryStoresActivity.STORE_LIST_FRAGMENT_TAG);
+        GroceryStoreListFragment groceryStoreListFragment = getGroceryStoreListFragment();
 
         assertNotNull(groceryStoreListFragment);
+    }
+
+    @Test
+    public void whenTheCursorLoaderIsFinishedThenTheGroceryStoreListFragmentShouldBeUpdatedWithStores() {
+        GroceryStore store = new GroceryStore("test");
+        Cursor mockCursor = mock(Cursor.class);
+        when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
+        when(mockCursor.getString(1)).thenReturn(store.getName());
+        ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
+        wrapper.__constructor__(mockCursor);
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoadFinished(cursorLoader, wrapper);
+        GroceryStoreListFragment groceryStoreListFragment = getGroceryStoreListFragment();
+        assertNotNull(groceryStoreListFragment);
+
+        RecyclerView listView = getRecyclerView(groceryStoreListFragment, R.id.stores_recycler_view);
+        TextView storeNameText = (TextView)listView.findViewHolderForPosition(0).itemView.findViewById(R.id.stores_text_view);
+        assertEquals(store.getName(), storeNameText.getText());
+    }
+
+    private GroceryStoreListFragment getGroceryStoreListFragment() {
+        return (GroceryStoreListFragment)activity.getSupportFragmentManager()
+                .findFragmentByTag(GroceryStoresActivity.STORE_LIST_FRAGMENT_TAG);
     }
 }

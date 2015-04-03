@@ -15,6 +15,7 @@ import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 import com.groceryreminder.models.GroceryStore;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GroceryStoresActivity extends ReminderFragmentBaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -72,7 +73,16 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        List<GroceryStore> groceryStoreList = new ArrayList<GroceryStore>();
 
+        while (cursor.moveToNext()) {
+            GroceryStore store = new GroceryStore(cursor.getString(1));
+            groceryStoreList.add(store);
+        }
+
+        GroceryStoreListFragment groceryStoreListFragment =
+                (GroceryStoreListFragment)getSupportFragmentManager().findFragmentByTag(STORE_LIST_FRAGMENT_TAG);
+        groceryStoreListFragment.setStores(groceryStoreList);
     }
 
     @Override

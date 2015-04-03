@@ -20,6 +20,7 @@ public class GroceryStoreListFragment extends Fragment {
     public static final String STORES_KEY = "grocery_stores";
     private static final String TAG = "StoreListFragment";
     private List<GroceryStore> stores;
+    private GroceryStoresRecyclerViewAdapter adapter;
 
     public static GroceryStoreListFragment newInstance(List<GroceryStore> stores) {
         GroceryStoreListFragment fragment = new GroceryStoreListFragment();
@@ -37,14 +38,19 @@ public class GroceryStoreListFragment extends Fragment {
         }
         Log.d(TAG, "In onCreateView");
         View root = inflater.inflate(R.layout.grocery_stores_list_fragment, container, false);
-        wireListView(root);
+        this.adapter = new GroceryStoresRecyclerViewAdapter(stores);
+        wireListView(root, adapter);
 
         return root;
     }
 
-    private void wireListView(View root) {
+    private void wireListView(View root, GroceryStoresRecyclerViewAdapter adapter) {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.stores_recycler_view);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        list.setAdapter(new GroceryStoresRecyclerViewAdapter(stores));
+        list.setAdapter(adapter);
+    }
+
+    public void setStores(List<GroceryStore> groceryStoreList) {
+        adapter.setStores(groceryStoreList);
     }
 }

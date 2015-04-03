@@ -21,6 +21,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
@@ -48,6 +50,39 @@ public class GroceryStoresRecyclerViewAdapterTest extends RobolectricTestBase {
         GroceryStoresRecyclerViewAdapter adapter = createAdapter(stores);
 
         assertEquals(1, adapter.getItemCount());
+    }
+
+    @Test
+    public void whenTheStoresAreSetThenObserversAreNotified() {
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
+        stores.add(store);
+        GroceryStoresRecyclerViewAdapter adapter = createAdapter(stores);
+
+        List<GroceryStore> updatedStores = new ArrayList<GroceryStore>();
+        GroceryStore updatedStore1 = new GroceryStore(ARBITRARY_STORE_NAME + 1);
+        updatedStores.add(updatedStore1);
+
+        GroceryStoresRecyclerViewAdapter adapterSpy = spy(adapter);
+        adapterSpy.setStores(updatedStores);
+
+        verify(adapterSpy).notifyDataSetChanged();
+    }
+
+    @Test
+    public void whenTheStoresAreSetThenTheItemCountIsUpdated() {
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
+        stores.add(store);
+        GroceryStoresRecyclerViewAdapter adapter = createAdapter(stores);
+
+        List<GroceryStore> updatedStores = new ArrayList<GroceryStore>();
+        GroceryStore updatedStore1 = new GroceryStore(ARBITRARY_STORE_NAME + 1);
+        GroceryStore updatedStore2 = new GroceryStore(ARBITRARY_STORE_NAME + 2);
+        updatedStores.add(updatedStore1);
+        updatedStores.add(updatedStore2);
+
+        adapter.setStores(updatedStores);
+
+        assertEquals(updatedStores.size(), adapter.getItemCount());
     }
 
     @Test
