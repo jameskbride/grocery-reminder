@@ -1,6 +1,8 @@
 package com.groceryreminder.views.reminders;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.views.stores.GroceryStoresActivity;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.junit.Before;
@@ -16,6 +19,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.tester.android.view.TestMenuItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -68,6 +73,17 @@ public class RemindersActivityTest extends RobolectricTestBase {
         RecyclerView listView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
         TextView reminderText = (TextView)listView.findViewHolderForPosition(0).itemView.findViewById(R.id.reminders_text_view);
         assertEquals(reminderText.getText(), expectedText);
+    }
+
+    @Test
+    public void whenTheStoresActionBarButtonIsPressedThenTheGroceryStoresActivityIsStarted() {
+        MenuItem findStoresMenuItem = new TestMenuItem(R.id.action_find_stores);
+
+        activity.onOptionsItemSelected(findStoresMenuItem);
+
+        ShadowActivity shadowActivity = Robolectric.shadowOf(activity);
+        Intent startedIntent = shadowActivity.peekNextStartedActivity();
+        assertEquals(GroceryStoresActivity.class.getName(), startedIntent.getComponent().getClassName());
     }
 
     private ReminderListFragment getReminderListFragment() {

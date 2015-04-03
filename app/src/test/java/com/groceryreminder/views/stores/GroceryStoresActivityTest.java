@@ -1,9 +1,12 @@
 package com.groceryreminder.views.stores;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.RecyclerView;
 import android.test.mock.MockCursor;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.groceryreminder.R;
@@ -17,7 +20,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowCursorWrapper;
+import org.robolectric.tester.android.view.TestMenuItem;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

@@ -1,5 +1,6 @@
 package com.groceryreminder.views.reminders;
 
+import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import com.groceryreminder.R;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 import com.groceryreminder.models.Reminder;
+import com.groceryreminder.views.stores.GroceryStoresActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,10 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.action_find_stores) {
+            startActivity(new Intent(this, GroceryStoresActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

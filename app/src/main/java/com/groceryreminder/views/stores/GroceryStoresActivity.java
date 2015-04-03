@@ -1,5 +1,6 @@
 package com.groceryreminder.views.stores;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -54,6 +55,8 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         if (id == R.id.action_settings) {
             return true;
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }
