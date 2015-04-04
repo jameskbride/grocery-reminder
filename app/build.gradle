@@ -30,12 +30,26 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('release.properties').newDataInputStream())
+            storeFile file(properties.getProperty('store.file'))
+            storePassword properties.getProperty("store.password")
+            keyAlias properties.getProperty("key.alias")
+            keyPassword properties.getProperty("key.password")
+        }
+    }
     buildTypes {
         debug {
             Properties properties = new Properties()
             properties.load(project.rootProject.file('local.properties').newDataInputStream())
             def apiKey = properties.getProperty('places.api.key')
             resValue "string", "google_places_api_key", apiKey
+            println("Store File: " + signingConfigs.debug.storeFile)
+            println("Store password: " + signingConfigs.debug.storePassword)
+            println("Key Alias: " + signingConfigs.debug.keyAlias)
+            println("Key Password: " + signingConfigs.debug.keyPassword)
         }
         release {
             Properties properties = new Properties()
@@ -44,6 +58,7 @@ android {
             resValue "string", "google_places_api_key", apiKey
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -75,6 +90,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.+'
 //    compile 'se.walkercrou:google-places-api-java:2.1.0'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+    compile 'commons-io:commons-io:1.3.2'
     testCompile 'org.hamcrest:hamcrest-integration:1.1'
     testCompile 'org.hamcrest:hamcrest-core:1.1'
     testCompile 'org.hamcrest:hamcrest-library:1.1'
