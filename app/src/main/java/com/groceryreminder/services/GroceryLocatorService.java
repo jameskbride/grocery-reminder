@@ -39,8 +39,11 @@ public class GroceryLocatorService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "In onHandleIntent");
         Location location = getLastKnownLocation();
+        Log.d(TAG, "Last know location is: " + location);
         List<Place> places = groceryStoreManager.findStoresByLocation(location);
+        Log.d(TAG, "Places count: " + places.size());
         groceryStoreManager.persistGroceryStores(places);
     }
 
