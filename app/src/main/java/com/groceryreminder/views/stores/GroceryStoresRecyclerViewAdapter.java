@@ -35,7 +35,8 @@ public class GroceryStoresRecyclerViewAdapter extends RecyclerView.Adapter<Groce
     }
 
     public void setStores(List<GroceryStore> groceryStoreList) {
-        this.groceryStores = groceryStoreList;
+        this.groceryStores.clear();
+        this.groceryStores.addAll(groceryStoreList);
         notifyDataSetChanged();
     }
 }
