@@ -28,6 +28,7 @@ import se.walkercrou.places.GooglePlacesInterface;
 )
 public class ReminderModule {
 
+    private static final String TAG = "ReminderModule";
     private ReminderApplication reminderApplication;
 
     public ReminderModule(ReminderApplication reminderApplication) {
@@ -44,7 +45,8 @@ public class ReminderModule {
                     .getApplicationInfo(reminderApplication.getPackageName(),
                             PackageManager.GET_META_DATA);
             Bundle bundle = applicationInfo.metaData;
-            apiKey = bundle.getString("google_places_api_key");
+            apiKey = bundle.getString("google-places-api-key");
+            Log.d(TAG, "api key: " + apiKey);
             return new GooglePlaces(apiKey);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -56,7 +58,7 @@ public class ReminderModule {
     @Provides
     @Singleton
     public GroceryStoreManagerInterface getGroceryStoreManager(GroceryStoreManager groceryStoreManager) {
-        Log.d("ReminderModule", "Providing the GroceryStoreManager");
+        Log.d(TAG, "Providing the GroceryStoreManager");
         return groceryStoreManager;
     }
 }

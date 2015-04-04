@@ -92,6 +92,9 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         GroceryStoreListFragment groceryStoreListFragment =
                 (GroceryStoreListFragment)getSupportFragmentManager().findFragmentByTag(STORE_LIST_FRAGMENT_TAG);
-        groceryStoreListFragment.setStores(new ArrayList<GroceryStore>());
+
+        if (groceryStoreListFragment != null) {
+            groceryStoreListFragment.setStores(new ArrayList<GroceryStore>());
+        }
     }
 }
