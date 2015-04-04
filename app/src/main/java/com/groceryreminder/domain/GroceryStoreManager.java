@@ -1,11 +1,13 @@
 package com.groceryreminder.domain;
 
+import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.injection.ForApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,8 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     GooglePlacesInterface googlePlaces;
 
     @Inject
-    Context context;
+    @ForApplication
+    Application context;
 
     @Override
     public List<Place> findStoresByLocation(Location location) {

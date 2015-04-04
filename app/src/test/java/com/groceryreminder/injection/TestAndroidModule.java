@@ -24,7 +24,8 @@ public class TestAndroidModule {
 
     @Provides
     @Singleton
-    public Context getApplicationContext() {
-        return Robolectric.application.getApplicationContext();
+    @ForApplication
+    public Application getApplicationContext() {
+        return Robolectric.application;
     }
 }

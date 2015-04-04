@@ -18,7 +18,6 @@ import static org.mockito.Mockito.mock;
 @Module(
         overrides = true,
         includes = {TestAndroidModule.class},
-        complete = false,
         injects = {
                 RemindersActivity.class,
                 GroceryLocatorService.class,

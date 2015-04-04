@@ -1,5 +1,6 @@
 package com.groceryreminder.injection;
 
+import android.app.Application;
 import android.content.Context;
 import android.location.LocationManager;
 
@@ -26,7 +27,7 @@ public class AndroidModule {
     @Provides
     @Singleton
     @ForApplication
-    public Context getApplicationContext() {
+    public Application getApplicationContext() {
         return application;
     }
 
