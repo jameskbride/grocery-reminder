@@ -2,7 +2,6 @@ package com.groceryreminder.domain;
 
 import android.app.Application;
 import android.content.ContentValues;
-import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
@@ -47,7 +46,8 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             contentValuesList.add(values);
         }
 
-        context.getContentResolver().bulkInsert(ReminderContract.Locations.CONTENT_URI, contentValuesList.toArray(new ContentValues[contentValuesList.size()]));
+        int insertCount = context.getContentResolver().bulkInsert(ReminderContract.Locations.CONTENT_URI, contentValuesList.toArray(new ContentValues[contentValuesList.size()]));
+        Log.d(TAG, "Inserted store count: " + insertCount);
     }
 
     private ContentValues BuildLocationContentValues(Place place) {
