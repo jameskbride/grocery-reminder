@@ -1,6 +1,7 @@
 package com.groceryreminder.views.stores;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.groceryreminder.R;
@@ -66,6 +67,7 @@ public class GroceryStoreListFragmentTest extends RobolectricTestBase {
         GroceryStoreListViewHolder groceryStoreListViewHolder = (GroceryStoreListViewHolder)groceryStoreRecyclerView.findViewHolderForPosition(0);
 
         TextView reminderText = (TextView)groceryStoreListViewHolder.itemView.findViewById(R.id.stores_text_view);
+        assertEquals(View.VISIBLE, reminderText.getVisibility());
         assertEquals(updatedStore.getName(), reminderText.getText());
     }
 }

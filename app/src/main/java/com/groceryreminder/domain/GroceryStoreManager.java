@@ -23,7 +23,7 @@ import se.walkercrou.places.Types;
 
 public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
-    private static final String TAG = "GroceryStoreManager";
+    private static final String TAG = "StoreManager";
     @Inject
     GooglePlacesInterface googlePlaces;
 
@@ -35,8 +35,8 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public List<Place> findStoresByLocation(Location location) {
         Log.d(TAG, "Location: " + location);
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
-        List<Place> places = googlePlaces.getPlacesByRadar(location.getLatitude(), location.getLongitude(), GroceryReminderConstants.FIVE_MILES_IN_METERS, 50, groceryStoreType);
-
+        List<Place> places = googlePlaces.getNearbyPlacesRankedByDistance(location.getLatitude(), location.getLongitude(), groceryStoreType);
+        googlePlaces.setDebugModeEnabled(true);
         return places;
     }
 
@@ -68,6 +68,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     private ContentValues BuildLocationContentValues(Place place) {
         ContentValues values = new ContentValues();
         values.put(ReminderContract.Locations.NAME, place.getName());
+        Log.d(TAG, "Place from service call: " + place.getName());
         values.put(ReminderContract.Locations.PLACES_ID, place.getPlaceId());
         values.put(ReminderContract.Locations.LATITUDE, place.getLatitude());
         values.put(ReminderContract.Locations.LONGITUDE, place.getLongitude());

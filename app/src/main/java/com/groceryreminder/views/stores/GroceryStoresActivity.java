@@ -1,6 +1,5 @@
 package com.groceryreminder.views.stores;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -79,8 +78,9 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         List<GroceryStore> groceryStoreList = new ArrayList<GroceryStore>();
         Log.d(TAG, "In onLoadFinished");
         while (cursor.moveToNext()) {
-            Log.d(TAG, "Loading stores from cursor.");
-            GroceryStore store = new GroceryStore(cursor.getString(1));
+            String storeName = cursor.getString(1);
+            Log.d(TAG, "Loading store from cursor: " + storeName);
+            GroceryStore store = new GroceryStore(storeName);
             groceryStoreList.add(store);
         }
 
