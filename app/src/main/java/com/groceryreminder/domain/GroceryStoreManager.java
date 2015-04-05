@@ -1,8 +1,11 @@
 package com.groceryreminder.domain;
 
 import android.app.Application;
+import android.content.ContentProviderOperation;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.location.Location;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
@@ -46,8 +49,20 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             contentValuesList.add(values);
         }
 
-        int insertCount = context.getContentResolver().bulkInsert(ReminderContract.Locations.CONTENT_URI, contentValuesList.toArray(new ContentValues[contentValuesList.size()]));
-        Log.d(TAG, "Inserted store count: " + insertCount);
+        ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+        for (ContentValues contentValues : contentValuesList) {
+            operations.add(ContentProviderOperation.newInsert(ReminderContract.Locations.CONTENT_URI)
+                    .withValues(contentValues).build()
+            );
+        }
+        try {
+            context.getContentResolver().applyBatch(ReminderContract.AUTHORITY, operations);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private ContentValues BuildLocationContentValues(Place place) {

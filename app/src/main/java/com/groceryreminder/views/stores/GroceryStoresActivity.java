@@ -77,8 +77,9 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<GroceryStore> groceryStoreList = new ArrayList<GroceryStore>();
-
+        Log.d(TAG, "In onLoadFinished");
         while (cursor.moveToNext()) {
+            Log.d(TAG, "Loading stores from cursor.");
             GroceryStore store = new GroceryStore(cursor.getString(1));
             groceryStoreList.add(store);
         }
@@ -90,6 +91,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        Log.d(TAG, "In onLoaderReset");
         GroceryStoreListFragment groceryStoreListFragment =
                 (GroceryStoreListFragment)getSupportFragmentManager().findFragmentByTag(STORE_LIST_FRAGMENT_TAG);
 
