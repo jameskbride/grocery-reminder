@@ -27,7 +27,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_stores_activity);
         GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(new ArrayList<GroceryStore>());
-        getSupportFragmentManager().beginTransaction().add(groceryStoreListFragment, STORE_LIST_FRAGMENT_TAG).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.stores_fragment_container, groceryStoreListFragment).commit();
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
     }
 
@@ -85,7 +85,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         }
 
         GroceryStoreListFragment groceryStoreListFragment =
-                (GroceryStoreListFragment)getSupportFragmentManager().findFragmentByTag(STORE_LIST_FRAGMENT_TAG);
+                (GroceryStoreListFragment)getSupportFragmentManager().findFragmentById(R.id.stores_fragment_container);
         groceryStoreListFragment.setStores(groceryStoreList);
     }
 
@@ -93,7 +93,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         Log.d(TAG, "In onLoaderReset");
         GroceryStoreListFragment groceryStoreListFragment =
-                (GroceryStoreListFragment)getSupportFragmentManager().findFragmentByTag(STORE_LIST_FRAGMENT_TAG);
+                (GroceryStoreListFragment)getSupportFragmentManager().findFragmentById(R.id.stores_fragment_container);
 
         if (groceryStoreListFragment != null) {
             groceryStoreListFragment.setStores(new ArrayList<GroceryStore>());

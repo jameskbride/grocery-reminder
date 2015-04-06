@@ -106,6 +106,6 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
 
     private GroceryStoreListFragment getGroceryStoreListFragment() {
         return (GroceryStoreListFragment)activity.getSupportFragmentManager()
-                .findFragmentByTag(GroceryStoresActivity.STORE_LIST_FRAGMENT_TAG);
+                .findFragmentById(R.id.stores_fragment_container);
     }
 }
