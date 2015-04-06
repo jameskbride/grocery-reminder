@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
 import com.melnykov.fab.FloatingActionButton;
 
@@ -84,6 +85,17 @@ public class RemindersActivityTest extends RobolectricTestBase {
         ShadowActivity shadowActivity = Robolectric.shadowOf(activity);
         Intent startedIntent = shadowActivity.peekNextStartedActivity();
         assertEquals(GroceryStoresActivity.class.getName(), startedIntent.getComponent().getClassName());
+    }
+
+    @Test
+    public void whenTheStoresActionBarButtonIsPressedThenTheGroceryLocatorServiceIsStarted() {
+        MenuItem findStoresMenuItem = new TestMenuItem(R.id.action_find_stores);
+
+        activity.onOptionsItemSelected(findStoresMenuItem);
+
+        ShadowActivity shadowActivity = Robolectric.shadowOf(activity);
+        Intent startedIntent = shadowActivity.peekNextStartedService();
+        assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
     }
 
     private ReminderListFragment getReminderListFragment() {

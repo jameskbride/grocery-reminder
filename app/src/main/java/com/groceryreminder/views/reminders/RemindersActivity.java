@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import com.groceryreminder.R;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 import com.groceryreminder.models.Reminder;
+import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         }
 
         if (id == R.id.action_find_stores) {
+            startService(new Intent(this, GroceryLocatorService.class));
             startActivity(new Intent(this, GroceryStoresActivity.class));
         }
 

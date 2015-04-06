@@ -154,7 +154,4 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getPowerRequirement());
         assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getVerticalAccuracy());
     }
-
-
-
 }
