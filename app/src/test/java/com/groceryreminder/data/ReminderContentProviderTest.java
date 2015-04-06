@@ -56,6 +56,25 @@ public class ReminderContentProviderTest {
     }
 
     @Test
+    public void whenADuplicateLocationIsInsertedThenItReplacesTheExistingRecord() {
+        ContentValues initialValues = createDefaultLocationValues();
+        String placesId = initialValues.getAsString(ReminderContract.Locations.PLACES_ID);
+        provider.insert(ReminderContract.Locations.CONTENT_URI, initialValues);
+        ContentValues duplicateValues = createDefaultLocationValues();
+        duplicateValues.put(ReminderContract.Locations.PLACES_ID, initialValues.getAsString(ReminderContract.Locations.PLACES_ID));
+        String duplicateLocationName = "duplicate";
+        duplicateValues.put(ReminderContract.Locations.NAME, duplicateLocationName);
+
+        Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, duplicateValues);
+
+        Cursor cursor = provider.query(expectedUri, ReminderContract.Locations.PROJECT_ALL, "", null, null);
+        assertEquals(1, cursor.getCount());
+        cursor.moveToNext();
+        assertEquals(duplicateLocationName, cursor.getString(1));
+        assertEquals(placesId, cursor.getString(2));
+    }
+
+    @Test
     public void givenALocationContentTypeAndContentValuesWhenARecordIsInsertedThenObserversAreNotified()
     {
         ContentValues values = createDefaultLocationValues();
@@ -123,8 +142,11 @@ public class ReminderContentProviderTest {
     @Test
     public void whenMultipleLocationsAreDeletedThenMultipleDeletionsShouldHaveOccurred() {
         ContentValues values = createDefaultLocationValues();
+        ContentValues secondValues = createDefaultLocationValues();
+        secondValues.put(ReminderContract.Locations.PLACES_ID, values.getAsString(ReminderContract.Locations.PLACES_ID + 1));
+
         provider.insert(ReminderContract.Locations.CONTENT_URI, values);
-        provider.insert(ReminderContract.Locations.CONTENT_URI, values);
+        provider.insert(ReminderContract.Locations.CONTENT_URI, secondValues);
 
         int count = provider.delete(ReminderContract.Locations.CONTENT_URI, "", null);
 

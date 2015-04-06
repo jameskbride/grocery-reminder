@@ -51,7 +51,7 @@ public class ReminderContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase writableDatabase = reminderDBHelper.getWritableDatabase();
-        long id = writableDatabase.insert(DBSchema.LOCATIONS, null, values);
+        long id = writableDatabase.insertWithOnConflict(DBSchema.LOCATIONS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
         Uri insertedUri = ContentUris.withAppendedId(uri, id);
         getContext().getContentResolver().notifyChange(insertedUri, null);

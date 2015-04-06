@@ -10,7 +10,7 @@ public class ReminderDBHelper extends SQLiteOpenHelper{
     private static final String DATABASE_NAME = "grocery_reminder.sqlite";
     private static final String CREATE_LOCATIONS_TABLE_SQL = "CREATE TABLE locations (" +
             " _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            " places_id varchar(200), " +
+            " places_id varchar(200) UNIQUE, " +
             " location_name varchar(200), " +
             " latitude varchar(200), " +
             " longitude varchar(200) " +
