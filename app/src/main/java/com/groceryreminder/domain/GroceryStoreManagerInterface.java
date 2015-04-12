@@ -11,4 +11,6 @@ public interface GroceryStoreManagerInterface {
     List<Place> findStoresByLocation(Location location);
 
     void persistGroceryStores(List<Place> places);
+
+    void clearAllStores();
 }

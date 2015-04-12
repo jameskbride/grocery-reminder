@@ -24,12 +24,15 @@ import se.walkercrou.places.Types;
 public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     private static final String TAG = "StoreManager";
-    @Inject
     GooglePlacesInterface googlePlaces;
 
-    @Inject
-    @ForApplication
     Application context;
+
+    @Inject
+    public GroceryStoreManager(@ForApplication Application applicationContext, GooglePlacesInterface googlePlaces) {
+        this.context = applicationContext;
+        this.googlePlaces = googlePlaces;
+    }
 
     @Override
     public List<Place> findStoresByLocation(Location location) {
@@ -63,6 +66,11 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void clearAllStores() {
+        context.getContentResolver().delete(ReminderContract.Locations.CONTENT_URI, null, null);
     }
 
     private ContentValues BuildLocationContentValues(Place place) {

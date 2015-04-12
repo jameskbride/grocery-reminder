@@ -58,7 +58,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         groceryLocatorService.onCreate();
         this.googlePlacesMock = getTestReminderModule().getGooglePlaces();
         setupLocationManager();
-        setupReminderContentprovider();
+        setupReminderContentProvider();
     }
 
     private void setupLocationManager() {
@@ -74,7 +74,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
     }
 
-    private void setupReminderContentprovider() {
+    private void setupReminderContentProvider() {
         reminderProvider = new ReminderContentProvider();
         reminderProvider.onCreate();
         shadowContentResolver = Robolectric.shadowOf(groceryLocatorService.getContentResolver());
