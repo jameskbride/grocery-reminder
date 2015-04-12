@@ -1,46 +1,34 @@
 package com.groceryreminder.services;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 
 import com.groceryreminder.RobolectricTestBase;
-import com.groceryreminder.data.ReminderContentProvider;
-import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowLocation;
 import org.robolectric.shadows.ShadowLocationManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import se.walkercrou.places.GooglePlacesInterface;
-import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
-import se.walkercrou.places.Types;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
@@ -48,13 +36,10 @@ import static org.mockito.Mockito.when;
 public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     private GroceryLocatorService groceryLocatorService;
-    private GooglePlacesInterface googlePlacesMock;
     private LocationManager locationManager;
     private ShadowLocationManager shadowLocationManager;
 
     private Location defaultGPSLocation;
-    private ReminderContentProvider reminderProvider;
-    private ShadowContentResolver shadowContentResolver;
 
     private GroceryStoreManagerInterface groceryStoreManagerMock;
 
@@ -64,9 +49,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         groceryStoreManagerMock = getTestReminderModule().getGroceryStoreManager();
         groceryLocatorService = new GroceryLocatorService();
         groceryLocatorService.onCreate();
-        this.googlePlacesMock = getTestReminderModule().getGooglePlaces();
         setupLocationManager();
-        setupReminderContentProvider();
     }
 
     private void setupLocationManager() {
@@ -81,13 +64,6 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
         ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.FIVE_MILES_IN_METERS});
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
-    }
-
-    private void setupReminderContentProvider() {
-        reminderProvider = new ReminderContentProvider();
-        reminderProvider.onCreate();
-        shadowContentResolver = Robolectric.shadowOf(groceryLocatorService.getContentResolver());
-        shadowContentResolver.registerProvider(ReminderContract.AUTHORITY, reminderProvider);
     }
 
     private Place createDefaultGooglePlace() {
@@ -146,5 +122,19 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         assertEquals(Criteria.ACCURACY_LOW, actualCriteria.getSpeedAccuracy());
         assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getPowerRequirement());
         assertEquals(Criteria.NO_REQUIREMENT, actualCriteria.getVerticalAccuracy());
+    }
+
+    @Test
+    public void whenNoProviderIsAvailableThenNoStoresAreUpdated() {
+        try {
+            shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, null);
+            shadowLocationManager.setBestProvider(LocationManager.GPS_PROVIDER, false, new ArrayList<Criteria>());
+        } catch (Exception e) {
+            fail("Unexpected exception");
+        }
+
+        groceryLocatorService.onHandleIntent(new Intent());
+
+        verifyNoMoreInteractions(groceryStoreManagerMock);
     }
 }

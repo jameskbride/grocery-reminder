@@ -42,6 +42,9 @@ public class GroceryLocatorService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "In onHandleIntent");
         Location location = getLastKnownLocation();
+        if (location == null) {
+            return;
+        }
         Log.d(TAG, "Last know location is: " + location);
         groceryStoreManager.deleteStoresByLocation(location);
         List<Place> places = groceryStoreManager.filterPlacesByDistance(location, groceryStoreManager.findStoresByLocation(location), GroceryReminderConstants.FIVE_MILES_IN_METERS);
@@ -54,6 +57,10 @@ public class GroceryLocatorService extends IntentService {
         Criteria expectedCriteria = buildLocationSearchCriteria();
         String provider = locationManager.getBestProvider(expectedCriteria, true);
         Log.d(TAG, "Best provider is: " + provider);
+        if (provider == null) {
+            Log.d(TAG, "No providers found");
+            return null;
+        }
         return locationManager.getLastKnownLocation(provider);
     }
 
