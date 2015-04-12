@@ -128,4 +128,16 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         List<Place> actualPlaces = groceryStoreManager.findStoresByLocation(defaultGPSLocation);
         assertTrue(actualPlaces.isEmpty());
     }
+
+    @Test
+    public void givenPlacesWhenTheyArePersistedThenTheyCanBeRetrieved() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.persistGroceryStores(places);
+
+        Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
+        assertEquals(1, cursor.getCount());
+    }
 }
