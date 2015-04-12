@@ -27,6 +27,7 @@ import static org.mockito.Mockito.mock;
 public class TestReminderModule {
 
     private GooglePlacesInterface googlePlacesMock = mock(GooglePlacesInterface.class);
+    private GroceryStoreManagerInterface groceryStoreManagerMock = mock(GroceryStoreManagerInterface.class);
 
     @Provides
     @Singleton
@@ -36,8 +37,7 @@ public class TestReminderModule {
 
     @Provides
     @Singleton
-    public GroceryStoreManagerInterface getGroceryStoreManager(GroceryStoreManager groceryStoreManager) {
-        Log.d("ReminderModule", "Providing the GroceryStoreManager");
-        return groceryStoreManager;
+    public GroceryStoreManagerInterface getGroceryStoreManager() {
+        return groceryStoreManagerMock;
     }
 }

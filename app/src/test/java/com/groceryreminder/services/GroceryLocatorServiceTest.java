@@ -11,6 +11,7 @@ import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContentProvider;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryReminderConstants;
+import com.groceryreminder.domain.GroceryStoreManagerInterface;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
@@ -54,9 +56,12 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     private ReminderContentProvider reminderProvider;
     private ShadowContentResolver shadowContentResolver;
 
+    private GroceryStoreManagerInterface groceryStoreManagerMock;
+
     @Before
     public void setUp() {
         super.setUp();
+        groceryStoreManagerMock = getTestReminderModule().getGroceryStoreManager();
         groceryLocatorService = new GroceryLocatorService();
         groceryLocatorService.onCreate();
         this.googlePlacesMock = getTestReminderModule().getGooglePlaces();
@@ -104,22 +109,14 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     @Test
     public void givenAnIntentWhenTheIntentIsHandledThenANearbySearchForGroceryStoresIsPerformed() {
-        Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
-        ArgumentCaptor<Param> paramsCaptor = ArgumentCaptor.forClass(Param.class);
-
         groceryLocatorService.onHandleIntent(new Intent());
-
-        verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), paramsCaptor.capture());
-
-        Param actualParams = paramsCaptor.getValue();
-        assertEquals(actualParams, groceryStoreType);
+        verify(groceryStoreManagerMock).findStoresByLocation(defaultGPSLocation);
     }
 
     @Test
-    public void givenAnIntentWhenTheIntentIsHandledThenTheCurrentLocationShouldBePassedToTheGooglePlacesSearch() {
+    public void whenTheIntentIsHandledThenDistanceStoresAreDeleted() {
         groceryLocatorService.onHandleIntent(new Intent());
-
-        verify(googlePlacesMock).getNearbyPlacesRankedByDistance(eq(defaultGPSLocation.getLatitude()), eq(defaultGPSLocation.getLongitude()), any(Param[].class));
+        verify(groceryStoreManagerMock).deleteStoresByLocation(defaultGPSLocation);
     }
 
     @Test
@@ -127,53 +124,12 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         Place place = createDefaultGooglePlace();
         List<Place> places = new ArrayList<Place>();
         places.add(place);
-
-        doReturn(places).when(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
-
+        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(places);
+        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, places,
+                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
         groceryLocatorService.onHandleIntent(new Intent());
 
-        Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
-        assertEquals(1, cursor.getCount());
-    }
-
-    @Test
-    public void givenPlaceSearchResultsAreFoundWhenTheyAreMoreThanFiveMilesDistanceThenTheyAreNotPersisted() {
-        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
-
-        Place place = createDefaultGooglePlace();
-        List<Place> places = new ArrayList<Place>();
-        places.add(place);
-
-        doReturn(places).when(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
-
-        groceryLocatorService.onHandleIntent(new Intent());
-
-        Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
-        assertEquals(0, cursor.getCount());
-    }
-
-    @Test
-    public void givenPersistedPlacesWhichAreMoreThanFiveMilesDistanceWhenTheIntentIsHandledThenTheDistancePlacesAreDeleted() {
-        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
-
-        List<Place> places = new ArrayList<Place>();
-
-        doReturn(places).when(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
-
-        ContentValues values = new ContentValues();
-        values.put(ReminderContract.Locations.NAME, "test");
-        values.put(ReminderContract.Locations.PLACES_ID, "test");
-        values.put(ReminderContract.Locations.LATITUDE, 1);
-        values.put(ReminderContract.Locations.LONGITUDE, 2);
-        shadowContentResolver.insert(ReminderContract.Locations.CONTENT_URI, values);
-
-        values.put(ReminderContract.Locations.PLACES_ID, "test2");
-        shadowContentResolver.insert(ReminderContract.Locations.CONTENT_URI, values);
-
-        groceryLocatorService.onHandleIntent(new Intent());
-
-        Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
-        assertEquals(0, cursor.getCount());
+        verify(groceryStoreManagerMock).persistGroceryStores(places);
     }
 
     @Test
