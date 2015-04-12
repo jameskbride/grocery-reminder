@@ -1,5 +1,6 @@
 package com.groceryreminder.domain;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Criteria;
@@ -139,5 +140,25 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
         assertEquals(1, cursor.getCount());
+    }
+
+    @Test
+    public void givenPersistedPlacesWhichAreMoreThanFiveMilesDistanceWhenTheIntentIsHandledThenTheDistancePlacesAreDeleted() {
+        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
+
+        ContentValues values = new ContentValues();
+        values.put(ReminderContract.Locations.NAME, "test");
+        values.put(ReminderContract.Locations.PLACES_ID, "test");
+        values.put(ReminderContract.Locations.LATITUDE, 1);
+        values.put(ReminderContract.Locations.LONGITUDE, 2);
+        shadowContentResolver.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        values.put(ReminderContract.Locations.PLACES_ID, "test2");
+        shadowContentResolver.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        groceryStoreManager.deleteStoresByLocation(defaultGPSLocation);
+
+        Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
+        assertEquals(0, cursor.getCount());
     }
 }
