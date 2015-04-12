@@ -2,9 +2,12 @@ package com.groceryreminder.domain;
 
 import android.app.Application;
 import android.content.ContentProviderOperation;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.OperationApplicationException;
+import android.database.Cursor;
 import android.location.Location;
+import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -73,6 +76,32 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
                     .withValues(contentValues).build()
             );
         }
+
+        applyBatchOperations(operations);
+
+    }
+
+    @Override
+    public void deleteStoresBeyondLocationRange(Location location) {
+        Cursor cursor = context.getContentResolver().query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT);
+
+        ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+        while (cursor.moveToNext()) {
+            float[] distanceArray = new float[1];
+            double latitude = Double.parseDouble(cursor.getString((cursor.getColumnIndex(ReminderContract.Locations.LATITUDE))));
+            double longitude = Double.parseDouble(cursor.getString((cursor.getColumnIndex(ReminderContract.Locations.LONGITUDE))));
+            Location.distanceBetween(location.getLatitude(), location.getLongitude(), latitude, longitude, distanceArray);
+
+            if (distanceArray[0] > (float) GroceryReminderConstants.FIVE_MILES_IN_METERS) {
+                Uri deletionUri = ContentUris.withAppendedId(ReminderContract.Locations.CONTENT_URI, cursor.getInt(0));
+                operations.add(ContentProviderOperation.newDelete(deletionUri).build());
+            }
+        }
+
+        applyBatchOperations(operations);
+    }
+
+    private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
         try {
             context.getContentResolver().applyBatch(ReminderContract.AUTHORITY, operations);
         } catch (RemoteException e) {
@@ -80,12 +109,6 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         } catch (OperationApplicationException e) {
             e.printStackTrace();
         }
-
-    }
-
-    @Override
-    public void clearAllStores() {
-        context.getContentResolver().delete(ReminderContract.Locations.CONTENT_URI, null, null);
     }
 
     private ContentValues BuildLocationContentValues(Place place) {

@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContentProvider;
@@ -14,6 +13,7 @@ import com.groceryreminder.data.ReminderContract;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -27,6 +27,7 @@ import java.util.List;
 import se.walkercrou.places.GooglePlacesInterface;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
+import se.walkercrou.places.Types;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,6 +35,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
@@ -97,27 +99,26 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         return place;
     }
 
+    private void setCurrentDistanceGreaterThanFiveMiles() {
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
+    }
+
     @Test
-    public void whenStoresAreClearedThenTheStoresShouldBeRemovedFromTheDatabase() {
-        ContentValues values = new ContentValues();
-        values.put(ReminderContract.Locations.NAME, "test");
-        values.put(ReminderContract.Locations.PLACES_ID, "test");
-        values.put(ReminderContract.Locations.LATITUDE, 1);
-        values.put(ReminderContract.Locations.LONGITUDE, 2);
+    public void whenPlacesAreRequestedByLocationThenANearbySearchIsPerformed() {
+        Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
+        ArgumentCaptor<Param> paramsCaptor = ArgumentCaptor.forClass(Param.class);
 
-        shadowContentResolver.insert(ReminderContract.Locations.CONTENT_URI, values);
+        groceryStoreManager.findStoresByLocation(defaultGPSLocation);
 
-        Cursor cursor = shadowContentResolver.query(ReminderContract.Locations.CONTENT_URI,
-                ReminderContract.Locations.PROJECT_ALL, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT);
+        verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), paramsCaptor.capture());
 
-        groceryStoreManager.clearAllStores();
-
-        assertEquals(0, cursor.getCount());
+        Param actualParams = paramsCaptor.getValue();
+        assertEquals(actualParams, groceryStoreType);
     }
 
     @Test
     public void whenPlacesAreRequestedByLocationThenPlacesOutsideOfFiveMilesAreNotReturned() {
-        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
+        setCurrentDistanceGreaterThanFiveMiles();
         Place place = createDefaultGooglePlace();
         List<Place> places = new ArrayList<Place>();
         places.add(place);

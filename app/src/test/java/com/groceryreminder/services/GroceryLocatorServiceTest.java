@@ -1,5 +1,6 @@
 package com.groceryreminder.services;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Criteria;
@@ -122,7 +123,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenPlaceSearchResultsAreFoundThenTheyArePersisted() {
+    public void givenPlaceSearchResultsAreFoundWhenTheyAreWithinFiveMilesDistanceThenTheyArePersisted() {
         Place place = createDefaultGooglePlace();
         List<Place> places = new ArrayList<Place>();
         places.add(place);
@@ -144,6 +145,30 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         places.add(place);
 
         doReturn(places).when(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
+
+        groceryLocatorService.onHandleIntent(new Intent());
+
+        Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
+        assertEquals(0, cursor.getCount());
+    }
+
+    @Test
+    public void givenPersistedPlacesWhichAreMoreThanFiveMilesDistanceWhenTheIntentIsHandledThenTheDistancePlacesAreDeleted() {
+        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
+
+        List<Place> places = new ArrayList<Place>();
+
+        doReturn(places).when(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
+
+        ContentValues values = new ContentValues();
+        values.put(ReminderContract.Locations.NAME, "test");
+        values.put(ReminderContract.Locations.PLACES_ID, "test");
+        values.put(ReminderContract.Locations.LATITUDE, 1);
+        values.put(ReminderContract.Locations.LONGITUDE, 2);
+        shadowContentResolver.insert(ReminderContract.Locations.CONTENT_URI, values);
+
+        values.put(ReminderContract.Locations.PLACES_ID, "test2");
+        shadowContentResolver.insert(ReminderContract.Locations.CONTENT_URI, values);
 
         groceryLocatorService.onHandleIntent(new Intent());
 
