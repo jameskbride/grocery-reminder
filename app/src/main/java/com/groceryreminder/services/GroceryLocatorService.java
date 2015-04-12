@@ -47,7 +47,8 @@ public class GroceryLocatorService extends IntentService {
         }
         Log.d(TAG, "Last know location is: " + location);
         groceryStoreManager.deleteStoresByLocation(location);
-        List<Place> places = groceryStoreManager.filterPlacesByDistance(location, groceryStoreManager.findStoresByLocation(location), GroceryReminderConstants.FIVE_MILES_IN_METERS);
+        List<Place> updatedPlaces = groceryStoreManager.findStoresByLocation(location);
+        List<Place> places = groceryStoreManager.filterPlacesByDistance(location, updatedPlaces, GroceryReminderConstants.FIVE_MILES_IN_METERS);
 
         Log.d(TAG, "Places count: " + places.size());
         groceryStoreManager.persistGroceryStores(places);
