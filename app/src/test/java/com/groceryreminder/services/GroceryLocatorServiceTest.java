@@ -99,13 +99,6 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenAnIntentWhenTheIntentIsHandledThenANearbySearchIsPerformed() {
-        groceryLocatorService.onHandleIntent(new Intent());
-
-        verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
-    }
-
-    @Test
     public void givenAnIntentWhenTheIntentIsHandledThenANearbySearchForGroceryStoresIsPerformed() {
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
         ArgumentCaptor<Param> paramsCaptor = ArgumentCaptor.forClass(Param.class);
