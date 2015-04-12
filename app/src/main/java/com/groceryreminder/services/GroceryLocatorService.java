@@ -1,29 +1,15 @@
 package com.groceryreminder.services;
 
 import android.app.IntentService;
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.OperationApplicationException;
-import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.RemoteException;
 import android.util.Log;
 
-import com.groceryreminder.data.ReminderContract;
-import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.injection.ReminderApplication;
-import com.groceryreminder.models.Reminder;
 
-import org.apache.http.client.utils.URIBuilder;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,7 +42,7 @@ public class GroceryLocatorService extends IntentService {
         Log.d(TAG, "In onHandleIntent");
         Location location = getLastKnownLocation();
         Log.d(TAG, "Last know location is: " + location);
-        groceryStoreManager.deleteStoresBeyondLocationRange(location);
+        groceryStoreManager.deleteStoresByLocation(location);
         List<Place> places = groceryStoreManager.findStoresByLocation(location);
         Log.d(TAG, "Places count: " + places.size());
         groceryStoreManager.persistGroceryStores(places);

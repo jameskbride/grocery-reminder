@@ -82,7 +82,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     }
 
     @Override
-    public void deleteStoresBeyondLocationRange(Location location) {
+    public void deleteStoresByLocation(Location location) {
         Cursor cursor = context.getContentResolver().query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT);
 
         ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();

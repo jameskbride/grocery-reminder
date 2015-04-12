@@ -12,5 +12,5 @@ public interface GroceryStoreManagerInterface {
 
     void persistGroceryStores(List<Place> places);
 
-    void deleteStoresBeyondLocationRange(Location location);
+    void deleteStoresByLocation(Location location);
 }
