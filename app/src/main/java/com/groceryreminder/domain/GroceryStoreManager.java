@@ -40,7 +40,17 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
         List<Place> places = googlePlaces.getNearbyPlacesRankedByDistance(location.getLatitude(), location.getLongitude(), groceryStoreType);
         googlePlaces.setDebugModeEnabled(true);
-        return places;
+
+        List<Place> filteredPlaces = new ArrayList<Place>();
+        for (Place place : places) {
+            float[] distanceArray = new float[1];
+            Location.distanceBetween(location.getLatitude(), location.getLongitude(), place.getLatitude(), place.getLongitude(), distanceArray);
+            if (distanceArray[0] <= (float)GroceryReminderConstants.FIVE_MILES_IN_METERS) {
+                filteredPlaces.add(place);
+            }
+        }
+
+        return filteredPlaces;
     }
 
     @Override

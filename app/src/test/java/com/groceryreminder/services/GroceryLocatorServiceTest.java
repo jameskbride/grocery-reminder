@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContentProvider;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.domain.GroceryReminderConstants;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
+import org.robolectric.shadows.ShadowLocation;
 import org.robolectric.shadows.ShadowLocationManager;
 
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         }
 
         this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
+        ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.FIVE_MILES_IN_METERS});
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
     }
 
@@ -130,6 +133,22 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
         Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
         assertEquals(1, cursor.getCount());
+    }
+
+    @Test
+    public void givenPlaceSearchResultsAreFoundWhenTheyAreMoreThanFiveMilesDistanceThenTheyAreNotPersisted() {
+        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
+
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        doReturn(places).when(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
+
+        groceryLocatorService.onHandleIntent(new Intent());
+
+        Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
+        assertEquals(0, cursor.getCount());
     }
 
     @Test
