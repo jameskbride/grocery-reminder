@@ -118,15 +118,13 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenPlacesAreRequestedByLocationThenPlacesOutsideOfFiveMilesAreNotReturned() {
+    public void givenDistanceIsGreaterThanFiveMilesWhenPlacesAreFilteredByLocationThenPlacesOutsideOfFiveMilesAreNotReturned() {
         setCurrentDistanceGreaterThanFiveMiles();
         Place place = createDefaultGooglePlace();
         List<Place> places = new ArrayList<Place>();
         places.add(place);
 
-        doReturn(places).when(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), any(Param[].class));
-
-        List<Place> actualPlaces = groceryStoreManager.findStoresByLocation(defaultGPSLocation);
+        List<Place> actualPlaces = groceryStoreManager.filterPlacesByDistance(defaultGPSLocation, places, GroceryReminderConstants.FIVE_MILES_IN_METERS);
         assertTrue(actualPlaces.isEmpty());
     }
 

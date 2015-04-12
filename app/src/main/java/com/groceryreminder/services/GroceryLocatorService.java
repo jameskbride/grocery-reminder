@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.injection.ReminderApplication;
 
@@ -43,7 +44,8 @@ public class GroceryLocatorService extends IntentService {
         Location location = getLastKnownLocation();
         Log.d(TAG, "Last know location is: " + location);
         groceryStoreManager.deleteStoresByLocation(location);
-        List<Place> places = groceryStoreManager.findStoresByLocation(location);
+        List<Place> places = groceryStoreManager.filterPlacesByDistance(location, groceryStoreManager.findStoresByLocation(location), GroceryReminderConstants.FIVE_MILES_IN_METERS);
+
         Log.d(TAG, "Places count: " + places.size());
         groceryStoreManager.persistGroceryStores(places);
     }
