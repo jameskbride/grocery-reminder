@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 
 import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.domain.GroceryReminderConstants;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     }
 
     private Intent BuildIntentToListenFor() {
-        return new Intent("com.groceryreminder.STORE_PROXIMITY_EVENT");
+        return new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
     }
 
     @Test
