@@ -1,6 +1,9 @@
 package com.groceryreminder.services;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 
 import com.groceryreminder.RobolectricTestBase;
 
@@ -11,9 +14,11 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
+import org.robolectric.shadows.ShadowNotificationManager;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -28,11 +33,25 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         super.setUp();
         broadcastReceiver = new GroceryStoreBroadcastReceiver();
     }
+
     @Test
     public void whenTheProximityEventIntentIsSentThenTheBroadcastReceiverListensForIt() {
         Intent intent = new Intent("com.groceryreminder.STORE_PROXIMITY_EVENT");
 
         ShadowApplication shadowApplication = Robolectric.getShadowApplication();
         assertTrue(shadowApplication.hasReceiverForIntent(intent));
+    }
+
+    @Test
+    public void givenAnIntentWithTheProximityEnteringKeyWhenTheIntentIsReceivedThenANotificationIsSent() {
+        Intent intent = new Intent("com.groceryreminder.STORE_PROXIMITY_EVENT");
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+
+        broadcastReceiver.onReceive(Robolectric.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = Robolectric.shadowOf((NotificationManager)
+                Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE));
+
+        assertEquals(1, shadowNotificationManager.size());
     }
 }
