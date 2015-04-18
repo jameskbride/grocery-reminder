@@ -7,6 +7,9 @@ import android.location.LocationManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.groceryreminder.R;
+import com.groceryreminder.domain.GroceryReminderConstants;
+
 public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
 
     @Override
@@ -16,6 +19,7 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
         }
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        notificationManager.notify(0, builder.build());
+        builder.setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store);
+        notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
     }
 }

@@ -1,10 +1,12 @@
 package com.groceryreminder.services;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 
+import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.domain.GroceryReminderConstants;
 
@@ -18,6 +20,7 @@ import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowNotificationManager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
@@ -68,5 +71,30 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         assertEquals(0, shadowNotificationManager.size());
+    }
+
+    @Test
+    public void whenANotificationIsSentThenTheNotificationIdShouldBeSet() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+
+        broadcastReceiver.onReceive(Robolectric.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertNotNull(notification);
+    }
+
+    @Test
+    public void whenANotificationIsSentThenTheSmallNotificationIconIsSet() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+
+        broadcastReceiver.onReceive(Robolectric.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertEquals(R.drawable.ic_stat_maps_local_grocery_store, notification.icon);
+
     }
 }
