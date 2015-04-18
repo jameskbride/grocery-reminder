@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class ReminderSwipeListenerTest extends RobolectricTestBase {
     @Before
     public void setUp() {
         defaultReminders = getDefaultReminderList();
-        recyclerView = new RecyclerView(Robolectric.getShadowApplication().getApplicationContext());
+        recyclerView = new RecyclerView(Shadows.shadowOf(RuntimeEnvironment.application).getApplicationContext());
         adapter = new RemindersRecyclerViewAdapter(defaultReminders);
         adapterSpy = spy(adapter);
     }

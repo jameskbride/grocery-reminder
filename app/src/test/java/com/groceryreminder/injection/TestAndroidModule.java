@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.LocationManager;
 
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import javax.inject.Singleton;
 
@@ -19,13 +20,13 @@ public class TestAndroidModule {
     @Provides
     @Singleton
     public LocationManager getLocationManager() {
-        return (LocationManager) Robolectric.application.getSystemService(Application.LOCATION_SERVICE);
+        return (LocationManager) RuntimeEnvironment.application.getSystemService(Application.LOCATION_SERVICE);
     }
 
     @Provides
     @Singleton
     @ForApplication
     public Application getApplicationContext() {
-        return Robolectric.application;
+        return RuntimeEnvironment.application;
     }
 }

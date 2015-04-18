@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.groceryreminder.R;
+import com.groceryreminder.ReminderRobolectricTestRunner;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.views.reminders.AddReminderFragment;
 import com.groceryreminder.views.reminders.OnAddReminderListener;
@@ -23,8 +24,7 @@ import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@RunWith(ReminderRobolectricTestRunner.class)
 public class AddReminderFragmentTest extends RobolectricTestBase {
 
     private RemindersActivity activity;

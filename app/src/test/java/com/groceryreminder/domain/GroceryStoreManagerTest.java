@@ -7,6 +7,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.groceryreminder.ReminderRobolectricTestRunner;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContentProvider;
 import com.groceryreminder.data.ReminderContract;
@@ -16,7 +17,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowLocation;
@@ -38,8 +41,7 @@ import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@RunWith(ReminderRobolectricTestRunner.class)
 public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     private GroceryStoreManager groceryStoreManager;
@@ -64,7 +66,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     private void setupLocationManager() {
         this.locationManager = getTestAndroidModule().getLocationManager();
-        this.shadowLocationManager = Robolectric.shadowOf(locationManager);
+        this.shadowLocationManager = Shadows.shadowOf(locationManager);
         try {
             assertTrue(shadowLocationManager.setBestProvider(LocationManager.GPS_PROVIDER, true, new ArrayList<Criteria>()));
         } catch (Exception e) {
@@ -79,7 +81,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     private void setupReminderContentProvider() {
         reminderProvider = new ReminderContentProvider();
         reminderProvider.onCreate();
-        shadowContentResolver = Robolectric.shadowOf(getTestAndroidModule().getApplicationContext().getContentResolver());
+        shadowContentResolver = Shadows.shadowOf(getTestAndroidModule().getApplicationContext().getContentResolver());
         shadowContentResolver.registerProvider(ReminderContract.AUTHORITY, reminderProvider);
     }
 

@@ -19,9 +19,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.tester.android.view.TestMenuItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -78,22 +78,19 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
     @Test
     public void whenTheStoresActionBarButtonIsPressedThenTheGroceryStoresActivityIsStarted() {
-        MenuItem findStoresMenuItem = new TestMenuItem(R.id.action_find_stores);
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        shadowActivity.clickMenuItem(R.id.action_find_stores);
 
-        activity.onOptionsItemSelected(findStoresMenuItem);
-
-        ShadowActivity shadowActivity = Robolectric.shadowOf(activity);
         Intent startedIntent = shadowActivity.peekNextStartedActivity();
         assertEquals(GroceryStoresActivity.class.getName(), startedIntent.getComponent().getClassName());
     }
 
     @Test
     public void whenTheStoresActionBarButtonIsPressedThenTheGroceryLocatorServiceIsStarted() {
-        MenuItem findStoresMenuItem = new TestMenuItem(R.id.action_find_stores);
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
 
-        activity.onOptionsItemSelected(findStoresMenuItem);
+        shadowActivity.clickMenuItem(R.id.action_find_stores);
 
-        ShadowActivity shadowActivity = Robolectric.shadowOf(activity);
         Intent startedIntent = shadowActivity.peekNextStartedService();
         assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
     }

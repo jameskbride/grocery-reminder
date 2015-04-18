@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 
@@ -32,7 +34,7 @@ public class BootBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenTheApplicationIsConfiguredThenTheBootBroadcastReceiverIsRegistered() {
-        List<ShadowApplication.Wrapper> registeredReceivers = Robolectric.getShadowApplication().getRegisteredReceivers();
+        List<ShadowApplication.Wrapper> registeredReceivers = Shadows.shadowOf(RuntimeEnvironment.application).getRegisteredReceivers();
 
         assertFalse(registeredReceivers.isEmpty());
         assertTrue(isBootBroadcastReceiverRegistered(registeredReceivers));
@@ -42,7 +44,7 @@ public class BootBroadcastReceiverTest extends RobolectricTestBase {
     public void whenTheBootCompletedIntentIsSentThenTheBroadcastReceiverListensForIt() {
         Intent intent = new Intent(Intent.ACTION_BOOT_COMPLETED);
 
-        ShadowApplication shadowApplication = Robolectric.getShadowApplication();
+        ShadowApplication shadowApplication = Shadows.shadowOf(RuntimeEnvironment.application);
         assertTrue(shadowApplication.hasReceiverForIntent(intent));
     }
 
@@ -50,9 +52,9 @@ public class BootBroadcastReceiverTest extends RobolectricTestBase {
     public void whenTheBootCompletedIntentIsReceivedThenTheGroceryLocatorServiceIsStarted() {
         Intent intent = new Intent(Intent.ACTION_BOOT_COMPLETED);
 
-        broadcastReceiver.onReceive(Robolectric.getShadowApplication().getApplicationContext(), intent);
+        broadcastReceiver.onReceive(Shadows.shadowOf(RuntimeEnvironment.application).getApplicationContext(), intent);
 
-        Intent serviceIntent = Robolectric.getShadowApplication().peekNextStartedService();
+        Intent serviceIntent = Shadows.shadowOf(RuntimeEnvironment.application).peekNextStartedService();
         assertEquals(GroceryLocatorService.class.getCanonicalName(), serviceIntent.getComponent().getClassName());
     }
 

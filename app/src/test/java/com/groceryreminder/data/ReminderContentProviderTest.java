@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowCursorWrapper;
@@ -78,7 +79,7 @@ public class ReminderContentProviderTest {
     public void givenALocationContentTypeAndContentValuesWhenARecordIsInsertedThenObserversAreNotified()
     {
         ContentValues values = createDefaultLocationValues();
-        ShadowContentResolver contentResolver = Robolectric.shadowOf(provider.getContext().getContentResolver());
+        ShadowContentResolver contentResolver = Shadows.shadowOf(provider.getContext().getContentResolver());
         Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, values);
 
         List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
@@ -100,7 +101,7 @@ public class ReminderContentProviderTest {
         ContentValues values = createDefaultLocationValues();
         Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, values);
 
-        ShadowContentResolver contentResolver = Robolectric.shadowOf(provider.getContext().getContentResolver());
+        ShadowContentResolver contentResolver = Shadows.shadowOf(provider.getContext().getContentResolver());
         provider.delete(expectedUri, "", null);
 
         List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
@@ -126,7 +127,7 @@ public class ReminderContentProviderTest {
         String testName = "test";
         ContentValues values = locationValuesBuilder.createDefaultLocationValues().withName(testName).build();
 
-        ShadowContentResolver contentResolver = Robolectric.shadowOf(provider.getContext().getContentResolver());
+        ShadowContentResolver contentResolver = Shadows.shadowOf(provider.getContext().getContentResolver());
         provider.insert(ReminderContract.Locations.CONTENT_URI, values);
         List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
         assertEquals(1, notifiedUriList.size());
