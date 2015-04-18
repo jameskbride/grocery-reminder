@@ -11,7 +11,7 @@ import com.groceryreminder.injection.TestReminderApplication;
 import com.groceryreminder.injection.TestReminderModule;
 import com.groceryreminder.injection.TestRemoteResourcesModule;
 
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowLog;
 
 public class RobolectricTestBase {
@@ -33,7 +33,7 @@ public class RobolectricTestBase {
     }
 
     protected TestReminderModule getTestReminderModule() {
-        return ((TestReminderApplication) Robolectric.application).getTestReminderModule();
+        return ((TestReminderApplication) RuntimeEnvironment.application).getTestReminderModule();
     }
 
     protected TestRemoteResourcesModule getTestRemoteResourcesModule() {
@@ -41,7 +41,7 @@ public class RobolectricTestBase {
     }
 
     protected TestAndroidModule getTestAndroidModule() {
-        return ((TestReminderApplication)Robolectric.application).getTestAndroidModule();
+        return ((TestReminderApplication) RuntimeEnvironment.application).getTestAndroidModule();
     }
 
     protected RecyclerView getRecyclerView(Fragment fragment, int viewId) {

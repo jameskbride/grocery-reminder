@@ -7,17 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.GroceryStore;
-import com.groceryreminder.models.Reminder;
-import com.groceryreminder.views.reminders.ReminderListFragment;
-import com.groceryreminder.views.reminders.ReminderListViewHolder;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -25,8 +24,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
 
     private static final String ARBITRARY_STORE_NAME = "test";

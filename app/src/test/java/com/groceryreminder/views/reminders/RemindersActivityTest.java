@@ -2,12 +2,13 @@ package com.groceryreminder.views.reminders;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.services.GroceryLocatorService;
@@ -18,23 +19,25 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.fakes.RoboMenu;
+import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.tester.android.view.TestMenuItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class RemindersActivityTest extends RobolectricTestBase {
 
     private RemindersActivity activity;
 
     @Before
     public void setUp() {
-        activity = Robolectric.buildActivity(RemindersActivity.class).create().start().get();
+        activity = Robolectric.setupActivity(RemindersActivity.class);
     }
 
     @Test
@@ -78,22 +81,20 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
     @Test
     public void whenTheStoresActionBarButtonIsPressedThenTheGroceryStoresActivityIsStarted() {
-        MenuItem findStoresMenuItem = new TestMenuItem(R.id.action_find_stores);
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
 
-        activity.onOptionsItemSelected(findStoresMenuItem);
+        shadowActivity.clickMenuItem(R.id.action_find_stores);
 
-        ShadowActivity shadowActivity = Robolectric.shadowOf(activity);
         Intent startedIntent = shadowActivity.peekNextStartedActivity();
         assertEquals(GroceryStoresActivity.class.getName(), startedIntent.getComponent().getClassName());
     }
 
     @Test
     public void whenTheStoresActionBarButtonIsPressedThenTheGroceryLocatorServiceIsStarted() {
-        MenuItem findStoresMenuItem = new TestMenuItem(R.id.action_find_stores);
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
 
-        activity.onOptionsItemSelected(findStoresMenuItem);
+        shadowActivity.clickMenuItem(R.id.action_find_stores);
 
-        ShadowActivity shadowActivity = Robolectric.shadowOf(activity);
         Intent startedIntent = shadowActivity.peekNextStartedService();
         assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
     }
