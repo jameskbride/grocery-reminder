@@ -1,5 +1,7 @@
 package com.groceryreminder.services;
 
+import android.content.Intent;
+
 import com.groceryreminder.RobolectricTestBase;
 
 import org.junit.Before;
@@ -26,22 +28,11 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         super.setUp();
         broadcastReceiver = new GroceryStoreBroadcastReceiver();
     }
-
     @Test
-    public void givenTheApplicationIsConfiguredThenTheGroceryStoreBroadcastReceiverIsRegistered() {
-        List<ShadowApplication.Wrapper> registeredReceivers = Robolectric.getShadowApplication().getRegisteredReceivers();
+    public void whenTheProximityEventIntentIsSentThenTheBroadcastReceiverListensForIt() {
+        Intent intent = new Intent("com.groceryreminder.STORE_PROXIMITY_EVENT");
 
-        assertFalse(registeredReceivers.isEmpty());
-        assertTrue(isBroadcastReceiverRegistered(registeredReceivers));
-    }
-
-    private boolean isBroadcastReceiverRegistered(List<ShadowApplication.Wrapper> registeredReceivers) {
-        boolean receiverFound = false;
-        for (ShadowApplication.Wrapper wrapper : registeredReceivers) {
-            if (!receiverFound)
-                receiverFound = GroceryStoreBroadcastReceiver.class.getSimpleName().equals(
-                        wrapper.broadcastReceiver.getClass().getSimpleName());
-        }
-        return receiverFound;
+        ShadowApplication shadowApplication = Robolectric.getShadowApplication();
+        assertTrue(shadowApplication.hasReceiverForIntent(intent));
     }
 }
