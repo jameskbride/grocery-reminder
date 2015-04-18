@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 
+import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.domain.GroceryReminderConstants;
@@ -13,8 +14,9 @@ import com.groceryreminder.domain.GroceryReminderConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowNotification;
@@ -24,8 +26,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     private GroceryStoreBroadcastReceiver broadcastReceiver;
@@ -44,7 +46,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     public void whenTheProximityEventIntentIsSentThenTheBroadcastReceiverListensForIt() {
         Intent intent = BuildIntentToListenFor();
 
-        ShadowApplication shadowApplication = Robolectric.getShadowApplication();
+        ShadowApplication shadowApplication = Shadows.shadowOf(RuntimeEnvironment.application);
         assertTrue(shadowApplication.hasReceiverForIntent(intent));
     }
 
@@ -53,22 +55,22 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
-        broadcastReceiver.onReceive(Robolectric.application, intent);
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         assertEquals(1, shadowNotificationManager.size());
     }
 
     private ShadowNotificationManager getShadowNotificationManager() {
-        return Robolectric.shadowOf((NotificationManager)
-                Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE));
+        return Shadows.shadowOf((NotificationManager)
+                RuntimeEnvironment.application.getSystemService(Context.NOTIFICATION_SERVICE));
     }
 
     @Test
     public void givenAnIntentWithoutTheProximityEnteringKeyWhenTheIntentIsReceivedThenNoNotificationIsSent() {
         Intent intent = BuildIntentToListenFor();
 
-        broadcastReceiver.onReceive(Robolectric.application, intent);
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         assertEquals(0, shadowNotificationManager.size());
@@ -79,7 +81,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
-        broadcastReceiver.onReceive(Robolectric.application, intent);
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
@@ -91,7 +93,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
-        broadcastReceiver.onReceive(Robolectric.application, intent);
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
@@ -103,11 +105,11 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
-        broadcastReceiver.onReceive(Robolectric.application, intent);
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-        ShadowNotification notification = Robolectric.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-        assertEquals(Robolectric.application.getString(R.string.app_name), notification.getContentTitle());
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+        assertEquals(RuntimeEnvironment.application.getString(R.string.app_name), notification.getContentTitle());
     }
 
     @Test
@@ -115,10 +117,10 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
-        broadcastReceiver.onReceive(Robolectric.application, intent);
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-        ShadowNotification notification = Robolectric.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-        assertEquals(Robolectric.application.getString(R.string.reminder_notification), notification.getContentText());
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+        assertEquals(RuntimeEnvironment.application.getString(R.string.reminder_notification), notification.getContentText());
     }
 }

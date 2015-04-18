@@ -37,7 +37,7 @@ public class RobolectricTestBase {
     }
 
     protected TestRemoteResourcesModule getTestRemoteResourcesModule() {
-        return ((TestReminderApplication) Robolectric.application).getTestRemoteResourcesModule();
+        return ((TestReminderApplication) RuntimeEnvironment.application).getTestRemoteResourcesModule();
     }
 
     protected TestAndroidModule getTestAndroidModule() {
