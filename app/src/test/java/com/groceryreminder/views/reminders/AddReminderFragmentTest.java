@@ -1,30 +1,28 @@
 package com.groceryreminder.views.reminders;
 
 import android.os.Bundle;
+import android.support.v7.appcompat.BuildConfig;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.groceryreminder.R;
-import com.groceryreminder.ReminderRobolectricTestRunner;
 import com.groceryreminder.RobolectricTestBase;
-import com.groceryreminder.views.reminders.AddReminderFragment;
-import com.groceryreminder.views.reminders.OnAddReminderListener;
-import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(ReminderRobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class AddReminderFragmentTest extends RobolectricTestBase {
 
     private RemindersActivity activity;

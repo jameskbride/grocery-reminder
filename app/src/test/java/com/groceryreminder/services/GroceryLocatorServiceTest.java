@@ -5,7 +5,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 
-import com.groceryreminder.ReminderRobolectricTestRunner;
+import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
@@ -13,7 +13,9 @@ import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.Shadows;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLocation;
 import org.robolectric.shadows.ShadowLocationManager;
 
@@ -30,7 +32,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(ReminderRobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     private GroceryLocatorService groceryLocatorService;

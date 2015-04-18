@@ -9,6 +9,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'idea'
 
 android {
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     lintOptions {
         abortOnError false
     }

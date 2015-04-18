@@ -4,13 +4,10 @@ import android.support.v7.widget.RecyclerView;
 
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.Reminder;
-import com.groceryreminder.views.reminders.ReminderSwipeListener;
-import com.groceryreminder.views.reminders.RemindersRecyclerViewAdapter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
