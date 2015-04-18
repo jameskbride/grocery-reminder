@@ -1,7 +1,6 @@
 package com.groceryreminder.domain;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
@@ -33,9 +32,7 @@ import se.walkercrou.places.Types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
@@ -55,7 +52,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     public void setUp() {
         super.setUp();
 
-        googlePlacesMock = getTestReminderModule().getGooglePlaces();
+        googlePlacesMock = getTestRemoteResourcesModule().getGooglePlaces();
         groceryStoreManager = new GroceryStoreManager(getTestAndroidModule().getApplicationContext(),
                 googlePlacesMock);
         setupReminderContentProvider();

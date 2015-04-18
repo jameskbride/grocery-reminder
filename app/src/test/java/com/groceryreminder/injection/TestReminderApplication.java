@@ -8,6 +8,7 @@ import dagger.ObjectGraph;
 public class TestReminderApplication extends ReminderApplication {
 
     private TestReminderModule testReminderModule;
+    private TestRemoteResourcesModule testRemoteResourcesModule;
     private TestAndroidModule testAndroidModule;
 
     @Override
@@ -20,6 +21,7 @@ public class TestReminderApplication extends ReminderApplication {
     protected List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(getTestReminderModule());
+        modules.add(getTestRemoteResourcesModule());
         modules.add(getTestAndroidModule());
         return modules;
     }
@@ -30,6 +32,14 @@ public class TestReminderApplication extends ReminderApplication {
         }
 
         return testReminderModule;
+    }
+
+    public TestRemoteResourcesModule getTestRemoteResourcesModule() {
+        if (testRemoteResourcesModule == null) {
+            this.testRemoteResourcesModule = new TestRemoteResourcesModule();
+        }
+
+        return testRemoteResourcesModule;
     }
 
     public TestAndroidModule getTestAndroidModule() {
