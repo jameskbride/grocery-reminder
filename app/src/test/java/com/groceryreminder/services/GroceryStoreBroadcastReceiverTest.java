@@ -54,10 +54,14 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
         broadcastReceiver.onReceive(Robolectric.application, intent);
 
-        ShadowNotificationManager shadowNotificationManager = Robolectric.shadowOf((NotificationManager)
-                Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE));
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
 
         assertEquals(1, shadowNotificationManager.size());
+    }
+
+    private ShadowNotificationManager getShadowNotificationManager() {
+        return Robolectric.shadowOf((NotificationManager)
+                Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE));
     }
 
     @Test
@@ -66,8 +70,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
         broadcastReceiver.onReceive(Robolectric.application, intent);
 
-        ShadowNotificationManager shadowNotificationManager = Robolectric.shadowOf((NotificationManager)
-                Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE));
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
 
         assertEquals(0, shadowNotificationManager.size());
     }
