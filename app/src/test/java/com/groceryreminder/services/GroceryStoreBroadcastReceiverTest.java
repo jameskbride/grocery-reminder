@@ -34,9 +34,13 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         broadcastReceiver = new GroceryStoreBroadcastReceiver();
     }
 
+    private Intent BuildIntentToListenFor() {
+        return new Intent("com.groceryreminder.STORE_PROXIMITY_EVENT");
+    }
+
     @Test
     public void whenTheProximityEventIntentIsSentThenTheBroadcastReceiverListensForIt() {
-        Intent intent = new Intent("com.groceryreminder.STORE_PROXIMITY_EVENT");
+        Intent intent = BuildIntentToListenFor();
 
         ShadowApplication shadowApplication = Robolectric.getShadowApplication();
         assertTrue(shadowApplication.hasReceiverForIntent(intent));
@@ -44,7 +48,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenAnIntentWithTheProximityEnteringKeyWhenTheIntentIsReceivedThenANotificationIsSent() {
-        Intent intent = new Intent("com.groceryreminder.STORE_PROXIMITY_EVENT");
+        Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(Robolectric.application, intent);
@@ -53,5 +57,17 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
                 Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE));
 
         assertEquals(1, shadowNotificationManager.size());
+    }
+
+    @Test
+    public void givenAnIntentWithoutTheProximityEnteringKeyWhenTheIntentIsReceivedThenNoNotificationIsSent() {
+        Intent intent = BuildIntentToListenFor();
+
+        broadcastReceiver.onReceive(Robolectric.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = Robolectric.shadowOf((NotificationManager)
+                Robolectric.application.getSystemService(Context.NOTIFICATION_SERVICE));
+
+        assertEquals(0, shadowNotificationManager.size());
     }
 }
