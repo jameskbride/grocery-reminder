@@ -18,8 +18,10 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
             return;
         }
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(context.getString(R.string.reminder_notification));
         notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
     }
 }
