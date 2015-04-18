@@ -17,10 +17,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowNotificationManager;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
@@ -55,7 +52,6 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         broadcastReceiver.onReceive(Robolectric.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-
         assertEquals(1, shadowNotificationManager.size());
     }
 
@@ -71,7 +67,6 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         broadcastReceiver.onReceive(Robolectric.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-
         assertEquals(0, shadowNotificationManager.size());
     }
 }
