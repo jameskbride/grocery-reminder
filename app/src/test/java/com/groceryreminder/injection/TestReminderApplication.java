@@ -9,7 +9,6 @@ public class TestReminderApplication extends ReminderApplication {
 
     private TestReminderModule testReminderModule;
     private TestAndroidModule testAndroidModule;
-    private AndroidModule androidModule;
 
     @Override
     public void onCreate() {
@@ -17,15 +16,11 @@ public class TestReminderApplication extends ReminderApplication {
         graph = ObjectGraph.create(modules.toArray());
     }
 
-    public TestReminderApplication() {
-        this.testReminderModule = new TestReminderModule();
-    }
-
     @Override
     protected List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(getTestReminderModule());
-        modules.add(TestAndroidModule.class);
+        modules.add(getTestAndroidModule());
         return modules;
     }
 
