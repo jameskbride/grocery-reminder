@@ -87,7 +87,8 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     public void testWhenTheStoresActionBarButtonIsPressedThenTheGroceryStoresCanBeViewed() {
         onView(withId(R.id.action_find_stores)).perform(click());
 
-        onView(allOf(withId(R.id.stores_fragment_container), withText(getActivity().getApplication().getString(R.string.store_list_title))));
+        onView(withText(getActivity().getApplication().getString(R.string.store_list_title)))
+                .check(ViewAssertions.matches(isDisplayed()));
     }
 
     private void addArbitraryReminder() {
