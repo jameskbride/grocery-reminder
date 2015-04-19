@@ -25,6 +25,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.allOf;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -80,6 +81,13 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
         onView(withText(ARBITRARY_REMINDER)).perform(swipeRight());
 
         onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.doesNotExist());
+    }
+
+    @Test
+    public void testWhenTheStoresActionBarButtonIsPressedThenTheGroceryStoresCanBeViewed() {
+        onView(withId(R.id.action_find_stores)).perform(click());
+
+        onView(allOf(withId(R.id.stores_fragment_container), withText(getActivity().getApplication().getString(R.string.store_list_title))));
     }
 
     private void addArbitraryReminder() {

@@ -20,7 +20,6 @@ import java.util.List;
 public class GroceryStoresActivity extends ReminderFragmentBaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "StoresActivity";
-    public static final String STORE_LIST_FRAGMENT_TAG = "StoreListFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

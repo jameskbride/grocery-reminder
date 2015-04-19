@@ -36,6 +36,7 @@ public class GroceryStoreListFragment extends Fragment {
         if (getArguments() != null) {
             this.stores = (List<GroceryStore>)getArguments().getSerializable(STORES_KEY);
         }
+        getActivity().setTitle(R.string.store_list_title);
         Log.d(TAG, "In onCreateView");
         View root = inflater.inflate(R.layout.grocery_stores_list_fragment, container, false);
         this.adapter = new GroceryStoresRecyclerViewAdapter(stores);

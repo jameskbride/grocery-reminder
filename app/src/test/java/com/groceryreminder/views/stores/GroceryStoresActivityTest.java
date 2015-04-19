@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowCursorWrapper;
 
@@ -39,6 +40,11 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         super.setUp();
 
         activity = Robolectric.buildActivity(GroceryStoresActivity.class).create().start().get();
+    }
+
+    @Test
+    public void whenTheActivityIsCreatedThenTheTitleShouldBeSet() {
+        assertEquals(RuntimeEnvironment.application.getString(R.string.store_list_title), activity.getTitle());
     }
 
     @Test
