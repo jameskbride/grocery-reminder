@@ -96,10 +96,6 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.+'
     testCompile('org.robolectric:robolectric:3.0-SNAPSHOT')
     testCompile('org.robolectric:shadows-support-v4:3.0-SNAPSHOT')
-    androidTestCompile 'org.hamcrest:hamcrest-integration:1.3'
-    androidTestCompile 'org.hamcrest:hamcrest-core:1.3'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    androidTestCompile('junit:junit:4.12')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.0') {
         exclude group: 'javax.inject'
         exclude module: 'javawriter'
