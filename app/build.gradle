@@ -97,6 +97,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.+'
     testCompile('org.robolectric:robolectric:3.0-SNAPSHOT')
     testCompile('org.robolectric:shadows-support-v4:3.0-SNAPSHOT')
+    androidTestCompile 'org.mockito:mockito-core:1.+'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.0') {
         exclude group: 'javax.inject'
         exclude module: 'javawriter'
