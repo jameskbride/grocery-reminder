@@ -17,7 +17,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLocation;
-import org.robolectric.shadows.ShadowLocationManager;
+import com.groceryreminder.shadows.ShadowLocationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class})
 public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     private GroceryLocatorService groceryLocatorService;
@@ -55,7 +55,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     private void setupLocationManager() {
         this.locationManager = getTestAndroidModule().getLocationManager();
-        this.shadowLocationManager = Shadows.shadowOf(locationManager);
+        this.shadowLocationManager = (com.groceryreminder.shadows.ShadowLocationManager)Shadows.shadowOf(locationManager);
         try {
             assertTrue(shadowLocationManager.setBestProvider(LocationManager.GPS_PROVIDER, true, new ArrayList<Criteria>()));
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         }
 
         this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
-        ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.FIVE_MILES_IN_METERS});
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.FIVE_MILES_IN_METERS});
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
     }
 
