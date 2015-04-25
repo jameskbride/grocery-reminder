@@ -38,10 +38,8 @@ public class ShadowLocationManager extends org.robolectric.shadows.ShadowLocatio
     }
 
     public boolean hasProximityAlert(double latitude, double longitude) {
-        for (ProximityAlert proximityAlert : proximityAlerts) {
-            if (proximityAlert.getLatitude() == latitude && proximityAlert.getLongitude() == longitude) {
-                return true;
-            }
+        if (getProximityAlert(latitude, longitude) != null) {
+            return true;
         }
 
         return false;
