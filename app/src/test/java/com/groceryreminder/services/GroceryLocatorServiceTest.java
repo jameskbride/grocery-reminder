@@ -24,12 +24,14 @@ import org.robolectric.shadows.ShadowPendingIntent;
 import com.groceryreminder.shadows.ShadowLocationManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import se.walkercrou.places.Place;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -91,12 +93,12 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         return location;
     }
 
-    private void updatePlaces(Place place) {
-        List<Place> places = new ArrayList<Place>();
-        places.add(place);
-        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(places);
-        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, places,
-                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+    private void updatePlaces(Place... places) {
+        List<Place> placeList = new ArrayList<Place>();
+        placeList.addAll(Arrays.asList(places));
+        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(placeList);
+        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, placeList,
+                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(placeList);
         groceryLocatorService.onHandleIntent(new Intent());
     }
 
@@ -174,6 +176,25 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         ShadowIntent shadowIntent = Shadows.shadowOf(shadowPendingIntent.getSavedIntent());
 
         assertEquals(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT, shadowIntent.getAction());
+    }
+
+    @Test
+    public void givenPlacesWhenProximityAlertIsAddedThenTheStorePendingIntentRequestCodeIsUnique() {
+        Place place = createDefaultGooglePlace();
+        Place place2 = new Place();
+        place2.setLatitude(place.getLatitude()+1);
+        place2.setLongitude(place.getLongitude());
+        place2.setName("test 2");
+        place2.setPlaceId("test_id2");
+        Place[] places = new Place[]{place, place2};
+        updatePlaces(places);
+
+        List<ShadowLocationManager.ProximityAlert> proximityAlerts = shadowLocationManager.getProximityAlerts();
+        assertEquals(places.length, proximityAlerts.size());
+
+        ShadowPendingIntent shadowPendingIntent1 = Shadows.shadowOf(proximityAlerts.get(0).getPendingIntent());
+        ShadowPendingIntent shadowPendingIntent2 = Shadows.shadowOf(proximityAlerts.get(1).getPendingIntent());
+        assertNotEquals(shadowPendingIntent1.getRequestCode(), shadowPendingIntent2.getRequestCode());
     }
 
     @Test
