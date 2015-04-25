@@ -64,7 +64,7 @@ public class GroceryLocatorService extends IntentService {
             locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(),
                     GroceryReminderConstants.FIFTEEN_FEET_IN_METERS, GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION,
                     PendingIntent.getBroadcast(getApplicationContext(), requestCode++, proximityAlertIntent,
-                            0));
+                            PendingIntent.FLAG_CANCEL_CURRENT));
         }
     }
 

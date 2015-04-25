@@ -1,5 +1,6 @@
 package com.groceryreminder.services;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
@@ -169,6 +170,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     @Test
     public void whenProximityAlertIsAddedThenTheStorePendingIntentIsSet() {
         Place place = createDefaultGooglePlace();
+
         updatePlaces(place);
 
         ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
@@ -176,6 +178,18 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         ShadowIntent shadowIntent = Shadows.shadowOf(shadowPendingIntent.getSavedIntent());
 
         assertEquals(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT, shadowIntent.getAction());
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenTheStorePendingIntentCancelsTheCurrentRequest() {
+        Place place = createDefaultGooglePlace();
+
+        updatePlaces(place);
+
+        ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(proximityAlert.getPendingIntent());
+
+        assertEquals(PendingIntent.FLAG_CANCEL_CURRENT, shadowPendingIntent.getFlags());
     }
 
     @Test
@@ -187,6 +201,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         place2.setName("test 2");
         place2.setPlaceId("test_id2");
         Place[] places = new Place[]{place, place2};
+
         updatePlaces(places);
 
         List<ShadowLocationManager.ProximityAlert> proximityAlerts = shadowLocationManager.getProximityAlerts();
