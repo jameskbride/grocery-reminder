@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.provider.Settings;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
@@ -140,6 +141,14 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheDefaultNotificationSoundPlays() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+
+        assertEquals(Settings.System.DEFAULT_NOTIFICATION_URI, notification.getRealNotification().sound);
     }
 }

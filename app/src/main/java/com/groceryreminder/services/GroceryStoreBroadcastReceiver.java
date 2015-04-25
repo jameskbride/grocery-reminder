@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -22,7 +23,8 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.reminder_notification))
-                .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN);
+                .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN)
+                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
         notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
     }
 }
