@@ -148,7 +148,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         groceryLocatorService.onHandleIntent(new Intent());
 
         ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
-        assertEquals(-1, proximityAlert.getExpiration());
+        assertEquals(GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION, proximityAlert.getExpiration());
     }
 
     @Test
