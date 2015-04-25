@@ -21,7 +21,8 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.reminder_notification));
+                .setContentText(context.getString(R.string.reminder_notification))
+                .setVibrate(new long[] {1000, 1000});
         notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
     }
 }
