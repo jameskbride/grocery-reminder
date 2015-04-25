@@ -13,9 +13,6 @@ import java.util.List;
 @Implements(LocationManager.class)
 public class ShadowLocationManager extends org.robolectric.shadows.ShadowLocationManager {
 
-    @RealObject
-    private LocationManager locationManager;
-
     List<ProximityAlert> proximityAlerts = new ArrayList<ProximityAlert>();
 
     @Implementation
