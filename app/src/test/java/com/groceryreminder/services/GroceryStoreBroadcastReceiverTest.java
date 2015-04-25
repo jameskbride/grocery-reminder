@@ -135,7 +135,11 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
 
-        long[] vibrationPattern = new long[] {1000, 1000};
-        assertArrayEquals(vibrationPattern, notification.getRealNotification().vibrate);
+        assertArrayEquals(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN, notification.getRealNotification().vibrate);
+    }
+
+    @Test
+    public void whenANotificationIsSentThenTheDefaultNotificationSoundPlays() {
+
     }
 }

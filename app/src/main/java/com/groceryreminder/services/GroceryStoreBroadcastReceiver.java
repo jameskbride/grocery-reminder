@@ -22,7 +22,7 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.reminder_notification))
-                .setVibrate(new long[] {1000, 1000});
+                .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN);
         notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
     }
 }
