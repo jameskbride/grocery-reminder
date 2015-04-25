@@ -6,7 +6,6 @@ import android.location.LocationManager;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
-import org.robolectric.internal.Shadow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +45,16 @@ public class ShadowLocationManager extends org.robolectric.shadows.ShadowLocatio
         }
 
         return false;
+    }
+
+    public ProximityAlert getProximityAlert(double latitude, double longitude) {
+        for (ProximityAlert proximityAlert : proximityAlerts) {
+            if (proximityAlert.getLatitude() == latitude && proximityAlert.getLongitude() == longitude) {
+                return proximityAlert;
+            }
+        }
+
+        return null;
     }
 
     public class ProximityAlert {

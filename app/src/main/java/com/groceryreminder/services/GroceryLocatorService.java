@@ -56,7 +56,7 @@ public class GroceryLocatorService extends IntentService {
         groceryStoreManager.persistGroceryStores(places);
         for (Place place : places) {
             Intent proximityAlertIntent = new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
-            locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(), 0, 0,
+            locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(), 15.24f, 0,
                     PendingIntent.getBroadcast(getApplicationContext(), 0, proximityAlertIntent,
                             PendingIntent.FLAG_ONE_SHOT));
         }
