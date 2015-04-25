@@ -134,7 +134,21 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         groceryLocatorService.onHandleIntent(new Intent());
 
         ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
-        assertEquals(15.24f, proximityAlert.getRadius(), 0.001);
+        assertEquals(GroceryReminderConstants.FIFTEEN_FEET_IN_METERS, proximityAlert.getRadius(), 0.001);
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenTheExpirationDoesNotExpire() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(places);
+        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, places,
+                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+        groceryLocatorService.onHandleIntent(new Intent());
+
+        ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+        assertEquals(-1, proximityAlert.getExpiration());
     }
 
     @Test
