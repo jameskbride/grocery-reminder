@@ -23,7 +23,6 @@ public class ShadowLocationManager extends org.robolectric.shadows.ShadowLocatio
     public void addProximityAlert(double latitude, double longitude,
                                   float radius, long expiration, PendingIntent intent) {
         proximityAlerts.add(new ProximityAlert(latitude, longitude, radius, expiration, intent));
-        Shadow.directlyOn(locationManager, LocationManager.class).addProximityAlert(latitude, longitude, radius, expiration, intent);
     }
 
     @Implementation
@@ -33,12 +32,20 @@ public class ShadowLocationManager extends org.robolectric.shadows.ShadowLocatio
                 proximityAlerts.remove(proximityAlert);
             }
         }
-
-        Shadow.directlyOn(locationManager, LocationManager.class).removeProximityAlert(intent);
     }
 
     public List<ProximityAlert> getProximityAlerts() {
         return proximityAlerts;
+    }
+
+    public boolean hasProximityAlert(double latitude, double longitude) {
+        for (ProximityAlert proximityAlert : proximityAlerts) {
+            if (proximityAlert.getLatitude() == latitude && proximityAlert.getLongitude() == longitude) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public class ProximityAlert {

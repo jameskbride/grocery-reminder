@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class}, sdk = Build.VERSION_CODES.JELLY_BEAN)
 public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     private GroceryLocatorService groceryLocatorService;
@@ -70,8 +71,8 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     private Place createDefaultGooglePlace() {
         Place place = new Place();
         place.setName("test");
-        place.setLatitude(0.0);
-        place.setLongitude(1.1);
+        place.setLatitude(39.9732997);
+        place.setLongitude(-82.99788610000002);
         place.setPlaceId("test_id");
 
         return place;
@@ -107,6 +108,19 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         groceryLocatorService.onHandleIntent(new Intent());
 
         verify(groceryStoreManagerMock).persistGroceryStores(places);
+    }
+
+    @Test
+    public void whenPlacesWithinFiveMilesArePersistedThenProximityAlertsAreAdded() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(places);
+        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, places,
+                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+        groceryLocatorService.onHandleIntent(new Intent());
+
+        assertTrue(shadowLocationManager.hasProximityAlert(place.getLatitude(), place.getLongitude()));
     }
 
     @Test
