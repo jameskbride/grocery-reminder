@@ -322,4 +322,16 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, capturedMinTimes.get(1).longValue());
     }
 
+    @Test
+    public void whenLocationUpdatesAreRequestedThenTheMinDistanceForNetworkUpdatesIsFiveMilesInMeters() {
+        ArgumentCaptor<Float> minDistanceCaptor = ArgumentCaptor.forClass(Float.class);
+
+        groceryStoreManager.listenForLocationUpdates();
+
+        verify(locationManager, times(2)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
+
+        List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
+        assertEquals(GroceryReminderConstants.FIVE_MILES_IN_METERS, capturedMinDistances.get(1).floatValue(), 0.001);
+    }
+
 }
