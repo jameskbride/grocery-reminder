@@ -18,6 +18,8 @@ import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.ForApplication;
+import com.groceryreminder.services.GroceryStoreLocationListener;
+import com.groceryreminder.services.LocationUpdater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +31,13 @@ import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Types;
 
-public class GroceryStoreManager implements GroceryStoreManagerInterface {
+public class GroceryStoreManager implements GroceryStoreManagerInterface, LocationUpdater {
 
     private static final String TAG = "StoreManager";
     private final LocationManager locationManager;
     private GooglePlacesInterface googlePlaces;
     private Application context;
+    private LocationListener locationListener;
 
     @Inject
     public GroceryStoreManager(@ForApplication Application applicationContext, LocationManager locationManager, GooglePlacesInterface googlePlaces) {
@@ -120,33 +123,15 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     @Override
     public void listenForLocationUpdates() {
-        LocationListener locationListener = createLocationListener();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
+        if (this.locationListener == null) {
+            this.locationListener = createLocationListener();
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
+        }
     }
 
     private LocationListener createLocationListener() {
-        return new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
+        return new GroceryStoreLocationListener(this);
     }
 
     private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
@@ -170,4 +155,15 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         return values;
     }
 
+    @Override
+    public void handleLocationUpdated(Location location) {
+        Log.d(TAG, "Hitting the handleLocationUpdated");
+        deleteStoresByLocation(location);
+        List<Place> updatedPlaces = findStoresByLocation(location);
+        List<Place> places = filterPlacesByDistance(location, updatedPlaces, GroceryReminderConstants.FIVE_MILES_IN_METERS);
+
+        Log.d(TAG, "Places count: " + places.size());
+        persistGroceryStores(places);
+        addProximityAlerts(places);
+    }
 }
