@@ -92,15 +92,6 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         return location;
     }
 
-    private void updatePlaces(Place... places) {
-        List<Place> placeList = new ArrayList<Place>();
-        placeList.addAll(Arrays.asList(places));
-        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(placeList);
-        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, placeList,
-                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(placeList);
-        groceryLocatorService.onHandleIntent(new Intent());
-    }
-
     @Test
     public void givenAnIntentWhenTheIntentIsHandledThenANearbySearchForGroceryStoresIsPerformed() {
         groceryLocatorService.onHandleIntent(new Intent());

@@ -18,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
@@ -181,7 +180,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
 
-        assertEquals(GroceryReminderConstants.FIFTEEN_FEET_IN_METERS, proximityAlert.getRadius(), 0.001);
+        assertEquals(GroceryReminderConstants.FIFTY_FEET_IN_METERS, proximityAlert.getRadius(), 0.001);
     }
 
     @Test
