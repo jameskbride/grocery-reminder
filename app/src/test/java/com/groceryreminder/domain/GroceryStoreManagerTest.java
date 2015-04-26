@@ -43,6 +43,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -285,6 +286,17 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(locationManager).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         assertEquals(300000L, minTimeCaptor.getValue().longValue());
+    }
+
+    @Test
+    public void whenLocationUpdatesAreRequestedThenTheMinDistanceForGPSUpdatesIsFiveMilesInMeters() {
+        ArgumentCaptor<Float> minDistanceCaptor = ArgumentCaptor.forClass(Float.class);
+
+        groceryStoreManager.listenForLocationUpdates();
+
+        verify(locationManager).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
+
+        assertEquals(GroceryReminderConstants.FIVE_MILES_IN_METERS, minDistanceCaptor.getValue().floatValue(), 0.001);
     }
 
 }
