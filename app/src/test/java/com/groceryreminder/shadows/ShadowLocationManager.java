@@ -5,7 +5,6 @@ import android.location.LocationManager;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
-import org.robolectric.annotation.RealObject;
 
 import java.util.ArrayList;
 import java.util.List;

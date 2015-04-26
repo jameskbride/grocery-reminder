@@ -1,7 +1,6 @@
 package com.groceryreminder.services;
 
 import android.app.IntentService;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
@@ -54,18 +53,7 @@ public class GroceryLocatorService extends IntentService {
 
         Log.d(TAG, "Places count: " + places.size());
         groceryStoreManager.persistGroceryStores(places);
-        addProximityAlerts(places);
-    }
-
-    private void addProximityAlerts(List<Place> places) {
-        int requestCode = 0;
-        for (Place place : places) {
-            Intent proximityAlertIntent = new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
-            locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(),
-                    GroceryReminderConstants.FIFTEEN_FEET_IN_METERS, GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION,
-                    PendingIntent.getBroadcast(getApplicationContext(), requestCode++, proximityAlertIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT));
-        }
+        groceryStoreManager.addProximityAlerts(places);
     }
 
     private Location getLastKnownLocation() {

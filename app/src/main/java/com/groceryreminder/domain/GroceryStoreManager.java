@@ -1,12 +1,15 @@
 package com.groceryreminder.domain;
 
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.ContentProviderOperation;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
@@ -27,13 +30,15 @@ import se.walkercrou.places.Types;
 public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     private static final String TAG = "StoreManager";
+    private final LocationManager locationManager;
     GooglePlacesInterface googlePlaces;
 
     Application context;
 
     @Inject
-    public GroceryStoreManager(@ForApplication Application applicationContext, GooglePlacesInterface googlePlaces) {
+    public GroceryStoreManager(@ForApplication Application applicationContext, LocationManager locationManager, GooglePlacesInterface googlePlaces) {
         this.context = applicationContext;
+        this.locationManager = locationManager;
         this.googlePlaces = googlePlaces;
     }
 
@@ -98,6 +103,18 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         }
 
         applyBatchOperations(operations);
+    }
+
+    @Override
+    public void addProximityAlerts(List<Place> places) {
+        int requestCode = 0;
+        for (Place place : places) {
+            Intent proximityAlertIntent = new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
+            locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(),
+                    GroceryReminderConstants.FIFTEEN_FEET_IN_METERS, GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION,
+                    PendingIntent.getBroadcast(context, requestCode++, proximityAlertIntent,
+                            PendingIntent.FLAG_CANCEL_CURRENT));
+        }
     }
 
     private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
