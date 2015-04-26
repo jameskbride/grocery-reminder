@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
@@ -39,7 +40,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -67,7 +72,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     private void setupLocationManager() {
-        this.locationManager = getTestAndroidModule().getLocationManager();
+        this.locationManager = spy(getTestAndroidModule().getLocationManager());
         this.shadowLocationManager = (com.groceryreminder.shadows.ShadowLocationManager)Shadows.shadowOf(locationManager);
         try {
             assertTrue(shadowLocationManager.setBestProvider(LocationManager.GPS_PROVIDER, true, new ArrayList<Criteria>()));
@@ -269,6 +274,17 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
+    }
+
+    @Test
+    public void whenLocationUpdatesAreRequestedThenTheMinTimeForGPSUpdatesIsFiveMinutes() {
+        ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
+
+        groceryStoreManager.listenForLocationUpdates();
+
+        verify(locationManager).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+
+        assertEquals(300000L, minTimeCaptor.getValue().longValue());
     }
 
 }

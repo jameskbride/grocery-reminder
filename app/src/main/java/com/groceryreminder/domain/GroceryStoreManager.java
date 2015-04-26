@@ -121,7 +121,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     @Override
     public void listenForLocationUpdates() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000l, 0f, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
 
