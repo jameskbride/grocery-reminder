@@ -33,9 +33,8 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     private static final String TAG = "StoreManager";
     private final LocationManager locationManager;
-    GooglePlacesInterface googlePlaces;
-
-    Application context;
+    private GooglePlacesInterface googlePlaces;
+    private Application context;
 
     @Inject
     public GroceryStoreManager(@ForApplication Application applicationContext, LocationManager locationManager, GooglePlacesInterface googlePlaces) {
