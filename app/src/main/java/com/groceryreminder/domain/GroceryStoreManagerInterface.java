@@ -2,11 +2,13 @@ package com.groceryreminder.domain;
 
 import android.location.Location;
 
+import com.groceryreminder.services.LocationUpdater;
+
 import java.util.List;
 
 import se.walkercrou.places.Place;
 
-public interface GroceryStoreManagerInterface {
+public interface GroceryStoreManagerInterface extends LocationUpdater{
 
     List<Place> findStoresByLocation(Location location);
 

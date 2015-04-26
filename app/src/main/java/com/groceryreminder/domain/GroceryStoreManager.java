@@ -31,7 +31,7 @@ import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 import se.walkercrou.places.Types;
 
-public class GroceryStoreManager implements GroceryStoreManagerInterface, LocationUpdater {
+public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     private static final String TAG = "StoreManager";
     private final LocationManager locationManager;

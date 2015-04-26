@@ -7,15 +7,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.injection.ReminderApplication;
 
-import java.util.List;
-
 import javax.inject.Inject;
-
-import se.walkercrou.places.Place;
 
 public class GroceryLocatorService extends IntentService {
 
@@ -47,14 +42,7 @@ public class GroceryLocatorService extends IntentService {
             Log.d(TAG, "Last known location is null");
             return;
         }
-        Log.d(TAG, "Last known location is: " + location);
-        groceryStoreManager.deleteStoresByLocation(location);
-        List<Place> updatedPlaces = groceryStoreManager.findStoresByLocation(location);
-        List<Place> places = groceryStoreManager.filterPlacesByDistance(location, updatedPlaces, GroceryReminderConstants.FIVE_MILES_IN_METERS);
-
-        Log.d(TAG, "Places count: " + places.size());
-        groceryStoreManager.persistGroceryStores(places);
-        groceryStoreManager.addProximityAlerts(places);
+        groceryStoreManager.handleLocationUpdated(location);
     }
 
     private Location getLastKnownLocation() {

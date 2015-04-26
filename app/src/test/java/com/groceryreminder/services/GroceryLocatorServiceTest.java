@@ -93,47 +93,10 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenTheIntentIsHandledThenANearbySearchForGroceryStoresIsPerformed() {
-        groceryLocatorService.onHandleIntent(new Intent());
-        verify(groceryStoreManagerMock).findStoresByLocation(defaultGPSLocation);
-    }
-
-    @Test
-    public void whenTheIntentIsHandledThenDistanceStoresAreDeleted() {
-        groceryLocatorService.onHandleIntent(new Intent());
-        verify(groceryStoreManagerMock).deleteStoresByLocation(defaultGPSLocation);
-    }
-
-    @Test
-    public void whenTheIntentIsHandledThenLocationUpdatesAreRequested() {
-        groceryLocatorService.onHandleIntent(new Intent());
-        verify(groceryStoreManagerMock).listenForLocationUpdates();
-    }
-
-    @Test
-    public void givenPlaceSearchResultsAreFoundWhenTheyAreWithinFiveMilesDistanceThenTheyArePersisted() {
-        Place place = createDefaultGooglePlace();
-        List<Place> places = new ArrayList<Place>();
-        places.add(place);
-        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(places);
-        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, places,
-                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+    public void givenALastKnownLocationWhenTheIntentIsHandledThenALocationUpdateIsHandled() {
         groceryLocatorService.onHandleIntent(new Intent());
 
-        verify(groceryStoreManagerMock).persistGroceryStores(places);
-    }
-
-    @Test
-    public void whenPlacesArePersistedThenProximityAlertsAreAdded() {
-        Place place = createDefaultGooglePlace();
-        List<Place> places = new ArrayList<Place>();
-        places.add(place);
-        when(groceryStoreManagerMock.findStoresByLocation(defaultGPSLocation)).thenReturn(places);
-        when(groceryStoreManagerMock.filterPlacesByDistance(defaultGPSLocation, places,
-                GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
-        groceryLocatorService.onHandleIntent(new Intent());
-
-        verify(groceryStoreManagerMock).addProximityAlerts(places);
+        verify(groceryStoreManagerMock).handleLocationUpdated(defaultGPSLocation);
     }
 
     @Test
