@@ -11,4 +11,6 @@ public class GroceryReminderConstants {
     public static final long PROXIMITY_ALERT_EXPIRATION = -1;
 
     public static final long[] PROXIMITY_VIBRATION_PATTERN = {1000, 1000};
+
+    public static final long MIN_LOCATION_UPDATE_TIME = 300000l;
 }

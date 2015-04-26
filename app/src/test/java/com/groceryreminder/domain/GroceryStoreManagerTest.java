@@ -285,7 +285,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         verify(locationManager).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
-        assertEquals(300000L, minTimeCaptor.getValue().longValue());
+        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, minTimeCaptor.getValue().longValue());
     }
 
     @Test
