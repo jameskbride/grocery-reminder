@@ -310,4 +310,16 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.NETWORK_PROVIDER));
     }
 
+    @Test
+    public void whenLocationUpdatesAreRequestedThenTheMinTimeForNetworkUpdatesIsFiveMinutes() {
+        ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
+
+        groceryStoreManager.listenForLocationUpdates();
+
+        verify(locationManager, times(2)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+
+        List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
+        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, capturedMinTimes.get(1).longValue());
+    }
+
 }
