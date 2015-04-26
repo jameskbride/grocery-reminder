@@ -93,7 +93,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenAnIntentWhenTheIntentIsHandledThenANearbySearchForGroceryStoresIsPerformed() {
+    public void whenTheIntentIsHandledThenANearbySearchForGroceryStoresIsPerformed() {
         groceryLocatorService.onHandleIntent(new Intent());
         verify(groceryStoreManagerMock).findStoresByLocation(defaultGPSLocation);
     }
@@ -102,6 +102,12 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     public void whenTheIntentIsHandledThenDistanceStoresAreDeleted() {
         groceryLocatorService.onHandleIntent(new Intent());
         verify(groceryStoreManagerMock).deleteStoresByLocation(defaultGPSLocation);
+    }
+
+    @Test
+    public void whenTheIntentIsHandledThenLocationUpdatesAreRequested() {
+        groceryLocatorService.onHandleIntent(new Intent());
+        verify(groceryStoreManagerMock).listenForLocationUpdates();
     }
 
     @Test
@@ -156,7 +162,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         }
 
         groceryLocatorService.onHandleIntent(new Intent());
-
+        verify(groceryStoreManagerMock).listenForLocationUpdates();
         verifyNoMoreInteractions(groceryStoreManagerMock);
     }
 }

@@ -41,6 +41,7 @@ public class GroceryLocatorService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "In onHandleIntent");
+        groceryStoreManager.listenForLocationUpdates();
         Location location = getLastKnownLocation();
         if (location == null) {
             Log.d(TAG, "Last known location is null");
