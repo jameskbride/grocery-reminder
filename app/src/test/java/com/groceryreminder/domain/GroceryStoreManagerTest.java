@@ -263,4 +263,12 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         assertFalse(locationListeners.isEmpty());
     }
 
+    @Test
+    public void whenLocationUpdatesAreRequestedThenAGPSListenerIsAddedToTheLocationManager() {
+        groceryStoreManager.listenForLocationUpdates();
+
+        List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
+    }
+
 }
