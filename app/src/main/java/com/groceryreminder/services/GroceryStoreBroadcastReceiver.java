@@ -15,16 +15,16 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
-            return;
+        if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setContentText(context.getString(R.string.reminder_notification))
+                    .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN)
+                    .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+            notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
         }
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.reminder_notification))
-                .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN)
-                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-        notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
+
     }
 }
