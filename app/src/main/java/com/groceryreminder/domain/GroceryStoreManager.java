@@ -121,7 +121,13 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     @Override
     public void listenForLocationUpdates() {
-        LocationListener locationListener = new LocationListener() {
+        LocationListener locationListener = createLocationListener();
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
+    }
+
+    private LocationListener createLocationListener() {
+        return new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
 
@@ -142,8 +148,6 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
             }
         };
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
     }
 
     private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
