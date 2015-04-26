@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 
 import com.groceryreminder.BuildConfig;
@@ -34,6 +35,7 @@ import se.walkercrou.places.Place;
 import se.walkercrou.places.Types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -252,4 +254,13 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         ShadowPendingIntent shadowPendingIntent2 = Shadows.shadowOf(proximityAlerts.get(1).getPendingIntent());
         assertNotEquals(shadowPendingIntent1.getRequestCode(), shadowPendingIntent2.getRequestCode());
     }
+
+    @Test
+    public void whenLocationUpdatesAreRequestedThenLocationListenersAreAddedToTheLocationManager() {
+        groceryStoreManager.listenForLocationUpdates();
+
+        List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertFalse(locationListeners.isEmpty());
+    }
+
 }

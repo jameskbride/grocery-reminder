@@ -17,4 +17,6 @@ public interface GroceryStoreManagerInterface {
     void deleteStoresByLocation(Location location);
 
     void addProximityAlerts(List<Place> places);
+
+    void listenForLocationUpdates();
 }

@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -115,6 +117,31 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
                     PendingIntent.getBroadcast(context, requestCode++, proximityAlertIntent,
                             PendingIntent.FLAG_CANCEL_CURRENT));
         }
+    }
+
+    @Override
+    public void listenForLocationUpdates() {
+        locationManager.requestLocationUpdates("", 0, 0, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        });
     }
 
     private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
