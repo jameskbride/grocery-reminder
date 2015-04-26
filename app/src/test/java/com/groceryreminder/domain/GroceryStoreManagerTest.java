@@ -46,6 +46,7 @@ import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -283,9 +284,10 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates();
 
-        verify(locationManager).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+        verify(locationManager, times(2)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
-        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, minTimeCaptor.getValue().longValue());
+        List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
+        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, capturedMinTimes.get(0).longValue());
     }
 
     @Test
@@ -294,9 +296,18 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates();
 
-        verify(locationManager).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
+        verify(locationManager, times(2)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
-        assertEquals(GroceryReminderConstants.FIVE_MILES_IN_METERS, minDistanceCaptor.getValue().floatValue(), 0.001);
+        List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
+        assertEquals(GroceryReminderConstants.FIVE_MILES_IN_METERS, capturedMinDistances.get(0).floatValue(), 0.001);
+    }
+
+    @Test
+    public void whenLocationUpdatesAreRequestedThenANetworkListenerIsAddedToTheLocationManager() {
+        groceryStoreManager.listenForLocationUpdates();
+
+        List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.NETWORK_PROVIDER));
     }
 
 }
