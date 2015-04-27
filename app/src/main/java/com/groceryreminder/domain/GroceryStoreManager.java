@@ -12,14 +12,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.ForApplication;
 import com.groceryreminder.services.GroceryStoreLocationListener;
-import com.groceryreminder.services.LocationUpdater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +50,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         Log.d(TAG, "Location: " + location);
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
         googlePlaces.setDebugModeEnabled(true);
-        List<Place> places = googlePlaces.getNearbyPlacesRankedByDistance(location.getLatitude(), location.getLongitude(), groceryStoreType);
+        List<Place> places = googlePlaces.getNearbyPlacesRankedByDistance(location.getLatitude(), location.getLongitude(), GOOGLE_PLACES_MAX_RESULTS, groceryStoreType);
 
         return places;
     }

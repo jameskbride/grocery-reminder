@@ -45,6 +45,7 @@ import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.timeout;
@@ -127,6 +128,21 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         location.setTime(System.currentTimeMillis() + GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME + 1);
     }
 
+    private void performMultipleLocationUpdates(Location location, Location updatedLocation) {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
+        groceryStoreManagerSpy.listenForLocationUpdates();
+
+        when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
+        when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+
+        groceryStoreManagerSpy.handleLocationUpdated(location);
+        groceryStoreManagerSpy.handleLocationUpdated(updatedLocation);
+    }
+
     @Test
     public void whenPlacesAreRequestedByLocationThenANearbySearchIsPerformed() {
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
@@ -134,7 +150,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.findStoresByLocation(defaultGPSLocation);
 
-        verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), paramsCaptor.capture());
+        verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), eq(GroceryStoreManagerInterface.GOOGLE_PLACES_MAX_RESULTS), paramsCaptor.capture());
 
         Param actualParams = paramsCaptor.getValue();
         assertEquals(actualParams, groceryStoreType);
@@ -387,24 +403,12 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         location.setLongitude(DEFAULT_LONGITUDE);
         setLocationUpdatableTimestamp(location);
 
-        Place place = createDefaultGooglePlace();
-        List<Place> places = new ArrayList<Place>();
-        places.add(place);
-
-        GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
-        groceryStoreManagerSpy.listenForLocationUpdates();
-
-        when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
-        when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
-
-        groceryStoreManagerSpy.handleLocationUpdated(location);
-
         Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setTime(location.getTime() + 1);
 
-        groceryStoreManagerSpy.handleLocationUpdated(updatedLocation);
+        performMultipleLocationUpdates(location, updatedLocation);
         List<ShadowLocationManager.ProximityAlert> proximityAlerts = shadowLocationManager.getProximityAlerts();
         assertEquals(1, proximityAlerts.size());
     }

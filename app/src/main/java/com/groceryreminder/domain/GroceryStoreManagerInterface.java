@@ -10,6 +10,8 @@ import se.walkercrou.places.Place;
 
 public interface GroceryStoreManagerInterface extends LocationUpdater{
 
+    int GOOGLE_PLACES_MAX_RESULTS = 40;
+
     List<Place> findStoresByLocation(Location location);
 
     List<Place> filterPlacesByDistance(Location location, List<Place> places, double distanceInMeters);
