@@ -1,6 +1,5 @@
 package com.groceryreminder.services;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
@@ -19,24 +18,19 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowLocation;
-import org.robolectric.shadows.ShadowPendingIntent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import se.walkercrou.places.Place;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class}, sdk = Build.VERSION_CODES.JELLY_BEAN)
@@ -97,6 +91,14 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         groceryLocatorService.onHandleIntent(new Intent());
 
         verify(groceryStoreManagerMock).handleLocationUpdated(defaultGPSLocation);
+    }
+
+    @Test
+    public void givenALastKnownLocationWhichIsTooInaccurateWhenTheIntentIsHandledThenALocationUpdateIsNotHandled() {
+        defaultGPSLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS + 1);
+        groceryLocatorService.onHandleIntent(new Intent());
+
+        verify(groceryStoreManagerMock, times(0)).handleLocationUpdated(defaultGPSLocation);
     }
 
     @Test

@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.injection.ReminderApplication;
 
@@ -38,7 +39,7 @@ public class GroceryLocatorService extends IntentService {
         Log.d(TAG, "In onHandleIntent");
         groceryStoreManager.listenForLocationUpdates();
         Location location = getLastKnownLocation();
-        if (location == null) {
+        if (location == null || location.getAccuracy() > GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
             Log.d(TAG, "Last known location is null");
             return;
         }
