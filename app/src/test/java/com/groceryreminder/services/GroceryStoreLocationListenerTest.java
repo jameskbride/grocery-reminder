@@ -14,6 +14,7 @@ import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -36,6 +37,16 @@ public class GroceryStoreLocationListenerTest extends RobolectricTestBase {
         groceryStoreLocationListener.onLocationChanged(location);
 
         verify(locationUpdaterMock).handleLocationUpdated(location);
+    }
+
+    @Test
+    public void givenALocationWithAnAccuracyGreaterThan100MetersWhenTheLocationIsChangedThenTheLocationIsNotHandled() {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setAccuracy(100.001f);
+
+        groceryStoreLocationListener.onLocationChanged(location);
+
+        verifyNoMoreInteractions(locationUpdaterMock);
     }
 
 }

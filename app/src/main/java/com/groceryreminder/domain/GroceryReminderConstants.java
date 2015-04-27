@@ -8,6 +8,7 @@ public class GroceryReminderConstants {
 
     public static final int NOTIFICATION_PROXIMITY_ALERT = 1;
     public static final float FIFTY_FEET_IN_METERS = 15.24f;
+    public static final int MAXIMUM_ACCURACY_IN_METERS = 100;
     public static final long PROXIMITY_ALERT_EXPIRATION = -1;
 
     public static final long[] PROXIMITY_VIBRATION_PATTERN = {1000, 1000};

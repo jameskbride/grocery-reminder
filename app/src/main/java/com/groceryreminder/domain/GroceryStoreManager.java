@@ -38,6 +38,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     private GooglePlacesInterface googlePlaces;
     private Application context;
     private LocationListener locationListener;
+    private Location currentLocation;
 
     @Inject
     public GroceryStoreManager(@ForApplication Application applicationContext, LocationManager locationManager, GooglePlacesInterface googlePlaces) {
@@ -158,6 +159,18 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     @Override
     public void handleLocationUpdated(Location location) {
         Log.d(TAG, "Hitting the handleLocationUpdated");
+        if (this.currentLocation == null) {
+            Log.d(TAG, "Current location is null");
+            this.currentLocation = location;
+            updateStoreLocations(location);
+        } else if (location.getTime() - this.currentLocation.getTime() >= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME) {
+            Log.d(TAG, "It's been at least 5 minutes since last update");
+            this.currentLocation = location;
+            updateStoreLocations(location);
+        }
+    }
+
+    private void updateStoreLocations(Location location) {
         deleteStoresByLocation(location);
         List<Place> updatedPlaces = findStoresByLocation(location);
         List<Place> places = filterPlacesByDistance(location, updatedPlaces, GroceryReminderConstants.FIVE_MILES_IN_METERS);

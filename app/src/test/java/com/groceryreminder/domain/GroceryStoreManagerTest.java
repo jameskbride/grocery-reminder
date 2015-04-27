@@ -7,6 +7,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.util.Log;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
@@ -44,9 +45,12 @@ import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -373,5 +377,35 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(groceryStoreManagerSpy).deleteStoresByLocation(location);
         verify(groceryStoreManagerSpy).persistGroceryStores(places);
         verify(groceryStoreManagerSpy).addProximityAlerts(places);
+    }
+
+    @Test
+    public void givenALocationIsSetWhenALocationIsHandledWithinFiveMinutesOfTheOriginalLocationThenTheLocationIsNotUpdated() {
+
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(DEFAULT_LATITUDE);
+        location.setLongitude(DEFAULT_LONGITUDE);
+        setLocationUpdatableTimestamp(location);
+
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
+        groceryStoreManagerSpy.listenForLocationUpdates();
+
+        when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
+        when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+
+        groceryStoreManagerSpy.handleLocationUpdated(location);
+
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
+        updatedLocation.setLatitude(DEFAULT_LATITUDE);
+        updatedLocation.setLongitude(DEFAULT_LONGITUDE);
+        updatedLocation.setTime(location.getTime() + 1);
+
+        groceryStoreManagerSpy.handleLocationUpdated(updatedLocation);
+        List<ShadowLocationManager.ProximityAlert> proximityAlerts = shadowLocationManager.getProximityAlerts();
+        assertEquals(1, proximityAlerts.size());
     }
 }
