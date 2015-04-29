@@ -8,7 +8,7 @@ import dagger.ObjectGraph;
 public class EspressoReminderApplication extends ReminderApplication {
 
     private AndroidModule androidModule;
-    private ReminderModule reminderModule;
+    private EspressoReminderModule reminderModule;
     private EspressoRemoteResourcesModule espressoRemoteResourcesModule;
 
     @Override
@@ -37,9 +37,9 @@ public class EspressoReminderApplication extends ReminderApplication {
         return this.androidModule;
     }
 
-    public ReminderModule getReminderModule() {
+    public EspressoReminderModule getReminderModule() {
         if (this.reminderModule == null) {
-            this.reminderModule = new ReminderModule();
+            this.reminderModule = new EspressoReminderModule();
         }
 
         return this.reminderModule;
