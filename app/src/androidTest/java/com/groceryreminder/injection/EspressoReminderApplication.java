@@ -13,8 +13,6 @@ public class EspressoReminderApplication extends ReminderApplication {
 
     @Override
     public void onCreate() {
-        super.onCreate();
-
         graph = ObjectGraph.create(getModules().toArray());
     }
 
