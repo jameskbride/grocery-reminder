@@ -2,12 +2,14 @@ package com.groceryreminder.views.reminders;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.Reminder;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
@@ -20,8 +22,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class ReminderSwipeListenerTest extends RobolectricTestBase {
 
     List<Reminder> defaultReminders;
