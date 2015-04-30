@@ -372,6 +372,17 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
+    public void givenTheGPSProviderIsNotPresentWhenLocationUpdatesAreRequestedThenLocationUpdatesAreNotRequestedForGPS() {
+        shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, false);
+
+        groceryStoreManager.listenForLocationUpdates();
+
+        List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
+    }
+
+
+    @Test
     public void givenNoLocationIsCurrentlySetWhenTheLocationIsUpdatedThenStoreLocationsAreUpdated() {
         Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
