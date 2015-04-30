@@ -22,7 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, packageName = "com.groceryreminder")
 public class AddReminderFragmentTest extends RobolectricTestBase {
 
     private RemindersActivity activity;
