@@ -13,6 +13,7 @@ import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -103,6 +104,7 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     }
 
     @Test
+    @Ignore
     public void testWhenTheStoresActionBarButtonIsPressedThenTheGroceryStoresAreListed() {
         EspressoReminderApplication app = (EspressoReminderApplication)getInstrumentation().getTargetContext().getApplicationContext();
 
