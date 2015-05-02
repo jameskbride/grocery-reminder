@@ -184,7 +184,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     @Override
     public boolean isBetterThanCurrentLocation(Location location) {
-        if (location.getAccuracy() == GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+        if (location.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
             return true;
         }
 
