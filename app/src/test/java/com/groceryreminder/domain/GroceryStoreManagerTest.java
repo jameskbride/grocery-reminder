@@ -476,4 +476,21 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         assertFalse(groceryStoreManager.isBetterThanCurrentLocation(location));
     }
+
+    @Test
+    public void givenCurrentLocationIsSetWhenTheLocationIsMoreAccurateThenItIsBetter() {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(DEFAULT_LATITUDE);
+        location.setLongitude(DEFAULT_LONGITUDE);
+        location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 1);
+
+        groceryStoreManager.setLocation(location);
+
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
+        updatedLocation.setLatitude(DEFAULT_LATITUDE);
+        updatedLocation.setLongitude(DEFAULT_LONGITUDE);
+        updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 2);
+
+        assertTrue(groceryStoreManager.isBetterThanCurrentLocation(updatedLocation));
+    }
 }
