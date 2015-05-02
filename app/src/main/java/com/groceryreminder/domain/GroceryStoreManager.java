@@ -189,9 +189,17 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         }
 
         if (currentLocation != null) {
-            if (location.getAccuracy() >= currentLocation.getAccuracy()) {
-                return false;
+            boolean isMoreAccurate = location.getAccuracy() < currentLocation.getAccuracy();
+            if (isMoreAccurate) {
+                return true;
             }
+
+            long timeDelta = location.getTime() - currentLocation.getTime();
+            if (timeDelta == 60000) {
+                return true;
+            }
+
+            return false;
         }
 
         return true;
