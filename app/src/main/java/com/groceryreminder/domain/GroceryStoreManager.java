@@ -181,4 +181,9 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         persistGroceryStores(places);
         addProximityAlerts(places);
     }
+
+    @Override
+    public boolean isBetterThanCurrentLocation(Location location) {
+        return false;
+    }
 }

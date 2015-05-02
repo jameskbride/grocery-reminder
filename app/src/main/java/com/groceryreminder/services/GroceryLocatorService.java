@@ -39,11 +39,9 @@ public class GroceryLocatorService extends IntentService {
         Log.d(TAG, "In onHandleIntent");
         groceryStoreManager.listenForLocationUpdates();
         Location location = getLastKnownLocation();
-        if (location == null || location.getAccuracy() > GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
-            Log.d(TAG, "Last known location is null");
-            return;
+        if (location != null && location.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+            groceryStoreManager.handleLocationUpdated(location);
         }
-        groceryStoreManager.handleLocationUpdated(location);
     }
 
     private Location getLastKnownLocation() {

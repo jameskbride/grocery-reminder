@@ -4,4 +4,6 @@ import android.location.Location;
 
 public interface LocationUpdater {
     void handleLocationUpdated(Location location);
+
+    boolean isBetterThanCurrentLocation(Location location);
 }

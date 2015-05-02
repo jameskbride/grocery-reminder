@@ -22,11 +22,9 @@ public class GroceryStoreLocationListener implements LocationListener {
         Log.d(TAG, "Location Updated: " + location.getLatitude() + ",  " + location.getLongitude());
         Log.d(TAG, "Location Provider: " + location.getProvider());
         Log.d(TAG, "Location Accuracy: " + location.getAccuracy());
-        if (location.getAccuracy() > GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
-            return;
+        if (location.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+            locationUpdater.handleLocationUpdated(location);
         }
-        locationUpdater.handleLocationUpdated(location);
-
     }
 
     @Override
