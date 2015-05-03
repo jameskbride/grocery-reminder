@@ -2,6 +2,7 @@ package com.groceryreminder.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -11,6 +12,7 @@ import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.domain.GroceryReminderConstants;
+import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +22,10 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
+import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowNotification;
 import org.robolectric.shadows.ShadowNotificationManager;
+import org.robolectric.shadows.ShadowPendingIntent;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -150,5 +154,20 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
 
         assertEquals(Settings.System.DEFAULT_NOTIFICATION_URI, notification.getRealNotification().sound);
+    }
+
+    @Test
+    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityShouldLaunch() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(notification.getRealNotification().contentIntent);
+        ShadowIntent shadowIntent = Shadows.shadowOf(shadowPendingIntent.getSavedIntent());
+
+        assertEquals(RemindersActivity.class.getName(), shadowIntent.getComponent().getClassName());
     }
 }
