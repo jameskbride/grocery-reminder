@@ -18,20 +18,29 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
-            Intent remindersActivityIntent = new Intent(context, RemindersActivity.class);
-            PendingIntent resultPendingIntent = PendingIntent
-                    .getActivity(context, 0, remindersActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
+
+            NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent);
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(context.getString(R.string.reminder_notification))
-                    .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN)
-                    .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
-                    .setContentIntent(resultPendingIntent);
             notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
         }
 
+    }
+
+    private NotificationCompat.Builder buildReminderNotification(Context context, PendingIntent resultPendingIntent) {
+        return new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
+                        .setContentTitle(context.getString(R.string.app_name))
+                        .setContentText(context.getString(R.string.reminder_notification))
+                        .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN)
+                        .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+                        .setContentIntent(resultPendingIntent);
+    }
+
+    private PendingIntent createRemindersActivityIntent(Context context) {
+        Intent remindersActivityIntent = new Intent(context, RemindersActivity.class);
+        return PendingIntent
+                .getActivity(context, 0, remindersActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
