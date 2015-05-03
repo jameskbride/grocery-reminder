@@ -1,11 +1,11 @@
 package com.groceryreminder.injection.views;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.groceryreminder.injection.ReminderApplication;
 
-public class ReminderFragmentBaseActivity extends ActionBarActivity {
+public class ReminderFragmentBaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
