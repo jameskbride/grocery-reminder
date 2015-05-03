@@ -196,12 +196,15 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     }
 
     private boolean compareLocations(Location currentLocation, Location updateLocation) {
-        boolean isMoreAccurate = updateLocation.getAccuracy() < currentLocation.getAccuracy();
-        if (isMoreAccurate) {
+        if (isSignificantlyNewerLocation(currentLocation, updateLocation)) {
             return true;
+        } else {
+            float accuracyRatio = updateLocation.getAccuracy() / currentLocation.getAccuracy();
+            boolean isSignificantlyMoreAccurate = accuracyRatio <= .50f;
+            if (isSignificantlyMoreAccurate) {
+                return true;
+            }
         }
-
-        if (isSignificantlyNewerLocation(currentLocation, updateLocation)) return true;
 
         return false;
     }

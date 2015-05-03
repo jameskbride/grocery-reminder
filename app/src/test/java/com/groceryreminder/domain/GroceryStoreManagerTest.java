@@ -17,6 +17,7 @@ import com.groceryreminder.services.LocationUpdater;
 import com.groceryreminder.shadows.ShadowLocationManager;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -479,7 +480,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenCurrentLocationIsSetWhenTheLocationIsMoreAccurateThenItIsBetter() {
+    public void givenCurrentLocationIsSetWhenTheLocationIsSignificantlyMoreAccurateThenItIsBetter() {
         Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
@@ -490,7 +491,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
-        updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 2);
+        updatedLocation.setAccuracy(location.getAccuracy() / 2);
 
         assertTrue(groceryStoreManager.isBetterThanCurrentLocation(updatedLocation));
     }
@@ -511,6 +512,42 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         updatedLocation.setTime(location.getTime() + LocationUpdater.SIGNIFICANT_LOCATION_TIME_DELTA);
 
         assertTrue(groceryStoreManager.isBetterThanCurrentLocation(updatedLocation));
+    }
+
+    @Test
+    public void givenCurrentLocationIsSetWhenTheLocationIsNotSignificantlyNewerThenItIsNotBetter() {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(DEFAULT_LATITUDE);
+        location.setLongitude(DEFAULT_LONGITUDE);
+        location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
+
+        groceryStoreManager.setLocation(location);
+
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
+        updatedLocation.setLatitude(DEFAULT_LATITUDE);
+        updatedLocation.setLongitude(DEFAULT_LONGITUDE);
+        updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
+        updatedLocation.setTime(location.getTime());
+
+        assertFalse(groceryStoreManager.isBetterThanCurrentLocation(updatedLocation));
+    }
+
+    @Test
+    public void givenCurrentLocationIsSetWhenTheLocationIsNotSignificantlyNewerAndNotSignificantlyMoreAccurateThenItIsNotBetter() {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(DEFAULT_LATITUDE);
+        location.setLongitude(DEFAULT_LONGITUDE);
+        location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
+
+        groceryStoreManager.setLocation(location);
+
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
+        updatedLocation.setLatitude(DEFAULT_LATITUDE);
+        updatedLocation.setLongitude(DEFAULT_LONGITUDE);
+        updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 1);
+        updatedLocation.setTime(location.getTime());
+
+        assertFalse(groceryStoreManager.isBetterThanCurrentLocation(updatedLocation));
     }
 
 }
