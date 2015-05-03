@@ -66,7 +66,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         }
 
         this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
-        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.FIVE_MILES_IN_METERS});
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
     }
 

@@ -7,7 +7,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
@@ -17,7 +16,6 @@ import com.groceryreminder.services.LocationUpdater;
 import com.groceryreminder.shadows.ShadowLocationManager;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -48,12 +46,9 @@ import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -93,7 +88,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         }
 
         this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
-        ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.FIVE_MILES_IN_METERS});
+        ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, true);
         shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
@@ -124,12 +119,12 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     private void setCurrentDistanceGreaterThanFiveMiles() {
-        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS + 1});
     }
 
     private void setLocationUpdatableTimestamp(Location location) {
         //Faking out the time per the minTime param of LocationManager.requestLocationUpdates() method
-        location.setTime(System.currentTimeMillis() + GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME + 1);
+        location.setTime(System.currentTimeMillis() + GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS + 1);
     }
 
     private void performMultipleLocationUpdates(Location location, Location updatedLocation) {
@@ -141,7 +136,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         groceryStoreManagerSpy.listenForLocationUpdates();
 
         when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
-        when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+        when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);
 
         groceryStoreManagerSpy.handleLocationUpdated(location);
         groceryStoreManagerSpy.handleLocationUpdated(updatedLocation);
@@ -167,7 +162,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         List<Place> places = new ArrayList<Place>();
         places.add(place);
 
-        List<Place> actualPlaces = groceryStoreManager.filterPlacesByDistance(defaultGPSLocation, places, GroceryReminderConstants.FIVE_MILES_IN_METERS);
+        List<Place> actualPlaces = groceryStoreManager.filterPlacesByDistance(defaultGPSLocation, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS);
         assertTrue(actualPlaces.isEmpty());
     }
 
@@ -185,7 +180,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenPersistedPlacesWhichAreMoreThanFiveMilesDistanceWhenTheIntentIsHandledThenTheDistancePlacesAreDeleted() {
-        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.FIVE_MILES_IN_METERS + 1});
+        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS + 1});
 
         ContentValues values = new ContentValues();
         values.put(ReminderContract.Locations.NAME, "test");
@@ -213,7 +208,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
 
-        assertEquals(GroceryReminderConstants.FIFTY_FEET_IN_METERS, proximityAlert.getRadius(), 0.001);
+        assertEquals(GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS, proximityAlert.getRadius(), 0.001);
     }
 
     @Test
@@ -319,7 +314,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(locationManager, times(2)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
-        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, capturedMinTimes.get(0).longValue());
+        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(0).longValue());
     }
 
     @Test
@@ -331,7 +326,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(locationManager, times(2)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
         List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
-        assertEquals(GroceryReminderConstants.FIVE_MILES_IN_METERS, capturedMinDistances.get(0).floatValue(), 0.001);
+        assertEquals(GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, capturedMinDistances.get(0).floatValue(), 0.001);
     }
 
     @Test
@@ -360,7 +355,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(locationManager, times(2)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
-        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, capturedMinTimes.get(1).longValue());
+        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(1).longValue());
     }
 
     @Test
@@ -372,7 +367,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(locationManager, times(2)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
         List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
-        assertEquals(GroceryReminderConstants.FIVE_MILES_IN_METERS, capturedMinDistances.get(1).floatValue(), 0.001);
+        assertEquals(GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, capturedMinDistances.get(1).floatValue(), 0.001);
     }
 
     @Test
@@ -410,7 +405,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         groceryStoreManagerSpy.listenForLocationUpdates();
 
         when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
-        when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.FIVE_MILES_IN_METERS)).thenReturn(places);
+        when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);
 
         shadowLocationManager.simulateLocation(location);
 

@@ -99,7 +99,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             double longitude = Double.parseDouble(cursor.getString((cursor.getColumnIndex(ReminderContract.Locations.LONGITUDE))));
             Location.distanceBetween(location.getLatitude(), location.getLongitude(), latitude, longitude, distanceArray);
 
-            if (distanceArray[0] > (float) GroceryReminderConstants.FIVE_MILES_IN_METERS) {
+            if (distanceArray[0] > (float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS) {
                 Uri deletionUri = ContentUris.withAppendedId(ReminderContract.Locations.CONTENT_URI, cursor.getInt(0));
                 operations.add(ContentProviderOperation.newDelete(deletionUri).build());
             }
@@ -114,7 +114,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         for (Place place : places) {
             Intent proximityAlertIntent = new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
             locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(),
-                    GroceryReminderConstants.FIFTY_FEET_IN_METERS, GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION,
+                    GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS, GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION,
                     PendingIntent.getBroadcast(context, requestCode++, proximityAlertIntent,
                             PendingIntent.FLAG_CANCEL_CURRENT));
         }
@@ -125,10 +125,10 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         if (this.locationListener == null) {
             this.locationListener = createLocationListener();
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
             }
             if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME, (float)GroceryReminderConstants.FIVE_MILES_IN_METERS, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
             }
         }
     }
@@ -165,7 +165,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             Log.d(TAG, "Current location is null");
             this.currentLocation = location;
             updateStoreLocations(location);
-        } else if (location.getTime() - this.currentLocation.getTime() >= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME) {
+        } else if (location.getTime() - this.currentLocation.getTime() >= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS) {
             Log.d(TAG, "It's been at least 5 minutes since last update");
             this.currentLocation = location;
             updateStoreLocations(location);
@@ -175,7 +175,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     private void updateStoreLocations(Location location) {
         deleteStoresByLocation(location);
         List<Place> updatedPlaces = findStoresByLocation(location);
-        List<Place> places = filterPlacesByDistance(location, updatedPlaces, GroceryReminderConstants.FIVE_MILES_IN_METERS);
+        List<Place> places = filterPlacesByDistance(location, updatedPlaces, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS);
 
         Log.d(TAG, "Places count: " + places.size());
         persistGroceryStores(places);
