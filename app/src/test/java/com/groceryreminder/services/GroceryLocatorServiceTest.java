@@ -31,6 +31,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class}, sdk = Build.VERSION_CODES.JELLY_BEAN)
@@ -88,8 +89,11 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     @Test
     public void givenALastKnownLocationWhenTheIntentIsHandledThenALocationUpdateIsHandled() {
+        when(groceryStoreManagerMock.isBetterThanCurrentLocation(defaultGPSLocation)).thenReturn(true);
+
         groceryLocatorService.onHandleIntent(new Intent());
 
+        verify(groceryStoreManagerMock).isBetterThanCurrentLocation(defaultGPSLocation);
         verify(groceryStoreManagerMock).handleLocationUpdated(defaultGPSLocation);
     }
 
