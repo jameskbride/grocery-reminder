@@ -198,23 +198,23 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     private boolean compareLocations(Location currentLocation, Location updateLocation) {
         if (isSignificantlyNewerLocation(currentLocation, updateLocation)) {
             return true;
-        } else {
-            float accuracyRatio = updateLocation.getAccuracy() / currentLocation.getAccuracy();
-            boolean isSignificantlyMoreAccurate = accuracyRatio <= .50f;
-            if (isSignificantlyMoreAccurate) {
-                return true;
-            }
+        } else if (isSignificantlyMoreAccurate(currentLocation, updateLocation)) {
+            return true;
         }
 
         return false;
     }
 
+    private boolean isSignificantlyMoreAccurate(Location currentLocation, Location updateLocation) {
+        float accuracyRatio = updateLocation.getAccuracy() / currentLocation.getAccuracy();
+
+        return accuracyRatio <= SIGNIFICANT_LOCATION_ACCURACY_RATIO;
+    }
+
     private boolean isSignificantlyNewerLocation(Location currentLocation, Location updateLocation) {
         long timeDelta = updateLocation.getTime() - currentLocation.getTime();
-        if (timeDelta == SIGNIFICANT_LOCATION_TIME_DELTA) {
-            return true;
-        }
-        return false;
+
+        return timeDelta == SIGNIFICANT_LOCATION_TIME_DELTA;
     }
 
     public void setLocation(Location location) {
