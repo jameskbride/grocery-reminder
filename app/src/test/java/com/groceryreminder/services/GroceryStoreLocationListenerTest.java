@@ -13,8 +13,10 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -31,22 +33,27 @@ public class GroceryStoreLocationListenerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenALocationIsUpdatedThenTheLocationUpdaterHandlesTheUpdate() {
+    public void givenALocationIsBetterWhenALocationIsUpdatedThenTheLocationUpdaterHandlesTheUpdate() {
         Location location = new Location(LocationManager.GPS_PROVIDER);
+
+        when(locationUpdaterMock.isBetterThanCurrentLocation(location)).thenReturn(true);
 
         groceryStoreLocationListener.onLocationChanged(location);
 
+        verify(locationUpdaterMock).isBetterThanCurrentLocation(location);
         verify(locationUpdaterMock).handleLocationUpdated(location);
     }
 
     @Test
-    public void givenALocationWithAnAccuracyGreaterThan100MetersWhenTheLocationIsChangedThenTheLocationIsNotHandled() {
+    public void givenALocationIsNotBetterWhenTheLocationIsChangedThenTheLocationIsNotHandled() {
         Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setAccuracy(100.001f);
 
+        when(locationUpdaterMock.isBetterThanCurrentLocation(location)).thenReturn(false);
+
         groceryStoreLocationListener.onLocationChanged(location);
 
-        verifyNoMoreInteractions(locationUpdaterMock);
+        verify(locationUpdaterMock, times(0)).handleLocationUpdated(location);
     }
 
 }
