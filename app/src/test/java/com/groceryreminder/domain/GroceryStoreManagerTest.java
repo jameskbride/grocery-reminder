@@ -13,6 +13,7 @@ import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContentProvider;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.services.LocationUpdater;
 import com.groceryreminder.shadows.ShadowLocationManager;
 
 import org.junit.Before;
@@ -507,7 +508,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
-        updatedLocation.setTime(location.getTime() + 60000);
+        updatedLocation.setTime(location.getTime() + LocationUpdater.SIGNIFICANT_LOCATION_TIME_DELTA);
 
         assertTrue(groceryStoreManager.isBetterThanCurrentLocation(updatedLocation));
     }
