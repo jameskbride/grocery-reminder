@@ -43,7 +43,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     private LocationManager locationManager;
     private ShadowLocationManager shadowLocationManager;
 
-    private Location defaultGPSLocation;
+    private Location defaultLocation;
 
     private GroceryStoreManagerInterface groceryStoreManagerMock;
 
@@ -65,9 +65,9 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
             fail("Unable to set the best provider.");
         }
 
-        this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
+        this.defaultLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
         ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
-        shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
+        shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultLocation);
     }
 
     private Place createDefaultGooglePlace() {
@@ -89,20 +89,20 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     @Test
     public void givenALastKnownLocationWhenTheIntentIsHandledThenALocationUpdateIsHandled() {
-        when(groceryStoreManagerMock.isBetterThanCurrentLocation(defaultGPSLocation)).thenReturn(true);
+        when(groceryStoreManagerMock.isBetterThanCurrentLocation(defaultLocation)).thenReturn(true);
 
         groceryLocatorService.onHandleIntent(new Intent());
 
-        verify(groceryStoreManagerMock).isBetterThanCurrentLocation(defaultGPSLocation);
-        verify(groceryStoreManagerMock).handleLocationUpdated(defaultGPSLocation);
+        verify(groceryStoreManagerMock).isBetterThanCurrentLocation(defaultLocation);
+        verify(groceryStoreManagerMock).handleLocationUpdated(defaultLocation);
     }
 
     @Test
     public void givenALastKnownLocationWhichIsTooInaccurateWhenTheIntentIsHandledThenALocationUpdateIsNotHandled() {
-        defaultGPSLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS + 1);
+        defaultLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS + 1);
         groceryLocatorService.onHandleIntent(new Intent());
 
-        verify(groceryStoreManagerMock, times(0)).handleLocationUpdated(defaultGPSLocation);
+        verify(groceryStoreManagerMock, times(0)).handleLocationUpdated(defaultLocation);
     }
 
     @Test

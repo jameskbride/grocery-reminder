@@ -87,10 +87,10 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
             fail("Unable to set the best provider.");
         }
 
-        this.defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
+        defaultGPSLocation = createDefaultLocation(LocationManager.PASSIVE_PROVIDER);
         ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
-        shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
-        shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, true);
+        shadowLocationManager.setLastKnownLocation(LocationManager.PASSIVE_PROVIDER, defaultGPSLocation);
+        shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, true);
         shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
     }
 
@@ -298,11 +298,11 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenLocationUpdatesAreRequestedThenAGPSListenerIsAddedToTheLocationManager() {
+    public void whenLocationUpdatesAreRequestedThenAPassiveNetworkListenerIsAddedToTheLocationManager() {
         groceryStoreManager.listenForLocationUpdates();
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
-        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
+        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.PASSIVE_PROVIDER));
     }
 
     @Test
@@ -392,7 +392,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenNoLocationIsCurrentlySetWhenTheLocationIsUpdatedThenStoreLocationsAreUpdated() {
-        Location location = new Location(LocationManager.GPS_PROVIDER);
+        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         setLocationUpdatableTimestamp(location);
