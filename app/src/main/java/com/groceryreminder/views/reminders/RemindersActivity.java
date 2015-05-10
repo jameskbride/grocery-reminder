@@ -2,8 +2,13 @@ package com.groceryreminder.views.reminders;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,9 +25,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class RemindersActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnAddReminderListener {
+public class RemindersActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnAddReminderListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String REMINDER_LIST_FRAGMENT = "REMINDER_LIST_FRAGMENT";
+    private static final String TAG = "RemindersActivity";
     @Inject
     LocationManager locationManager;
 
@@ -35,6 +41,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, ReminderListFragment.newInstance(reminders), REMINDER_LIST_FRAGMENT)
                 .commit();
+        getSupportLoaderManager().initLoader(1, null, this);
     }
 
     @Override
@@ -85,5 +92,28 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)
                 .commit();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(TAG, "in onCreateLoader");
+        CursorLoader loader = new CursorLoader(this,
+                ReminderContract.Reminders.CONTENT_URI,
+                ReminderContract.Reminders.PROJECT_ALL,
+                null,
+                null,
+                ReminderContract.Reminders.SORT_ORDER_DEFAULT);
+
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

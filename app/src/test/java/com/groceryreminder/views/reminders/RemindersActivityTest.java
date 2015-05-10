@@ -3,6 +3,7 @@ package com.groceryreminder.views.reminders;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
@@ -29,8 +30,11 @@ import org.robolectric.fakes.RoboMenu;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -137,5 +141,22 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
         Intent startedIntent = shadowActivity.peekNextStartedService();
         assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
+    }
+
+    @Test
+    public void whenTheActivityIsCreatedThenTheCursorLoaderShouldBeInitialized() {
+        assertNotNull(activity.getSupportLoaderManager().getLoader(1));
+    }
+
+    @Test
+    public void whenTheLoaderIsCreatedThenTheCursorLoaderShouldBeConfigured() {
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+
+        assertNotNull(cursorLoader);
+        assertEquals(ReminderContract.Reminders.CONTENT_URI, cursorLoader.getUri());
+        assertArrayEquals(ReminderContract.Reminders.PROJECT_ALL, cursorLoader.getProjection());
+        assertEquals(ReminderContract.Reminders.SORT_ORDER_DEFAULT, cursorLoader.getSortOrder());
+        assertNull(cursorLoader.getSelection());
+        assertNull(cursorLoader.getSelectionArgs());
     }
 }

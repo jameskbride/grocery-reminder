@@ -6,10 +6,10 @@ import android.provider.BaseColumns;
 
 public class ReminderContract {
 
-    public static final String REMINDER_AUTHORITY = "com.groceryreminder.reminders";
+    public static final String REMINDER_AUTHORITY = "com.groceryreminder.data.ReminderContentProvider";
     public static final Uri REMINDER_CONTENT_URI = Uri.parse("content://" + REMINDER_AUTHORITY);
 
-    public static final String REMINDER_LOCATION_AUTHORITY = "com.groceryreminder.locations";
+    public static final String REMINDER_LOCATION_AUTHORITY = "com.groceryreminder.data.GroceryStoreLocationContentProvider";
     public static final Uri REMINDER_LOCATIONS_CONTENT_URI = Uri.parse("content://" + REMINDER_LOCATION_AUTHORITY);
 
     public static final class Locations implements BaseColumns {
@@ -21,10 +21,6 @@ public class ReminderContract {
         public static final String[] PROJECT_ALL = {_ID, NAME, PLACES_ID, LATITUDE, LONGITUDE};
         public static final String SORT_ORDER_DEFAULT = "";
         public static final Uri CONTENT_URI = Uri.withAppendedPath(ReminderContract.REMINDER_LOCATIONS_CONTENT_URI, "locations");
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-                "/com.groceryreminder.reminders_locations";
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
-                "/com.groceryreminder.reminders_locations";
     }
 
     public static final class Reminders implements BaseColumns {
