@@ -23,4 +23,11 @@ public class ReminderContract {
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
                 "/com.groceryreminder.reminders_locations";
     }
+
+    public static final class Reminders implements BaseColumns {
+
+        public static final String DESCRIPTION = "description";
+        public static final String[] PROJECT_ALL = {_ID, DESCRIPTION};
+        public static final String SORT_ORDER_DEFAULT = "";
+    }
 }

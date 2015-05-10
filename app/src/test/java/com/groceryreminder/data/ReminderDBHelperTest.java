@@ -10,9 +10,7 @@ import com.groceryreminder.testUtils.LocationValuesBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
@@ -35,6 +33,17 @@ public class ReminderDBHelperTest {
         dbHelper = new ReminderDBHelper(context.getApplicationContext());
     }
 
+    private SQLiteDatabase insertLocationValues(ContentValues values) {
+        SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
+        writableDatabase.insert(DBSchema.LOCATIONS, "", values);
+
+        return writableDatabase;
+    }
+
+    private ContentValues createDefaultLocationValues() {
+        return new LocationValuesBuilder().createDefaultLocationValues().build();
+    }
+
     @Test
     public void whenTheDBHelperIsCreatedThenTheDatabaseNameShouldBeSet() {
         assertEquals(REMINDER_DATABASE_NAME, dbHelper.getDatabaseName());
@@ -43,7 +52,7 @@ public class ReminderDBHelperTest {
     @Test
     public void whenTheDBHelperIsCreatedThenTheLocationsTableShouldBeCreated() {
         ContentValues values = createDefaultLocationValues();
-        insertValues(values);
+        insertLocationValues(values);
 
         SQLiteDatabase readableDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = readableDatabase.query(DBSchema.LOCATIONS, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
@@ -57,9 +66,27 @@ public class ReminderDBHelperTest {
     }
 
     @Test
+    public void whenTheDBHelperIsCreatedThenTheRemindersTableShouldBeCreated() {
+        ContentValues reminderValues = new ContentValues();
+        reminderValues.put(ReminderContract.Reminders._ID, 1);
+        reminderValues.put(ReminderContract.Reminders.DESCRIPTION, ReminderContract.Reminders.DESCRIPTION);
+
+        SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
+        writableDatabase.insert(DBSchema.REMINDERS, "", reminderValues);
+
+
+        SQLiteDatabase readableDatabase = dbHelper.getReadableDatabase();
+        Cursor cursor = readableDatabase.query(DBSchema.REMINDERS, ReminderContract.Reminders.PROJECT_ALL, "", null, null, null, ReminderContract.Reminders.SORT_ORDER_DEFAULT, null);
+
+        assertTrue(cursor.moveToNext());
+        assertEquals(1, cursor.getInt(0));
+        assertEquals(ReminderContract.Reminders.DESCRIPTION, cursor.getString(1));
+    }
+
+    @Test
     public void whenTheDBHelperIsUpgradedThenTheLocationsTableIsRecreated() {
         ContentValues values = createDefaultLocationValues();
-        SQLiteDatabase writableDatabase = insertValues(values);
+        SQLiteDatabase writableDatabase = insertLocationValues(values);
 
         dbHelper.onUpgrade(writableDatabase, 0, 0);
 
@@ -67,16 +94,5 @@ public class ReminderDBHelperTest {
         Cursor cursor = readableDatabase.query(DBSchema.LOCATIONS, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
 
         assertFalse(cursor.moveToNext());
-    }
-
-    private SQLiteDatabase insertValues(ContentValues values) {
-        SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
-        writableDatabase.insert(DBSchema.LOCATIONS, "", values);
-
-        return writableDatabase;
-    }
-
-    private ContentValues createDefaultLocationValues() {
-        return new LocationValuesBuilder().createDefaultLocationValues().build();
     }
 }

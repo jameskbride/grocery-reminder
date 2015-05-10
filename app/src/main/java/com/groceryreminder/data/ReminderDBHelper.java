@@ -16,7 +16,13 @@ public class ReminderDBHelper extends SQLiteOpenHelper{
             " longitude varchar(200) " +
             " )";
 
+    private static final String CREATE_REMINDERS_TABLE_SQL = "CREATE TABLE reminders (" +
+            "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            " description varchar(200) " +
+            " )";
+
     private static final String DROP_LOCATIONS_TABLE = "DROP TABLE IF EXISTS locations";
+    private static final String DROP_REMINDERS_TABLE = "DROP TABLE IF EXISTS reminders";
     private static final String TAG = "ReminderDBHelper";
 
     public ReminderDBHelper(Context applicationContext) {
@@ -27,10 +33,18 @@ public class ReminderDBHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "Creating the locations table.");
         db.execSQL(CREATE_LOCATIONS_TABLE_SQL);
+        Log.d(TAG, "Creating the reminders table.");
+        db.execSQL(CREATE_REMINDERS_TABLE_SQL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG, "Dropping the reminders table: " + DROP_REMINDERS_TABLE);
+        db.execSQL(DROP_REMINDERS_TABLE);
+
+        Log.d(TAG, "Recreating the reminders table: " + CREATE_REMINDERS_TABLE_SQL);
+        db.execSQL(CREATE_REMINDERS_TABLE_SQL);
+
         Log.d(TAG, "Dropping the locations table: " + DROP_LOCATIONS_TABLE);
         db.execSQL(DROP_LOCATIONS_TABLE);
 
