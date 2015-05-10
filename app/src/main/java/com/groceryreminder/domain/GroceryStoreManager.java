@@ -214,7 +214,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     private boolean isSignificantlyNewerLocation(Location currentLocation, Location updateLocation) {
         long timeDelta = updateLocation.getTime() - currentLocation.getTime();
 
-        return timeDelta == SIGNIFICANT_LOCATION_TIME_DELTA;
+        return timeDelta >= SIGNIFICANT_LOCATION_TIME_DELTA;
     }
 
     public void setLocation(Location location) {
