@@ -3,6 +3,7 @@ package com.groceryreminder.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -10,6 +11,17 @@ import android.net.Uri;
 
 public class ReminderContentProvider  extends ContentProvider{
     private ReminderDBHelper reminderDBHelper;
+
+    private static final int REMINDER_LIST = 1;
+    private static final int REMINDER_ITEM_ID = 2;
+    private static final UriMatcher URI_MATCHER;
+    private static final String REMINDERS_URI_LIST_PATH = "reminders";
+
+    static {
+        URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+        URI_MATCHER.addURI(ReminderContract.AUTHORITY, REMINDERS_URI_LIST_PATH, REMINDER_LIST);
+        URI_MATCHER.addURI(ReminderContract.AUTHORITY, "reminders/#", REMINDER_ITEM_ID);
+    }
 
     @Override
     public boolean onCreate() {
@@ -48,7 +60,29 @@ public class ReminderContentProvider  extends ContentProvider{
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase writableDatabase = reminderDBHelper.getWritableDatabase();
+        int deletedCount = 0;
+
+        switch(URI_MATCHER.match(uri))
+        {
+            case REMINDER_LIST:
+                deletedCount = writableDatabase.delete(DBSchema.REMINDERS, selection, selectionArgs);
+                break;
+
+            case REMINDER_ITEM_ID:
+                String id = uri.getLastPathSegment();
+                String whereClause = ReminderContract.Reminders._ID + " = " + id;
+
+                deletedCount = writableDatabase.delete(DBSchema.REMINDERS, whereClause, selectionArgs);
+                break;
+        }
+
+        if (deletedCount > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+
+        return deletedCount;
     }
 
     @Override
