@@ -13,8 +13,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowContentResolver;
 
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -63,5 +69,16 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
 
         Cursor cursor = provider.query(expectedUri, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
         assertEquals(2, cursor.getCount());
+    }
+
+    @Test
+    public void givenAReminderContentTypeAndContentValuesWhenARecordIsInsertedThenObserversAreNotified()
+    {
+        ContentValues values = createDefaultReminderValues();
+        ShadowContentResolver contentResolver = Shadows.shadowOf(provider.getContext().getContentResolver());
+        Uri expectedUri = provider.insert(ReminderContract.Reminders.CONTENT_URI, values);
+
+        List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
+        assertThat(notifiedUriList.get(0).uri, is(expectedUri));
     }
 }
