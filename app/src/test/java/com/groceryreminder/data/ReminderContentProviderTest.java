@@ -103,4 +103,18 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
         List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
         assertThat(notifiedUriList.get(1).uri, is(expectedUri));
     }
+
+    @Test
+    public void givenASelectionIsProvidedWhenAReminderIsDeletedThenADeletionWillOccur() {
+        String testDescription = "test";
+        ContentValues values = new ReminderValuesBuilder().createDefaultReminderValues().withDescription(testDescription).build();
+
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, values);
+
+        String selection = ReminderContract.Reminders.DESCRIPTION + " = ? ";
+        String[] selectionArgs = new String[] {testDescription};
+        int count = provider.delete(ReminderContract.Reminders.CONTENT_URI, selection, selectionArgs);
+
+        assertEquals(1, count);
+    }
 }
