@@ -117,4 +117,35 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
 
         assertEquals(1, count);
     }
+
+    @Test
+    public void whenNoRemindersAreDeletedThenNoObserversAreNotified() {
+        String testDescription = "test";
+        ContentValues values = new ReminderValuesBuilder().createDefaultReminderValues().withDescription(testDescription).build();
+
+        ShadowContentResolver contentResolver = Shadows.shadowOf(provider.getContext().getContentResolver());
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, values);
+        List<ShadowContentResolver.NotifiedUri> notifiedUriList = contentResolver.getNotifiedUris();
+        assertEquals(1, notifiedUriList.size());
+
+        String selection = ReminderContract.Reminders.DESCRIPTION + " = ? ";
+        String[] selectionArgs = new String[] {"wrong name"};
+        provider.delete(ReminderContract.Reminders.CONTENT_URI, selection, selectionArgs);
+
+        notifiedUriList = contentResolver.getNotifiedUris();
+        assertEquals(1, notifiedUriList.size());
+    }
+
+    @Test
+    public void whenMultipleRemindersAreDeletedThenMultipleDeletionsShouldHaveOccurred() {
+        ContentValues values = createDefaultReminderValues();
+        ContentValues secondValues = createDefaultReminderValues();
+
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, values);
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, secondValues);
+
+        int count = provider.delete(ReminderContract.Reminders.CONTENT_URI, "", null);
+
+        assertEquals(2, count);
+    }
 }
