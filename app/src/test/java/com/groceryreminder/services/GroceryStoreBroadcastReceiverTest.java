@@ -29,6 +29,7 @@ import org.robolectric.shadows.ShadowPendingIntent;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -157,7 +158,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityShouldLaunch() {
+    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityIsLaunched() {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
@@ -169,5 +170,18 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         ShadowIntent shadowIntent = Shadows.shadowOf(shadowPendingIntent.getSavedIntent());
 
         assertEquals(RemindersActivity.class.getName(), shadowIntent.getComponent().getClassName());
+    }
+
+    @Test
+    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheTheNotificationIsDismissed() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+
+        assertTrue((notification.getRealNotification().flags & Notification.FLAG_AUTO_CANCEL) == Notification.FLAG_AUTO_CANCEL);
     }
 }

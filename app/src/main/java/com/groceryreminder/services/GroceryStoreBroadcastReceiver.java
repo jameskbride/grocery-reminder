@@ -35,6 +35,7 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
                         .setContentText(context.getString(R.string.reminder_notification))
                         .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN)
                         .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+                        .setAutoCancel(true)
                         .setContentIntent(resultPendingIntent);
     }
 
