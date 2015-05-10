@@ -7,6 +7,7 @@ import android.net.Uri;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.testUtils.LocationValuesBuilder;
 import com.groceryreminder.testUtils.ReminderValuesBuilder;
 
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
         ContentValues duplicateValues = createDefaultReminderValues();
         duplicateValues.put(ReminderContract.Reminders.DESCRIPTION, initialValues.getAsString(ReminderContract.Reminders.DESCRIPTION));
 
-        Uri expectedUri = provider.insert(ReminderContract.Locations.CONTENT_URI, duplicateValues);
+        Uri expectedUri = provider.insert(ReminderContract.Reminders.CONTENT_URI, duplicateValues);
 
         Cursor cursor = provider.query(expectedUri, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
         assertEquals(2, cursor.getCount());
@@ -147,5 +148,65 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
         int count = provider.delete(ReminderContract.Reminders.CONTENT_URI, "", null);
 
         assertEquals(2, count);
+    }
+
+    @Test
+    public void whenRemindersAreQueriedThenTheRequestedProjectsShouldBeReturned() {
+        ContentValues values = createDefaultReminderValues();
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, values);
+
+        Cursor cursor = provider.query(ReminderContract.Reminders.CONTENT_URI, new String[]{ReminderContract.Reminders._ID}, "", null, null);
+
+        assertEquals(0, cursor.getColumnIndex(ReminderContract.Reminders._ID));
+    }
+
+    @Test
+    public void whenRemindersAreQueriedThenTheRequestedSelectionShouldBeUsed() {
+        ContentValues otherRecord = new ReminderValuesBuilder().createDefaultReminderValues().build();
+        String expectedDescription = "test";
+        ContentValues recordToQuery = new ReminderValuesBuilder().createDefaultReminderValues().withDescription(expectedDescription).build();
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, otherRecord);
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, recordToQuery);
+
+        String selection = ReminderContract.Reminders.DESCRIPTION + " = 'test'";
+        Cursor cursor = provider.query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, selection, null, null);
+
+        assertEquals(1, cursor.getCount());
+        assertTrue(cursor.moveToNext());
+        assertEquals(expectedDescription, cursor.getString(1));
+    }
+
+    @Test
+    public void whenRemindersAreQueriedThenTheRequestedSelectionArgsShouldBeUsed() {
+        ContentValues otherRecord = new ReminderValuesBuilder().createDefaultReminderValues().build();
+        String expectedDescription = "test";
+        ContentValues recordToQuery = new ReminderValuesBuilder().createDefaultReminderValues().withDescription(expectedDescription).build();
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, otherRecord);
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, recordToQuery);
+
+        String selection = ReminderContract.Reminders.DESCRIPTION + " = ?";
+        String[] selectionArgs = new String[] {expectedDescription};
+        Cursor cursor = provider.query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, selection, selectionArgs, null);
+
+        assertEquals(1, cursor.getCount());
+        assertTrue(cursor.moveToNext());
+        assertEquals(expectedDescription, cursor.getString(1));
+    }
+
+    @Test
+    public void whenRemindersAreQueriedThenTheRequestedSortOrderShouldBeUsed() {
+        String secondExpectedDescription = "bananas";
+        ContentValues secondRecord = new ReminderValuesBuilder().createDefaultReminderValues().withDescription(secondExpectedDescription).build();
+        String firstExpectedDescription = "apples";
+        ContentValues recordToQuery = new ReminderValuesBuilder().createDefaultReminderValues().withDescription(firstExpectedDescription).build();
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, secondRecord);
+        provider.insert(ReminderContract.Reminders.CONTENT_URI, recordToQuery);
+
+        Cursor cursor = provider.query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, null, null, ReminderContract.Reminders.DESCRIPTION + " asc");
+
+        assertTrue(cursor.moveToNext());
+        assertEquals(firstExpectedDescription, cursor.getString(1));
+        assertTrue(cursor.moveToNext());
+        assertEquals(secondExpectedDescription, cursor.getString(1));
     }
 }
