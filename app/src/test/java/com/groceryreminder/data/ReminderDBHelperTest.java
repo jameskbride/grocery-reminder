@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.testUtils.LocationValuesBuilder;
+import com.groceryreminder.testUtils.ReminderValuesBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,12 +68,8 @@ public class ReminderDBHelperTest {
 
     @Test
     public void whenTheDBHelperIsCreatedThenTheRemindersTableShouldBeCreated() {
-        ContentValues reminderValues = new ContentValues();
-        reminderValues.put(ReminderContract.Reminders._ID, 1);
-        reminderValues.put(ReminderContract.Reminders.DESCRIPTION, ReminderContract.Reminders.DESCRIPTION);
-
-        SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
-        writableDatabase.insert(DBSchema.REMINDERS, "", reminderValues);
+        ContentValues reminderValues = new ReminderValuesBuilder().createDefaultReminderValues().build();
+        insertReminderValues(reminderValues);
 
         SQLiteDatabase readableDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = readableDatabase.query(DBSchema.REMINDERS, ReminderContract.Reminders.PROJECT_ALL, "", null, null, null, ReminderContract.Reminders.SORT_ORDER_DEFAULT, null);
@@ -80,6 +77,11 @@ public class ReminderDBHelperTest {
         assertTrue(cursor.moveToNext());
         assertEquals(1, cursor.getInt(0));
         assertEquals(ReminderContract.Reminders.DESCRIPTION, cursor.getString(1));
+    }
+
+    private void insertReminderValues(ContentValues reminderValues) {
+        SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
+        writableDatabase.insert(DBSchema.REMINDERS, "", reminderValues);
     }
 
     @Test

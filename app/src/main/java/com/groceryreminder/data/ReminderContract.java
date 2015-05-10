@@ -29,5 +29,6 @@ public class ReminderContract {
         public static final String DESCRIPTION = "description";
         public static final String[] PROJECT_ALL = {_ID, DESCRIPTION};
         public static final String SORT_ORDER_DEFAULT = "";
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(ReminderContract.CONTENT_URI, "reminders");
     }
 }
