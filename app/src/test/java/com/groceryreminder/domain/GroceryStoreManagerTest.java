@@ -98,7 +98,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         reminderProvider = new GroceryStoreLocationContentProvider();
         reminderProvider.onCreate();
         shadowContentResolver = Shadows.shadowOf(getTestAndroidModule().getApplicationContext().getContentResolver());
-        shadowContentResolver.registerProvider(ReminderContract.AUTHORITY, reminderProvider);
+        shadowContentResolver.registerProvider(ReminderContract.REMINDER_AUTHORITY, reminderProvider);
     }
 
     private Location createDefaultLocation(String provider) {

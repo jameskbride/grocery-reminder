@@ -1,6 +1,8 @@
 package com.groceryreminder.views.reminders;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
 import com.melnykov.fab.FloatingActionButton;
@@ -28,6 +31,7 @@ import org.robolectric.shadows.ShadowActivity;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -38,6 +42,26 @@ public class RemindersActivityTest extends RobolectricTestBase {
     @Before
     public void setUp() {
         activity = Robolectric.setupActivity(RemindersActivity.class);
+    }
+
+    private ReminderListFragment getReminderListFragment() {
+        return (ReminderListFragment)activity.getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+    }
+
+    private AddReminderFragment getAddReminderFragment() {
+        return (AddReminderFragment)activity.getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+    }
+
+    private void clickAddReminderButton(AddReminderFragment addReminderFragment) {
+        Button addButton = (Button)addReminderFragment.getView().findViewById(R.id.add_reminder_button);
+        addButton.performClick();
+    }
+
+    private void clickAddReminderRequestButton() {
+        FloatingActionButton addReminderRequestButton = (FloatingActionButton)activity.findViewById(R.id.fab);
+        addReminderRequestButton.performClick();
     }
 
     @Test
@@ -80,6 +104,22 @@ public class RemindersActivityTest extends RobolectricTestBase {
     }
 
     @Test
+    public void whenAReminderIsEnteredThenItIsPersisted() {
+        clickAddReminderRequestButton();
+        AddReminderFragment addReminderFragment = getAddReminderFragment();
+        EditText addReminderEditText = (EditText)addReminderFragment.getView().findViewById(R.id.add_reminder_edit);
+        String expectedText = "a reminder";
+        addReminderEditText.setText(expectedText);
+
+        clickAddReminderButton(addReminderFragment);
+
+        Cursor cursor = activity.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
+        assertEquals(1, cursor.getCount());
+        assertTrue(cursor.moveToNext());
+        assertEquals(expectedText, cursor.getString(1));
+    }
+
+    @Test
     public void whenTheStoresActionBarButtonIsPressedThenTheGroceryStoresActivityIsStarted() {
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
 
@@ -97,25 +137,5 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
         Intent startedIntent = shadowActivity.peekNextStartedService();
         assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
-    }
-
-    private ReminderListFragment getReminderListFragment() {
-        return (ReminderListFragment)activity.getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
-    }
-
-    private AddReminderFragment getAddReminderFragment() {
-        return (AddReminderFragment)activity.getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
-    }
-
-    private void clickAddReminderButton(AddReminderFragment addReminderFragment) {
-        Button addButton = (Button)addReminderFragment.getView().findViewById(R.id.add_reminder_button);
-        addButton.performClick();
-    }
-
-    private void clickAddReminderRequestButton() {
-        FloatingActionButton addReminderRequestButton = (FloatingActionButton)activity.findViewById(R.id.fab);
-        addReminderRequestButton.performClick();
     }
 }

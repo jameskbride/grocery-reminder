@@ -18,8 +18,8 @@ public class GroceryStoreLocationContentProvider extends ContentProvider {
 
     static {
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-        URI_MATCHER.addURI(ReminderContract.AUTHORITY, LOCATIONS_URI_LIST_PATH, LOCATION_LIST);
-        URI_MATCHER.addURI(ReminderContract.AUTHORITY, "locations/#", LOCATION_ITEM_ID);
+        URI_MATCHER.addURI(ReminderContract.REMINDER_LOCATION_AUTHORITY, LOCATIONS_URI_LIST_PATH, LOCATION_LIST);
+        URI_MATCHER.addURI(ReminderContract.REMINDER_LOCATION_AUTHORITY, "locations/#", LOCATION_ITEM_ID);
     }
 
     private ReminderDBHelper reminderDBHelper;

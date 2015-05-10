@@ -19,8 +19,8 @@ public class ReminderContentProvider  extends ContentProvider{
 
     static {
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-        URI_MATCHER.addURI(ReminderContract.AUTHORITY, REMINDERS_URI_LIST_PATH, REMINDER_LIST);
-        URI_MATCHER.addURI(ReminderContract.AUTHORITY, "reminders/#", REMINDER_ITEM_ID);
+        URI_MATCHER.addURI(ReminderContract.REMINDER_AUTHORITY, REMINDERS_URI_LIST_PATH, REMINDER_LIST);
+        URI_MATCHER.addURI(ReminderContract.REMINDER_AUTHORITY, "reminders/#", REMINDER_ITEM_ID);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ReminderContentProvider  extends ContentProvider{
         Cursor cursor = queryBuilder.query(reminderDBHelper.getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
 
         //Cannot currently test-drive this line: minSdk must be 19, currently set to 15
-        cursor.setNotificationUri(getContext().getContentResolver(), ReminderContract.Locations.CONTENT_URI);
+        cursor.setNotificationUri(getContext().getContentResolver(), ReminderContract.Reminders.CONTENT_URI);
 
         return cursor;
     }

@@ -1,5 +1,6 @@
 package com.groceryreminder.views.reminders;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.groceryreminder.R;
+import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 import com.groceryreminder.models.Reminder;
 import com.groceryreminder.services.GroceryLocatorService;
@@ -76,6 +78,9 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         ReminderListFragment reminderListFragment = (ReminderListFragment)getSupportFragmentManager()
                 .findFragmentByTag(REMINDER_LIST_FRAGMENT);
         Reminder reminder = new Reminder(value);
+        ContentValues values = new ContentValues();
+        values.put(ReminderContract.Reminders.DESCRIPTION, value);
+        getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, values);
         reminderListFragment.addReminder(reminder);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)

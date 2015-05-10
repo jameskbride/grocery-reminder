@@ -30,6 +30,11 @@
             tools:replace="android:value"
             android:value="@string/google_places_api_key_string"></meta-data>
         <provider android:name=".data.GroceryStoreLocationContentProvider"
+            android:authorities="com.groceryreminder.locations"
+            android:enabled="true"
+            android:exported="false">
+        </provider>
+        <provider android:name=".data.ReminderContentProvider"
             android:authorities="com.groceryreminder.reminders"
             android:enabled="true"
             android:exported="false">

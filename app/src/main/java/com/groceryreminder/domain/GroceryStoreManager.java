@@ -139,7 +139,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
         try {
-            context.getContentResolver().applyBatch(ReminderContract.AUTHORITY, operations);
+            context.getContentResolver().applyBatch(ReminderContract.REMINDER_AUTHORITY, operations);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (OperationApplicationException e) {
