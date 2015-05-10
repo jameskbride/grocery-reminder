@@ -75,7 +75,7 @@ public class RemindersActivityTest extends RobolectricTestBase {
         ReminderListFragment reminderListFragment = getReminderListFragment();
 
         RecyclerView listView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
-        TextView reminderText = (TextView)listView.findViewHolderForPosition(0).itemView.findViewById(R.id.reminders_text_view);
+        TextView reminderText = (TextView)listView.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.reminders_text_view);
         assertEquals(reminderText.getText(), expectedText);
     }
 
