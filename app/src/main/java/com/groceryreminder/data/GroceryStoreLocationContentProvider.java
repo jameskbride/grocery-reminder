@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-public class ReminderContentProvider extends ContentProvider {
+public class GroceryStoreLocationContentProvider extends ContentProvider {
 
     private static final int LOCATION_LIST = 1;
     private static final int LOCATION_ITEM_ID = 2;

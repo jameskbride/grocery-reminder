@@ -74,7 +74,6 @@ public class ReminderDBHelperTest {
         SQLiteDatabase writableDatabase = dbHelper.getWritableDatabase();
         writableDatabase.insert(DBSchema.REMINDERS, "", reminderValues);
 
-
         SQLiteDatabase readableDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = readableDatabase.query(DBSchema.REMINDERS, ReminderContract.Reminders.PROJECT_ALL, "", null, null, null, ReminderContract.Reminders.SORT_ORDER_DEFAULT, null);
 

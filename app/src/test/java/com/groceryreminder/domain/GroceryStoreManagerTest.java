@@ -10,7 +10,7 @@ import android.location.LocationManager;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
-import com.groceryreminder.data.ReminderContentProvider;
+import com.groceryreminder.data.GroceryStoreLocationContentProvider;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.services.LocationUpdater;
 import com.groceryreminder.shadows.ShadowLocationManager;
@@ -56,7 +56,7 @@ import static org.mockito.Mockito.when;
 public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     private GroceryStoreManager groceryStoreManager;
-    private ReminderContentProvider reminderProvider;
+    private GroceryStoreLocationContentProvider reminderProvider;
     private ShadowContentResolver shadowContentResolver;
     private GooglePlacesInterface googlePlacesMock;
     private LocationManager locationManager;
@@ -95,7 +95,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     private void setupReminderContentProvider() {
-        reminderProvider = new ReminderContentProvider();
+        reminderProvider = new GroceryStoreLocationContentProvider();
         reminderProvider.onCreate();
         shadowContentResolver = Shadows.shadowOf(getTestAndroidModule().getApplicationContext().getContentResolver());
         shadowContentResolver.registerProvider(ReminderContract.AUTHORITY, reminderProvider);

@@ -6,19 +6,15 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.groceryreminder.BuildConfig;
-import com.groceryreminder.models.Reminder;
 import com.groceryreminder.testUtils.LocationValuesBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
-import org.robolectric.shadows.ShadowCursorWrapper;
 
 import java.util.List;
 
@@ -30,21 +26,21 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
-public class ReminderContentProviderTest {
+public class GroceryStoreLocationContentProviderTest {
 
-    private ReminderContentProvider provider;
+    private GroceryStoreLocationContentProvider provider;
     private LocationValuesBuilder locationValuesBuilder;
 
     @Before
     public void setUp() {
-        provider = new ReminderContentProvider();
+        provider = new GroceryStoreLocationContentProvider();
         provider.onCreate();
         locationValuesBuilder = new LocationValuesBuilder();
     }
 
     @Test
     public void whenTheProviderIsCreatedThenItShouldBeInitialized() {
-        ReminderContentProvider provider = new ReminderContentProvider();
+        GroceryStoreLocationContentProvider provider = new GroceryStoreLocationContentProvider();
         assertTrue(provider.onCreate());
     }
 
