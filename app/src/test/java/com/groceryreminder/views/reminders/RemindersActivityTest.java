@@ -68,6 +68,18 @@ public class RemindersActivityTest extends RobolectricTestBase {
         addReminderRequestButton.performClick();
     }
 
+    private void loadReminderListFragment() {
+        Reminder reminder = new Reminder("test");
+        Cursor mockCursor = mock(Cursor.class);
+        when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
+        when(mockCursor.getString(1)).thenReturn(reminder.getText());
+        ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
+        wrapper.__constructor__(mockCursor);
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoadFinished(cursorLoader, wrapper);
+    }
+
     @Test
     public void whenTheActivityIsCreatedThenItShouldBeStarted() {
         assertFalse(activity.isFinishing());
@@ -88,23 +100,6 @@ public class RemindersActivityTest extends RobolectricTestBase {
         EditText addReminderEditText = (EditText)addReminderFragment.getView().findViewById(R.id.add_reminder_edit);
 
         assertEquals(View.VISIBLE, addReminderEditText.getVisibility());
-    }
-
-    @Test
-    public void givenTheAddReminderFragmentIsVisibleWhenAReminderIsEnteredThenTheReminderListIsUpdated() {
-        clickAddReminderRequestButton();
-        AddReminderFragment addReminderFragment = getAddReminderFragment();
-        EditText addReminderEditText = (EditText)addReminderFragment.getView().findViewById(R.id.add_reminder_edit);
-        String expectedText = "a reminder";
-        addReminderEditText.setText(expectedText);
-
-        clickAddReminderButton(addReminderFragment);
-
-        ReminderListFragment reminderListFragment = getReminderListFragment();
-
-        RecyclerView listView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
-        TextView reminderText = (TextView)listView.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.reminders_text_view);
-        assertEquals(reminderText.getText(), expectedText);
     }
 
     @Test
@@ -178,5 +173,19 @@ public class RemindersActivityTest extends RobolectricTestBase {
         TextView reminderDescriptionText = (TextView)listView.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.reminders_text_view);
         assertEquals(View.VISIBLE, reminderDescriptionText.getVisibility());
         assertEquals(reminder.getText(), reminderDescriptionText.getText());
+    }
+
+    @Test
+    public void whenTheCursorIsResetThenTheReminderListFragmentShouldContainNoStores() {
+        loadReminderListFragment();
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoaderReset(cursorLoader);
+
+        ReminderListFragment reminderListFragment = getReminderListFragment();
+        assertNotNull(reminderListFragment);
+
+        RecyclerView listView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
+        assertEquals(0, listView.getAdapter().getItemCount());
     }
 }

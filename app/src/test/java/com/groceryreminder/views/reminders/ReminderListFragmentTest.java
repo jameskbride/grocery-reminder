@@ -60,19 +60,4 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
         OnAddReminderRequestListener onAddReminderRequestListener = reminderListFragment.getOnAddReminderRequestListener();
         assertNotNull(onAddReminderRequestListener);
     }
-
-    @Test
-    public void whenAReminderIsAddedThenTheReminderListIsUpdated() {
-        List<Reminder> reminders = new ArrayList<Reminder>();
-        ReminderListFragment reminderListFragment = ReminderListFragment.newInstance(reminders);
-        startFragment(activity, reminderListFragment);
-
-        reminderListFragment.addReminder(new Reminder("new reminder"));
-
-        RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
-        ReminderListViewHolder reminderListViewHolder = (ReminderListViewHolder)reminderRecyclerView.findViewHolderForPosition(0);
-        TextView reminderText = (TextView)reminderListViewHolder.itemView.findViewById(R.id.reminders_text_view);
-        assertEquals(reminderText.getText(), "new reminder");
-    }
-
 }

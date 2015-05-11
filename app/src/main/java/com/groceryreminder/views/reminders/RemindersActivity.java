@@ -79,11 +79,9 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
     public void addReminder(String value) {
         ReminderListFragment reminderListFragment = (ReminderListFragment)getSupportFragmentManager()
                 .findFragmentByTag(REMINDER_LIST_FRAGMENT);
-        Reminder reminder = new Reminder(value);
         ContentValues values = new ContentValues();
         values.put(ReminderContract.Reminders.DESCRIPTION, value);
         getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, values);
-        reminderListFragment.addReminder(reminder);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.reminder_fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)
                 .commit();
@@ -120,6 +118,12 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(TAG, "In onLoaderReset");
+        ReminderListFragment reminderListFragment =
+                (ReminderListFragment)getSupportFragmentManager().findFragmentById(R.id.reminder_fragment_container);
 
+        if (reminderListFragment != null) {
+            reminderListFragment.setReminders(new ArrayList<Reminder>());
+        }
     }
 }

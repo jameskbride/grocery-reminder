@@ -93,10 +93,6 @@ public class ReminderListFragment extends Fragment {
         return onAddReminderRequestListener;
     }
 
-    public void addReminder(Reminder reminder) {
-        reminders.add(reminder);
-    }
-
     public void setReminders(List<Reminder> reminders) {
         this.adapter.setReminders(reminders);
     }
