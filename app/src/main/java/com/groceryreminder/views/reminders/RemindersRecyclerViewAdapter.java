@@ -39,4 +39,12 @@ public class RemindersRecyclerViewAdapter extends RecyclerView.Adapter<ReminderL
         reminders.addAll(updatedReminders);
         notifyDataSetChanged();
     }
+
+    public void removeReminders(int[] reverseSortedPositions) {
+        for (int position : reverseSortedPositions) {
+            reminders.remove(position);
+            notifyItemRemoved(position);
+        }
+        notifyDataSetChanged();
+    }
 }

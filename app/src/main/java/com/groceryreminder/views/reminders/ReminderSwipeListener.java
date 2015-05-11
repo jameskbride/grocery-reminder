@@ -11,9 +11,9 @@ import brnunes.swipeablecardview.SwipeableRecyclerViewTouchListener;
 public class ReminderSwipeListener implements SwipeableRecyclerViewTouchListener.SwipeListener {
 
     private final List<Reminder> reminders;
-    private final RecyclerView.Adapter adapter;
+    private final RemindersRecyclerViewAdapter adapter;
 
-    public ReminderSwipeListener(List<Reminder> reminders, RecyclerView.Adapter adapter) {
+    public ReminderSwipeListener(List<Reminder> reminders, RemindersRecyclerViewAdapter adapter) {
         this.reminders = reminders;
         this.adapter = adapter;
     }
@@ -29,11 +29,7 @@ public class ReminderSwipeListener implements SwipeableRecyclerViewTouchListener
     }
 
     private void dismissReminder(int[] reverseSortedPositions) {
-        for (int position : reverseSortedPositions) {
-            reminders.remove(position);
-            adapter.notifyItemRemoved(position);
-        }
-        adapter.notifyDataSetChanged();
+        adapter.removeReminders(reverseSortedPositions);
     }
 
     @Override
