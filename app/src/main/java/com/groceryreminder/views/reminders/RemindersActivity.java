@@ -3,7 +3,6 @@ package com.groceryreminder.views.reminders;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -22,15 +21,11 @@ import com.groceryreminder.views.stores.GroceryStoresActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 
 public class RemindersActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnAddReminderListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String REMINDER_LIST_FRAGMENT = "REMINDER_LIST_FRAGMENT";
     private static final String TAG = "RemindersActivity";
-    @Inject
-    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +34,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
         List<Reminder> reminders = new ArrayList<Reminder>();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, ReminderListFragment.newInstance(reminders), REMINDER_LIST_FRAGMENT)
+                .add(R.id.reminder_fragment_container, ReminderListFragment.newInstance(reminders), REMINDER_LIST_FRAGMENT)
                 .commit();
         getSupportLoaderManager().initLoader(1, null, this);
     }
@@ -77,7 +72,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
     public void requestNewReminder() {
         AddReminderFragment addReminderFragment = AddReminderFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, addReminderFragment).addToBackStack(null).commit();
+                .replace(R.id.reminder_fragment_container, addReminderFragment).addToBackStack(null).commit();
     }
 
     @Override
@@ -90,7 +85,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, values);
         reminderListFragment.addReminder(reminder);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)
+                .replace(R.id.reminder_fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)
                 .commit();
     }
 

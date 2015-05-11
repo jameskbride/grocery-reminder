@@ -1,11 +1,9 @@
 package com.groceryreminder.views.reminders;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,8 +24,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.fakes.RoboMenu;
-import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -50,12 +46,12 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
     private ReminderListFragment getReminderListFragment() {
         return (ReminderListFragment)activity.getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
+                .findFragmentById(R.id.reminder_fragment_container);
     }
 
     private AddReminderFragment getAddReminderFragment() {
         return (AddReminderFragment)activity.getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
+                .findFragmentById(R.id.reminder_fragment_container);
     }
 
     private void clickAddReminderButton(AddReminderFragment addReminderFragment) {

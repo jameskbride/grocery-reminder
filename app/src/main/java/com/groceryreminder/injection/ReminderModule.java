@@ -17,7 +17,6 @@ import dagger.Provides;
         AndroidModule.class,
         RemoteResourcesModule.class},
     injects = {
-        RemindersActivity.class,
         GroceryLocatorService.class,
         GroceryStoreManager.class
     },

@@ -105,7 +105,7 @@ public class AddReminderFragmentTest extends RobolectricTestBase {
         reminderListFragment.onAttach(activity);
         reminderListFragment.onCreate(new Bundle());
         reminderListFragment.onCreateView(LayoutInflater.from(activity),
-                (ViewGroup)activity.findViewById(R.id.fragment_container), null);
+                (ViewGroup)activity.findViewById(R.id.reminder_fragment_container), null);
 
         return reminderListFragment;
     }
