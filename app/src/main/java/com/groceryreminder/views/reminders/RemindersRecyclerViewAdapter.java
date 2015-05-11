@@ -13,9 +13,11 @@ import java.util.List;
 public class RemindersRecyclerViewAdapter extends RecyclerView.Adapter<ReminderListViewHolder> {
 
     private List<Reminder> reminders;
+    private OnReminderDataChangeListener onReminderDataChangeListener;
 
-    public RemindersRecyclerViewAdapter(List<Reminder> reminders) {
+    public RemindersRecyclerViewAdapter(List<Reminder> reminders, OnReminderDataChangeListener onReminderDataChangeListener) {
         this.reminders = reminders;
+        this.onReminderDataChangeListener = onReminderDataChangeListener;
     }
 
     @Override
@@ -42,7 +44,8 @@ public class RemindersRecyclerViewAdapter extends RecyclerView.Adapter<ReminderL
 
     public void removeReminders(int[] reverseSortedPositions) {
         for (int position : reverseSortedPositions) {
-            reminders.remove(position);
+            Reminder reminder = reminders.remove(position);
+            onReminderDataChangeListener.removeReminder(reminder);
             notifyItemRemoved(position);
         }
         notifyDataSetChanged();

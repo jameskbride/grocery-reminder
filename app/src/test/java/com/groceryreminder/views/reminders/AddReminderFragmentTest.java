@@ -45,8 +45,8 @@ public class AddReminderFragmentTest extends RobolectricTestBase {
         startFragment(activity, reminderListFragment);
         reminderListFragment.onAttach(activity);
 
-        OnAddReminderListener onAddReminderListener = reminderListFragment.getOnAddReminderListener();
-        assertNotNull(onAddReminderListener);
+        OnReminderDataChangeListener onReminderDataChangeListener = reminderListFragment.getOnReminderDataChangeListener();
+        assertNotNull(onReminderDataChangeListener);
     }
 
     @Test

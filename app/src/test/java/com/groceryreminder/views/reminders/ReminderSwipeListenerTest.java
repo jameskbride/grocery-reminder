@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -30,12 +30,14 @@ public class ReminderSwipeListenerTest extends RobolectricTestBase {
     RecyclerView recyclerView;
     RemindersRecyclerViewAdapter adapter;
     RemindersRecyclerViewAdapter adapterSpy;
+    OnReminderDataChangeListener onReminderDataChangeListenerMock;
 
     @Before
     public void setUp() {
         defaultReminders = getDefaultReminderList();
         recyclerView = new RecyclerView(Shadows.shadowOf(RuntimeEnvironment.application).getApplicationContext());
-        adapter = new RemindersRecyclerViewAdapter(defaultReminders);
+        onReminderDataChangeListenerMock = mock(OnReminderDataChangeListener.class);
+        adapter = new RemindersRecyclerViewAdapter(defaultReminders, onReminderDataChangeListenerMock);
         adapterSpy = spy(adapter);
     }
 
@@ -94,7 +96,7 @@ public class ReminderSwipeListenerTest extends RobolectricTestBase {
     }
 
     private List<Reminder> getDefaultReminderList() {
-        Reminder reminder = new Reminder("test");
+        Reminder reminder = new Reminder(0, "test");
         List<Reminder> reminders = new ArrayList<Reminder>();
         reminders.add(reminder);
         return reminders;

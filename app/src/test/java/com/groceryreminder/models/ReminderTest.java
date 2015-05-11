@@ -10,7 +10,7 @@ public class ReminderTest {
 
     @Test
     public void givenAReminderWithTextWhenToStringIsCalledThenTheTextIsReturned() {
-        Reminder reminder = new Reminder("test");
+        Reminder reminder = new Reminder(0, "test");
 
         assertEquals("test", reminder.toString());
     }

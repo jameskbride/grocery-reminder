@@ -1,8 +1,10 @@
 package com.groceryreminder.views.reminders;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RemindersActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnAddReminderListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class RemindersActivity extends ReminderFragmentBaseActivity implements OnAddReminderRequestListener, OnReminderDataChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String REMINDER_LIST_FRAGMENT = "REMINDER_LIST_FRAGMENT";
     private static final String TAG = "RemindersActivity";
@@ -88,6 +90,13 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
     }
 
     @Override
+    public int removeReminder(Reminder reminder) {
+        Uri deleteReminderUri = ContentUris.withAppendedId(ReminderContract.Reminders.CONTENT_URI, reminder.getId());
+
+        return getContentResolver().delete(deleteReminderUri, "", null);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "in onCreateLoader");
         CursorLoader loader = new CursorLoader(this,
@@ -105,9 +114,10 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         List<Reminder> reminders = new ArrayList<Reminder>();
         Log.d(TAG, "In onLoadFinished");
         while (cursor.moveToNext()) {
+            Long reminderId = cursor.getLong(0);
             String reminderDescription = cursor.getString(1);
             Log.d(TAG, "Loading reminder from cursor: " + reminderDescription);
-            Reminder store = new Reminder(reminderDescription);
+            Reminder store = new Reminder(reminderId, reminderDescription);
             reminders.add(store);
         }
 

@@ -23,6 +23,7 @@ public class ReminderListFragment extends Fragment {
     private static final String REMINDERS_KEY = "REMINDERS_KEY";
     private List<Reminder> reminders;
     private OnAddReminderRequestListener onAddReminderRequestListener;
+    private OnReminderDataChangeListener onReminderDataChangeListener;
     private RemindersRecyclerViewAdapter adapter;
 
     public static ReminderListFragment newInstance(List<Reminder> reminders) {
@@ -65,12 +66,13 @@ public class ReminderListFragment extends Fragment {
         super.onAttach(activity);
         Log.d("ReminderListFragment", "In onAttach");
         onAddReminderRequestListener = (OnAddReminderRequestListener)activity;
+        onReminderDataChangeListener = (OnReminderDataChangeListener)activity;
     }
 
     private RecyclerView wireListView(View root) {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        this.adapter = new RemindersRecyclerViewAdapter(reminders);
+        this.adapter = new RemindersRecyclerViewAdapter(reminders, onReminderDataChangeListener);
         list.setAdapter(this.adapter);
         setReminderListOnTouchListener(list);
 

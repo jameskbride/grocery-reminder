@@ -69,7 +69,7 @@ public class RemindersActivityTest extends RobolectricTestBase {
     }
 
     private void loadReminderListFragment() {
-        Reminder reminder = new Reminder("test");
+        Reminder reminder = new Reminder(0, "test");
         Cursor mockCursor = mock(Cursor.class);
         when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
         when(mockCursor.getString(1)).thenReturn(reminder.getText());
@@ -157,9 +157,10 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
     @Test
     public void whenTheLoaderIsFinishedThenTheRemindersListIsUpdated() {
-        Reminder reminder = new Reminder("test");
+        Reminder reminder = new Reminder(0, "test");
         Cursor mockCursor = mock(Cursor.class);
         when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
+        when(mockCursor.getLong(0)).thenReturn(reminder.getId());
         when(mockCursor.getString(1)).thenReturn(reminder.getText());
         ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
         wrapper.__constructor__(mockCursor);

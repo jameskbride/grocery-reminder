@@ -1,12 +1,17 @@
 package com.groceryreminder.views.reminders;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
+import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.models.Reminder;
+import com.groceryreminder.testUtils.ReminderValuesBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,9 +42,20 @@ public class RemindersRecyclerViewAdapterTest {
         this.reminders = new ArrayList<Reminder>();
     }
 
+    private RemindersRecyclerViewAdapter createAdapter(List<Reminder> reminders) {
+        return new RemindersRecyclerViewAdapter(reminders, activity);
+    }
+
+    private RecyclerView getRecyclerView() {
+        RecyclerView viewGroup = (RecyclerView)activity.findViewById(R.id.reminders_recycler_view);
+        viewGroup.setLayoutManager(new LinearLayoutManager(activity));
+
+        return viewGroup;
+    }
+
     @Test
     public void whenTheAdapterIsCreatedWithRemindersThenTheItemCountIsSet() {
-        Reminder reminder = new Reminder(ARBITRARY_REMINDER_TEXT);
+        Reminder reminder = new Reminder(0, ARBITRARY_REMINDER_TEXT);
         reminders.add(reminder);
         RemindersRecyclerViewAdapter adapter = createAdapter(reminders);
 
@@ -49,7 +65,7 @@ public class RemindersRecyclerViewAdapterTest {
     @Test
     public void whenTheViewHolderIsCreatedThenTheReminderListViewHolderIsNotNull() {
         RecyclerView viewGroup = getRecyclerView();
-        RemindersRecyclerViewAdapter adapter = new RemindersRecyclerViewAdapter(reminders);
+        RemindersRecyclerViewAdapter adapter = new RemindersRecyclerViewAdapter(reminders, activity);
 
         ReminderListViewHolder viewHolder = adapter.onCreateViewHolder(viewGroup, -1);
 
@@ -58,7 +74,7 @@ public class RemindersRecyclerViewAdapterTest {
 
     @Test
     public void givenAReminderWhenTheViewHolderIsBoundThenTheTextViewIsSet() {
-        Reminder reminder = new Reminder(ARBITRARY_REMINDER_TEXT);
+        Reminder reminder = new Reminder(0, ARBITRARY_REMINDER_TEXT);
         reminders.add(reminder);
         RemindersRecyclerViewAdapter adapter = createAdapter(reminders);
         RecyclerView recyclerView = getRecyclerView();
@@ -72,14 +88,14 @@ public class RemindersRecyclerViewAdapterTest {
 
     @Test
     public void givenMultipleRemindersWhenViewHolderIsBoundWithAnArbitraryPositionThenTheTextViewIsSet() {
-        Reminder reminder = new Reminder(ARBITRARY_REMINDER_TEXT);
+        Reminder reminder = new Reminder(0, ARBITRARY_REMINDER_TEXT);
         reminders.add(reminder);
 
         String expectedReminder = ARBITRARY_REMINDER_TEXT + 1;
-        Reminder secondReminder = new Reminder(expectedReminder);
+        Reminder secondReminder = new Reminder(1, expectedReminder);
         reminders.add(secondReminder);
 
-        RemindersRecyclerViewAdapter adapter = new RemindersRecyclerViewAdapter(reminders);
+        RemindersRecyclerViewAdapter adapter = new RemindersRecyclerViewAdapter(reminders, activity);
         RecyclerView recyclerView = getRecyclerView();
         ReminderListViewHolder viewHolder = adapter.onCreateViewHolder(recyclerView, -1);
         adapter.onBindViewHolder(viewHolder, 1);
@@ -90,12 +106,12 @@ public class RemindersRecyclerViewAdapterTest {
 
     @Test
     public void whenTheRemindersAreSetThenObserversAreNotified() {
-        Reminder reminder = new Reminder(ARBITRARY_REMINDER_TEXT);
+        Reminder reminder = new Reminder(0, ARBITRARY_REMINDER_TEXT);
         reminders.add(reminder);
         RemindersRecyclerViewAdapter adapter = createAdapter(reminders);
 
         List<Reminder> updatedReminders = new ArrayList<Reminder>();
-        Reminder updatedReminder = new Reminder(ARBITRARY_REMINDER_TEXT + 1);
+        Reminder updatedReminder = new Reminder(0, ARBITRARY_REMINDER_TEXT + 1);
         updatedReminders.add(updatedReminder);
 
         RemindersRecyclerViewAdapter adapterSpy = spy(adapter);
@@ -106,13 +122,13 @@ public class RemindersRecyclerViewAdapterTest {
 
     @Test
     public void whenTheRemindersAreSetThenTheItemCountIsUpdated() {
-        Reminder store = new Reminder(ARBITRARY_REMINDER_TEXT);
+        Reminder store = new Reminder(0, ARBITRARY_REMINDER_TEXT);
         reminders.add(store);
         RemindersRecyclerViewAdapter adapter = createAdapter(reminders);
 
         List<Reminder> updatedReminders = new ArrayList<Reminder>();
-        Reminder updatedReminder1 = new Reminder(ARBITRARY_REMINDER_TEXT + 1);
-        Reminder updatedReminder2 = new Reminder(ARBITRARY_REMINDER_TEXT + 2);
+        Reminder updatedReminder1 = new Reminder(1, ARBITRARY_REMINDER_TEXT + 1);
+        Reminder updatedReminder2 = new Reminder(2, ARBITRARY_REMINDER_TEXT + 2);
         updatedReminders.add(updatedReminder1);
         updatedReminders.add(updatedReminder2);
 
@@ -121,15 +137,21 @@ public class RemindersRecyclerViewAdapterTest {
         assertEquals(updatedReminders.size(), adapter.getItemCount());
     }
 
-    private RemindersRecyclerViewAdapter createAdapter(List<Reminder> reminders) {
-        return new RemindersRecyclerViewAdapter(reminders);
+    @Test
+    public void whenAReminderIsRemovedThenItIsRemovedFromTheDatabase() {
+        String description = "test";
+        ContentValues reminderValues = new ReminderValuesBuilder().createDefaultReminderValues()
+                .withDescription(description).build();
+        Uri insertUri = activity.getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, reminderValues);
+
+        reminders.add(new Reminder(Long.parseLong(insertUri.getLastPathSegment()), description));
+        RemindersRecyclerViewAdapter adapter = createAdapter(reminders);
+
+        adapter.removeReminders(new int[]{0});
+
+        Cursor cursor = activity.getContentResolver()
+                .query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
+
+        assertEquals(0, cursor.getCount());
     }
-
-    private RecyclerView getRecyclerView() {
-        RecyclerView viewGroup = (RecyclerView)activity.findViewById(R.id.reminders_recycler_view);
-        viewGroup.setLayoutManager(new LinearLayoutManager(activity));
-
-        return viewGroup;
-    }
-
 }

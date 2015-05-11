@@ -16,7 +16,7 @@ import com.groceryreminder.R;
 public class AddReminderFragment extends Fragment {
 
 
-    private OnAddReminderListener onAddReminderListener;
+    private OnReminderDataChangeListener onReminderDataChangeListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class AddReminderFragment extends Fragment {
             public void onClick(View v) {
                 EditText reminderEditText = (EditText)getActivity().findViewById(R.id.add_reminder_edit);
                 String reminderText = reminderEditText.getText().toString();
-                onAddReminderListener.addReminder(reminderText);
+                onReminderDataChangeListener.addReminder(reminderText);
             }
         });
     }
@@ -65,7 +65,7 @@ public class AddReminderFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.onAddReminderListener = (OnAddReminderListener)activity;
+        this.onReminderDataChangeListener = (OnReminderDataChangeListener)activity;
     }
 
     public static AddReminderFragment newInstance() {
@@ -74,7 +74,7 @@ public class AddReminderFragment extends Fragment {
         return fragment;
     }
 
-    public OnAddReminderListener getOnAddReminderListener() {
-        return onAddReminderListener;
+    public OnReminderDataChangeListener getOnReminderDataChangeListener() {
+        return onReminderDataChangeListener;
     }
 }

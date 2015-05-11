@@ -35,7 +35,7 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
 
     @Test
     public void givenRemindersWhenTheFragmentIsCreatedThenTheViewShouldBePopulated() {
-        Reminder reminder = new Reminder("test");
+        Reminder reminder = new Reminder(0, "test");
         List<Reminder> reminders = new ArrayList<Reminder>();
         reminders.add(reminder);
 
@@ -43,7 +43,7 @@ public class ReminderListFragmentTest extends RobolectricTestBase {
         startFragment(activity, reminderListFragment);
 
         RecyclerView reminderRecyclerView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
-        ReminderListViewHolder reminderListViewHolder = (ReminderListViewHolder)reminderRecyclerView.findViewHolderForPosition(0);
+        ReminderListViewHolder reminderListViewHolder = (ReminderListViewHolder)reminderRecyclerView.findViewHolderForAdapterPosition(0);
 
         TextView reminderText = (TextView)reminderListViewHolder.itemView.findViewById(R.id.reminders_text_view);
         assertEquals(reminderText.getText(), "test");

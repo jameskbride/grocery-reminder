@@ -5,7 +5,10 @@ import java.io.Serializable;
 public class Reminder implements Serializable {
 
     private String text;
-    public Reminder(String text) {
+    private long id;
+
+    public Reminder(long id, String text) {
+        this.id = id;
         this.text = text;
     }
 
@@ -13,11 +16,9 @@ public class Reminder implements Serializable {
         return text;
     }
 
-    @Override
-    public String toString() {
-        return text;
+    public long getId() {
+        return id;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -26,13 +27,20 @@ public class Reminder implements Serializable {
 
         Reminder reminder = (Reminder) o;
 
-        if (text != null ? !text.equals(reminder.text) : reminder.text != null) return false;
+        if (id != reminder.id) return false;
+        return !(text != null ? !text.equals(reminder.text) : reminder.text != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return text != null ? text.hashCode() : 0;
+        int result = text != null ? text.hashCode() : 0;
+        result = 31 * result + (int) (id ^ (id >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return text;
     }
 }
