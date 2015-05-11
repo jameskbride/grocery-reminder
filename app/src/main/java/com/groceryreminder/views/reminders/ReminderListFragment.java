@@ -23,6 +23,7 @@ public class ReminderListFragment extends Fragment {
     private static final String REMINDERS_KEY = "REMINDERS_KEY";
     private List<Reminder> reminders;
     private OnAddReminderRequestListener onAddReminderRequestListener;
+    private RemindersRecyclerViewAdapter adapter;
 
     public static ReminderListFragment newInstance(List<Reminder> reminders) {
         ReminderListFragment fragment = new ReminderListFragment();
@@ -69,6 +70,7 @@ public class ReminderListFragment extends Fragment {
     private RecyclerView wireListView(View root) {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        this.adapter = new RemindersRecyclerViewAdapter(reminders);
         list.setAdapter(new RemindersRecyclerViewAdapter(reminders));
         setReminderListOnTouchListener(list);
 
@@ -93,5 +95,9 @@ public class ReminderListFragment extends Fragment {
 
     public void addReminder(Reminder reminder) {
         reminders.add(reminder);
+    }
+
+    public void setReminders(List<Reminder> reminders) {
+        this.adapter.setReminders(reminders);
     }
 }

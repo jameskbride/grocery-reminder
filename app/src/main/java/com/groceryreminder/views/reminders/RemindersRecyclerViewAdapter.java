@@ -33,4 +33,10 @@ public class RemindersRecyclerViewAdapter extends RecyclerView.Adapter<ReminderL
     public int getItemCount() {
         return reminders.size();
     }
+
+    public void setReminders(List<Reminder> updatedReminders) {
+        reminders.clear();
+        reminders.addAll(updatedReminders);
+        notifyDataSetChanged();
+    }
 }

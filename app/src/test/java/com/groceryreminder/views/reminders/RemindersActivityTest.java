@@ -13,6 +13,7 @@ import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.models.Reminder;
 import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
 import com.melnykov.fab.FloatingActionButton;
@@ -25,6 +26,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowCursorWrapper;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -32,6 +34,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -154,5 +158,25 @@ public class RemindersActivityTest extends RobolectricTestBase {
         assertEquals(ReminderContract.Reminders.SORT_ORDER_DEFAULT, cursorLoader.getSortOrder());
         assertNull(cursorLoader.getSelection());
         assertNull(cursorLoader.getSelectionArgs());
+    }
+
+    @Test
+    public void whenTheLoaderIsFinishedThenTheRemindersListIsUpdated() {
+        Reminder reminder = new Reminder("test");
+        Cursor mockCursor = mock(Cursor.class);
+        when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
+        when(mockCursor.getString(1)).thenReturn(reminder.getText());
+        ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
+        wrapper.__constructor__(mockCursor);
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoadFinished(cursorLoader, wrapper);
+        ReminderListFragment reminderListFragment = getReminderListFragment();
+        assertNotNull(reminderListFragment);
+
+        RecyclerView listView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
+        TextView reminderDescriptionText = (TextView)listView.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.reminders_text_view);
+        assertEquals(View.VISIBLE, reminderDescriptionText.getVisibility());
+        assertEquals(reminder.getText(), reminderDescriptionText.getText());
     }
 }

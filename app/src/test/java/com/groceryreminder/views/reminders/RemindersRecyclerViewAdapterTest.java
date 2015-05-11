@@ -20,6 +20,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -84,6 +86,39 @@ public class RemindersRecyclerViewAdapterTest {
 
         TextView reminderText = (TextView)viewHolder.itemView.findViewById(R.id.reminders_text_view);
         assertEquals(reminderText.getText(), ARBITRARY_REMINDER_TEXT + 1);
+    }
+
+    @Test
+    public void whenTheRemindersAreSetThenObserversAreNotified() {
+        Reminder reminder = new Reminder(ARBITRARY_REMINDER_TEXT);
+        reminders.add(reminder);
+        RemindersRecyclerViewAdapter adapter = createAdapter(reminders);
+
+        List<Reminder> updatedReminders = new ArrayList<Reminder>();
+        Reminder updatedReminder = new Reminder(ARBITRARY_REMINDER_TEXT + 1);
+        updatedReminders.add(updatedReminder);
+
+        RemindersRecyclerViewAdapter adapterSpy = spy(adapter);
+        adapterSpy.setReminders(updatedReminders);
+
+        verify(adapterSpy).notifyDataSetChanged();
+    }
+
+    @Test
+    public void whenTheRemindersAreSetThenTheItemCountIsUpdated() {
+        Reminder store = new Reminder(ARBITRARY_REMINDER_TEXT);
+        reminders.add(store);
+        RemindersRecyclerViewAdapter adapter = createAdapter(reminders);
+
+        List<Reminder> updatedReminders = new ArrayList<Reminder>();
+        Reminder updatedReminder1 = new Reminder(ARBITRARY_REMINDER_TEXT + 1);
+        Reminder updatedReminder2 = new Reminder(ARBITRARY_REMINDER_TEXT + 2);
+        updatedReminders.add(updatedReminder1);
+        updatedReminders.add(updatedReminder2);
+
+        adapter.setReminders(updatedReminders);
+
+        assertEquals(updatedReminders.size(), adapter.getItemCount());
     }
 
     private RemindersRecyclerViewAdapter createAdapter(List<Reminder> reminders) {

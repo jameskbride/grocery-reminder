@@ -103,8 +103,19 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        List<Reminder> reminders = new ArrayList<Reminder>();
+        Log.d(TAG, "In onLoadFinished");
+        while (cursor.moveToNext()) {
+            String reminderDescription = cursor.getString(1);
+            Log.d(TAG, "Loading reminder from cursor: " + reminderDescription);
+            Reminder store = new Reminder(reminderDescription);
+            reminders.add(store);
+        }
 
+        ReminderListFragment groceryStoreListFragment =
+                (ReminderListFragment)getSupportFragmentManager().findFragmentById(R.id.reminder_fragment_container);
+        groceryStoreListFragment.setReminders(reminders);
     }
 
     @Override

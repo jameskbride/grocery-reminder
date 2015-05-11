@@ -81,7 +81,7 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         assertNotNull(groceryStoreListFragment);
 
         RecyclerView listView = getRecyclerView(groceryStoreListFragment, R.id.stores_recycler_view);
-        TextView storeNameText = (TextView)listView.findViewHolderForPosition(0).itemView.findViewById(R.id.stores_text_view);
+        TextView storeNameText = (TextView)listView.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.stores_text_view);
         assertEquals(View.VISIBLE, storeNameText.getVisibility());
         assertEquals(store.getName(), storeNameText.getText());
     }
