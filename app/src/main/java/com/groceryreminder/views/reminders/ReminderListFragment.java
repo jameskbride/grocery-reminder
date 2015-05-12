@@ -16,7 +16,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.util.List;
 
-import brnunes.swipeablecardview.SwipeableRecyclerViewTouchListener;
+import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
 public class ReminderListFragment extends Fragment {
 

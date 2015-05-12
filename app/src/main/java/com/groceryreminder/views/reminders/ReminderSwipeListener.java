@@ -2,11 +2,10 @@ package com.groceryreminder.views.reminders;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 import com.groceryreminder.models.Reminder;
 
 import java.util.List;
-
-import brnunes.swipeablecardview.SwipeableRecyclerViewTouchListener;
 
 public class ReminderSwipeListener implements SwipeableRecyclerViewTouchListener.SwipeListener {
 
