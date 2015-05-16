@@ -2,7 +2,7 @@ package com.groceryreminder.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -11,7 +11,9 @@ import android.provider.Settings;
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
+import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryReminderConstants;
+import com.groceryreminder.testUtils.ReminderValuesBuilder;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.Before;
@@ -29,7 +31,6 @@ import org.robolectric.shadows.ShadowPendingIntent;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -43,6 +44,8 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     public void setUp() {
         super.setUp();
         broadcastReceiver = new GroceryStoreBroadcastReceiver();
+        ContentValues reminderValues = new ReminderValuesBuilder().createDefaultReminderValues().build();
+        RuntimeEnvironment.application.getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, reminderValues);
     }
 
     private Intent BuildIntentToListenFor() {
@@ -71,6 +74,18 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         assertEquals(1, shadowNotificationManager.size());
+    }
+
+    @Test
+    public void givenNoRemindersExistWhenTheIntentIsReceivedThenNoNotificationIsSent() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+
+        RuntimeEnvironment.application.getContentResolver().delete(ReminderContract.Reminders.CONTENT_URI, "", null);
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        assertEquals(0, shadowNotificationManager.size());
     }
 
     @Test

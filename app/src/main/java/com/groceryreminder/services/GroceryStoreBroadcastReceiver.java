@@ -4,12 +4,14 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.groceryreminder.R;
+import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
@@ -18,12 +20,14 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
-            PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
-
-            NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent);
-
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
+            Cursor cursor = context.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
+            if (cursor.getCount() > 0)
+            {
+                PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
+                NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
+            }
         }
 
     }
