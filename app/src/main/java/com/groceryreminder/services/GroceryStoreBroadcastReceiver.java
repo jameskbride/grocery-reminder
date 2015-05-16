@@ -24,7 +24,7 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
             if (cursor.getCount() > 0)
             {
                 PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
-                NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent);
+                NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent, intent);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
             }
@@ -32,10 +32,10 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
 
     }
 
-    private NotificationCompat.Builder buildReminderNotification(Context context, PendingIntent resultPendingIntent) {
+    private NotificationCompat.Builder buildReminderNotification(Context context, PendingIntent resultPendingIntent, Intent intent) {
         return new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_stat_maps_local_grocery_store)
-                        .setContentTitle(context.getString(R.string.app_name))
+                        .setContentTitle(context.getString(R.string.app_name) + ": " + intent.getStringExtra(ReminderContract.Locations.NAME))
                         .setContentText(context.getString(R.string.reminder_notification))
                         .setVibrate(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN)
                         .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)

@@ -38,6 +38,7 @@ import static org.junit.Assert.assertTrue;
 @Config(constants = BuildConfig.class)
 public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
+    private static final String ARBITRARY_STORE_NAME = "store name";
     private GroceryStoreBroadcastReceiver broadcastReceiver;
 
     @Before
@@ -49,7 +50,9 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     }
 
     private Intent BuildIntentToListenFor() {
-        return new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
+        Intent intentToListenFor =  new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
+
+        return intentToListenFor;
     }
 
     private ShadowNotificationManager getShadowNotificationManager() {
@@ -126,12 +129,13 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     public void whenANotificationIsSentThenTheContentTitleIsSet() {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+        intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-        assertEquals(RuntimeEnvironment.application.getString(R.string.app_name), notification.getContentTitle());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.app_name) + ": " + ARBITRARY_STORE_NAME, notification.getContentTitle());
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.groceryreminder.models;
 import java.io.Serializable;
 
 public class GroceryStore implements Serializable {
+
     private String name;
 
     public GroceryStore(String name) {

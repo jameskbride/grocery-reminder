@@ -267,6 +267,20 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
+    public void whenProximityAlertIsAddedThenTheStorePendingIntentContainsTheStoreName() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(proximityAlert.getPendingIntent());
+
+        assertEquals(place.getName(), shadowPendingIntent.getSavedIntent().getStringExtra(ReminderContract.Locations.NAME));
+    }
+
+    @Test
     public void givenPlacesWhenProximityAlertIsAddedThenTheStorePendingIntentRequestCodeIsUnique() {
         Place place = createDefaultGooglePlace();
         Place place2 = new Place();
