@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
@@ -47,7 +46,7 @@ public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
     @Test
     public void givenStoresListViewWhenAStoreIsBoundThenTheStoreNameTextIsSet() {
         RecyclerView recyclerView = getRecyclerView();
-        View view = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.stores_swipelist, recyclerView, false);
+        View view = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.store_viewholder, recyclerView, false);
         GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
 
         GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view);

@@ -20,7 +20,7 @@ public class GroceryStoresRecyclerViewAdapter extends RecyclerView.Adapter<Groce
 
     @Override
     public GroceryStoreListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.stores_swipelist, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.store_viewholder, parent, false);
         return new GroceryStoreListViewHolder(view);
     }
 
