@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/AppActionBarTheme</item>
+        <item name="android:actionBarStyle">@style/AppActionBarTheme</item>
+
+        <!--<item name="textAppearance">@style/AppThemeTextAppearance</item>-->
+        <item name="android:textAppearance">@style/AppThemeTextAppearance</item>
+    </style>
+
+    <style name="AppActionBarTheme" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="background">@color/primary</item>
+        <item name="android:background">@color/primary</item>
+    </style>
+
+    <style name="AppThemeTextAppearance" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <!--<item name="textSize">25sp</item>-->
+        <item name="android:textSize">25sp</item>
+    </style>
+
+</resources>
