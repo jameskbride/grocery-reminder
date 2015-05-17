@@ -8,7 +8,9 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.groceryreminder.R;
+import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.EspressoReminderApplication;
+import com.groceryreminder.models.Reminder;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.After;
@@ -55,6 +57,8 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
         super.setUp();
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         remindersActivity = getActivity();
+        remindersActivity.getContentResolver().delete(ReminderContract.Reminders.CONTENT_URI, "", null);
+        remindersActivity.getContentResolver().delete(ReminderContract.Locations.CONTENT_URI, "", null);
     }
 
     @After
