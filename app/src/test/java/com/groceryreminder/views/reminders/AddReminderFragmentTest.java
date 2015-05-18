@@ -1,12 +1,12 @@
 package com.groceryreminder.views.reminders;
 
 import android.os.Bundle;
-import android.support.v7.appcompat.BuildConfig;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, packageName = "com.groceryreminder")
+@Config(constants = BuildConfig.class)
 public class AddReminderFragmentTest extends RobolectricTestBase {
 
     private RemindersActivity activity;
