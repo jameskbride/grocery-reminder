@@ -10,6 +10,7 @@ import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.GroceryStore;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.util.ActivityController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +33,27 @@ import static org.mockito.Mockito.verify;
 public class GroceryStoresRecyclerViewAdapterTest extends RobolectricTestBase {
 
     private static final String ARBITRARY_STORE_NAME = "test";
+
+    private ActivityController<FragmentActivity> activityController;
     private FragmentActivity activity;
     private List<GroceryStore> stores;
 
     @Before
     public void setUp() {
-        this.activity = Robolectric.buildActivity(FragmentActivity.class).create().start().get();
+        super.setUp();
+        this.activityController = Robolectric.buildActivity(FragmentActivity.class);
+        this.activity = activityController.create().start().get();
         this.stores = new ArrayList<GroceryStore>();
         activity.setContentView(R.layout.grocery_stores_activity);
         //TODO This should be removed once the activity is completed test-drove with CursorLoader.
         activity.getSupportFragmentManager().beginTransaction()
                 .add(R.id.stores_fragment_container, GroceryStoreListFragment.newInstance(stores), "tag")
                 .commit();
+    }
+
+    @After
+    public void tearDown() {
+        this.activityController.pause().stop().destroy();
     }
 
     @Test

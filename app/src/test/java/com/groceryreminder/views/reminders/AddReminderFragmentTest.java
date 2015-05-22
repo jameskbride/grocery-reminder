@@ -10,12 +10,14 @@ import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.util.ActivityController;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
@@ -25,11 +27,18 @@ import static org.junit.Assert.assertTrue;
 @Config(constants = BuildConfig.class)
 public class AddReminderFragmentTest extends RobolectricTestBase {
 
+    private ActivityController<RemindersActivity> activityController;
     private RemindersActivity activity;
 
     @Before
     public void setUp() {
-        this.activity = Robolectric.buildActivity(RemindersActivity.class).create().start().get();
+        this.activityController = Robolectric.buildActivity(RemindersActivity.class);
+        this.activity = activityController.create().start().get();
+    }
+
+    @After
+    public void tearDown() {
+        this.activityController.pause().stop().destroy();
     }
 
     @Test

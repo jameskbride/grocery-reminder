@@ -13,12 +13,14 @@ import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.models.Reminder;
 import com.groceryreminder.testUtils.ReminderValuesBuilder;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.util.ActivityController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +35,20 @@ import static org.mockito.Mockito.verify;
 public class RemindersRecyclerViewAdapterTest {
 
     private static final String ARBITRARY_REMINDER_TEXT = "test";
+    private ActivityController<RemindersActivity> activityController;
     private RemindersActivity activity;
     private List<Reminder> reminders;
 
     @Before
     public void setUp() {
-        this.activity = Robolectric.buildActivity(RemindersActivity.class).create().start().get();
+        activityController = Robolectric.buildActivity(RemindersActivity.class);
+        this.activity = activityController.create().start().get();
         this.reminders = new ArrayList<Reminder>();
+    }
+
+    @After
+    public void tearDown() {
+        activityController.pause().stop().destroy();
     }
 
     private RemindersRecyclerViewAdapter createAdapter(List<Reminder> reminders) {

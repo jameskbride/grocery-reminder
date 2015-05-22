@@ -9,12 +9,14 @@ import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.GroceryStore;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.util.ActivityController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +27,19 @@ import static org.junit.Assert.assertEquals;
 @Config(constants = BuildConfig.class)
 public class GroceryStoreListFragmentTest extends RobolectricTestBase {
 
+    private ActivityController<GroceryStoresActivity> activityController;
     private GroceryStoresActivity activity;
 
     @Before
     public void setUp() {
         super.setUp();
-        activity = Robolectric.buildActivity(GroceryStoresActivity.class).create().start().visible().get();
+        activityController = Robolectric.buildActivity(GroceryStoresActivity.class);
+        activity = activityController.create().start().visible().get();
+    }
+
+    @After
+    public void tearDown() {
+        activityController.pause().stop().destroy();
     }
 
     @Test

@@ -8,26 +8,37 @@ import android.widget.TextView;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
+import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.models.Reminder;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
-public class ReminderListViewHolderTest {
+public class ReminderListViewHolderTest extends RobolectricTestBase {
 
+    private ActivityController<RemindersActivity> activityController;
     private RemindersActivity activity;
 
     @Before
     public void setUp() {
-        this.activity = Robolectric.buildActivity(RemindersActivity.class).create().start().get();
+        super.setUp();
+        this.activityController = Robolectric.buildActivity(RemindersActivity.class);
+        this.activity = activityController.create().start().get();
+    }
+
+    @After
+    public void tearDown() {
+        activityController.pause().stop().destroy();
     }
 
     @Test

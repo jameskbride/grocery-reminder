@@ -12,6 +12,7 @@ import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.models.GroceryStore;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowCursorWrapper;
+import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -33,13 +35,20 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class)
 public class GroceryStoresActivityTest extends RobolectricTestBase {
 
+    private ActivityController<GroceryStoresActivity> activityController;
     private GroceryStoresActivity activity;
 
     @Before
     public void setUp() {
         super.setUp();
 
-        activity = Robolectric.buildActivity(GroceryStoresActivity.class).create().start().get();
+        activityController = Robolectric.buildActivity(GroceryStoresActivity.class);
+        activity = activityController.create().start().get();
+    }
+
+    @After
+    public void tearDown() {
+        activityController.pause().stop().destroy();
     }
 
     @Test

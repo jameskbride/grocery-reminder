@@ -18,6 +18,7 @@ import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
 import com.melnykov.fab.FloatingActionButton;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowCursorWrapper;
+import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -41,11 +43,18 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class)
 public class RemindersActivityTest extends RobolectricTestBase {
 
+    private ActivityController<RemindersActivity> activityController;
     private RemindersActivity activity;
 
     @Before
     public void setUp() {
-        activity = Robolectric.setupActivity(RemindersActivity.class);
+        activityController = Robolectric.buildActivity(RemindersActivity.class);
+        activity = activityController.setup().get();
+    }
+
+    @After
+    public void tearDown() {
+        activityController.pause().stop().destroy();
     }
 
     private ReminderListFragment getReminderListFragment() {
