@@ -71,6 +71,9 @@ public class GroceryStoreLocationContentProviderTest {
         cursor.moveToNext();
         assertEquals(duplicateLocationName, cursor.getString(1));
         assertEquals(placesId, cursor.getString(2));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -160,6 +163,9 @@ public class GroceryStoreLocationContentProviderTest {
         Cursor cursor = provider.query(ReminderContract.Locations.CONTENT_URI, new String[] {ReminderContract.Locations._ID}, "", null, null);
 
         assertEquals(0, cursor.getColumnIndex(ReminderContract.Locations._ID));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -193,6 +199,9 @@ public class GroceryStoreLocationContentProviderTest {
         assertEquals(1, cursor.getCount());
         assertTrue(cursor.moveToNext());
         assertEquals(expectedName, cursor.getString(1));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -210,6 +219,9 @@ public class GroceryStoreLocationContentProviderTest {
         assertEquals(firstExpectedName, cursor.getString(1));
         assertTrue(cursor.moveToNext());
         assertEquals(secondExpectedName, cursor.getString(1));
+
+        cursor.close();
+        cursor = null;
     }
 
     private ContentValues createDefaultLocationValues() {

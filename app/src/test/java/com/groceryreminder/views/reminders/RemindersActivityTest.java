@@ -116,6 +116,9 @@ public class RemindersActivityTest extends RobolectricTestBase {
         assertEquals(1, cursor.getCount());
         assertTrue(cursor.moveToNext());
         assertEquals(expectedText, cursor.getString(1));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test

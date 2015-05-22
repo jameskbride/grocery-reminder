@@ -153,5 +153,8 @@ public class RemindersRecyclerViewAdapterTest {
                 .query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
 
         assertEquals(0, cursor.getCount());
+
+        cursor.close();
+        cursor = null;
     }
 }

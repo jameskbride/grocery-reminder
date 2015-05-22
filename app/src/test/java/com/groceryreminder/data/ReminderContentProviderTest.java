@@ -70,6 +70,9 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
 
         Cursor cursor = provider.query(expectedUri, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
         assertEquals(2, cursor.getCount());
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -158,6 +161,9 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
         Cursor cursor = provider.query(ReminderContract.Reminders.CONTENT_URI, new String[]{ReminderContract.Reminders._ID}, "", null, null);
 
         assertEquals(0, cursor.getColumnIndex(ReminderContract.Reminders._ID));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -174,6 +180,9 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
         assertEquals(1, cursor.getCount());
         assertTrue(cursor.moveToNext());
         assertEquals(expectedDescription, cursor.getString(1));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -191,6 +200,9 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
         assertEquals(1, cursor.getCount());
         assertTrue(cursor.moveToNext());
         assertEquals(expectedDescription, cursor.getString(1));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -208,5 +220,8 @@ public class ReminderContentProviderTest extends RobolectricTestBase {
         assertEquals(firstExpectedDescription, cursor.getString(1));
         assertTrue(cursor.moveToNext());
         assertEquals(secondExpectedDescription, cursor.getString(1));
+
+        cursor.close();
+        cursor = null;
     }
 }

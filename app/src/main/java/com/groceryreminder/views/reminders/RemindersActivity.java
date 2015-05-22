@@ -31,6 +31,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "In onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminders_activity);
 
@@ -67,6 +68,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
     @Override
     public void requestNewReminder() {
+        Log.d(TAG, "Requesting new reminder.");
         AddReminderFragment addReminderFragment = AddReminderFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.reminder_fragment_container, addReminderFragment).addToBackStack(null).commit();
@@ -74,6 +76,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
     @Override
     public void addReminder(String value) {
+        Log.d(TAG, "Adding reminder.");
         ReminderListFragment reminderListFragment = (ReminderListFragment)getSupportFragmentManager()
                 .findFragmentByTag(REMINDER_LIST_FRAGMENT);
         ContentValues values = new ContentValues();

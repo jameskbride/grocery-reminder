@@ -64,6 +64,9 @@ public class ReminderDBHelperTest {
         assertTrue(cursor.getString(2).contains(ReminderContract.Locations.PLACES_ID));
         assertEquals(ReminderContract.Locations.LATITUDE, cursor.getString(3));
         assertEquals(ReminderContract.Locations.LONGITUDE, cursor.getString(4));
+
+        cursor.close();
+        cursor = null;
     }
 
     @Test
@@ -77,6 +80,9 @@ public class ReminderDBHelperTest {
         assertTrue(cursor.moveToNext());
         assertEquals(1, cursor.getInt(0));
         assertEquals(ReminderContract.Reminders.DESCRIPTION, cursor.getString(1));
+
+        cursor.close();
+        cursor = null;
     }
 
     private void insertReminderValues(ContentValues reminderValues) {
@@ -95,5 +101,8 @@ public class ReminderDBHelperTest {
         Cursor cursor = readableDatabase.query(DBSchema.LOCATIONS, ReminderContract.Locations.PROJECT_ALL, "", null, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT, null);
 
         assertFalse(cursor.moveToNext());
+
+        cursor.close();
+        cursor = null;
     }
 }
