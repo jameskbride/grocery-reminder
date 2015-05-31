@@ -114,8 +114,8 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
         List<Place> places = new ArrayList<Place>();
         Place arbitraryPlace = createDefaultGooglePlace();
         places.add(arbitraryPlace);
-        GooglePlacesFake googlePlacesMock = (GooglePlacesFake)app.getEspressoRemoteResourcesModule().getGooglePlaces();
-        googlePlacesMock.setPlacesResponse(places);
+        GooglePlacesFake googlePlacesFake = (GooglePlacesFake)app.getEspressoRemoteResourcesModule().getGooglePlaces();
+        googlePlacesFake.setPlacesResponse(places);
 
         onView(withId(R.id.action_find_stores)).perform(click());
 

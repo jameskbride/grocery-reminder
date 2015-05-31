@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.location.LocationManager;
 
+import com.groceryreminder.domain.GroceryStoreLocationManager;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
 import javax.inject.Singleton;
