@@ -14,8 +14,7 @@ import dagger.Provides;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-@Module(library = true,
-    injects = {RemindersActivity.class}
+@Module(library = true
 )
 public class AndroidModule {
 

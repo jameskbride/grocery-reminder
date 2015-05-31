@@ -44,6 +44,11 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
     }
 
     @Override
+    protected boolean shouldInject() {
+        return false;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
