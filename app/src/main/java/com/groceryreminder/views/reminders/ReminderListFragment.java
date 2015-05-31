@@ -3,20 +3,20 @@ package com.groceryreminder.views.reminders;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 import com.groceryreminder.R;
 import com.groceryreminder.models.Reminder;
 import com.melnykov.fab.FloatingActionButton;
 
-import java.util.List;
+import org.solovyev.android.views.llm.LinearLayoutManager;
 
-import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
+import java.util.List;
 
 public class ReminderListFragment extends Fragment {
 
@@ -71,7 +71,8 @@ public class ReminderListFragment extends Fragment {
 
     private RecyclerView wireListView(View root) {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
-        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        list.setLayoutManager(linearLayoutManager);
         this.adapter = new RemindersRecyclerViewAdapter(reminders, onReminderDataChangeListener);
         list.setAdapter(this.adapter);
         setReminderListOnTouchListener(list);
