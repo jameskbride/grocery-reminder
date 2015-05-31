@@ -57,6 +57,7 @@ public class AddReminderFragment extends Fragment {
             public void onClick(View v) {
                 EditText reminderEditText = (EditText)getActivity().findViewById(R.id.add_reminder_edit);
                 String reminderText = reminderEditText.getText().toString();
+                reminderEditText.setText("");
                 onReminderDataChangeListener.addReminder(reminderText);
             }
         });

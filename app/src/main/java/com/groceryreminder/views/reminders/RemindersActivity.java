@@ -84,6 +84,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, values);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.reminder_fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)
+                .addToBackStack(null)
                 .commit();
     }
 

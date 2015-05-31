@@ -2,6 +2,7 @@ package com.groceryreminder.espresso;
 
 import android.content.pm.ActivityInfo;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
@@ -23,6 +24,7 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
+import dalvik.annotation.TestTarget;
 import se.walkercrou.places.GooglePlacesInterface;
 import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
@@ -32,6 +34,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -69,20 +72,20 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     @Test
     public void testWhenAReminderIsAddedThenItIsDisplayedInTheList() {
         addArbitraryReminder();
-        onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.matches(isDisplayed()));
+        onView(withText(ARBITRARY_REMINDER)).check(matches(isDisplayed()));
     }
 
     @Test
     public void testGivenAReminderHasBeenAddedWhenTheDeviceIsRotatedItIsStillDisplayed() {
         addArbitraryReminder();
         remindersActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.matches(isDisplayed()));
+        onView(withText(ARBITRARY_REMINDER)).check(matches(isDisplayed()));
     }
 
     @Test
     public void testGivenAReminderHashBeenAddedWhenItIsSwipedLeftThenItIsDismissed() {
         addArbitraryReminder();
-        onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.matches(isDisplayed()));
+        onView(withText(ARBITRARY_REMINDER)).check(matches(isDisplayed()));
 
         onView(withText(ARBITRARY_REMINDER)).perform(swipeLeft());
 
@@ -92,7 +95,7 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     @Test
     public void testGivenAReminderHashBeenAddedWhenItIsSwipedRightThenItIsDismissed() {
         addArbitraryReminder();
-        onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.matches(isDisplayed()));
+        onView(withText(ARBITRARY_REMINDER)).check(matches(isDisplayed()));
 
         onView(withText(ARBITRARY_REMINDER)).perform(swipeRight());
 
@@ -104,7 +107,14 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
         onView(withId(R.id.action_find_stores)).perform(click());
 
         onView(withText(getActivity().getApplication().getString(R.string.store_list_title)))
-                .check(ViewAssertions.matches(isDisplayed()));
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testGivenAReminderIsAddedWhenTheBackButtonIsPressedThenTheAddReminderTextIsEmpty() {
+        addArbitraryReminder();
+        Espresso.pressBack();
+        onView(withId(R.id.add_reminder_edit)).check(matches(withText("")));
     }
 
     @Test
@@ -121,7 +131,7 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
         onView(withId(R.id.action_find_stores)).perform(click());
 
         onView(withText(getActivity().getApplication().getString(R.string.store_list_title)))
-                .check(ViewAssertions.matches(isDisplayed()));
+                .check(matches(isDisplayed()));
 
         verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), (Param[]) anyVararg());
     }
