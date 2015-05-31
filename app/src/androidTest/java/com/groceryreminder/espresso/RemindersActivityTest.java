@@ -8,25 +8,20 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.groceryreminder.GooglePlacesFake;
 import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.EspressoReminderApplication;
-import com.groceryreminder.models.Reminder;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
-import dalvik.annotation.TestTarget;
-import se.walkercrou.places.GooglePlacesInterface;
-import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -38,11 +33,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -118,22 +108,19 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     }
 
     @Test
-    @Ignore
     public void testWhenTheStoresActionBarButtonIsPressedThenTheGroceryStoresAreListed() {
         EspressoReminderApplication app = (EspressoReminderApplication)getInstrumentation().getTargetContext().getApplicationContext();
 
         List<Place> places = new ArrayList<Place>();
         Place arbitraryPlace = createDefaultGooglePlace();
         places.add(arbitraryPlace);
-        GooglePlacesInterface googlePlacesMock = app.getEspressoRemoteResourcesModule().getGooglePlaces();
-        when(googlePlacesMock.getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), (Param[]) anyVararg())).thenReturn(places);
+        GooglePlacesFake googlePlacesMock = (GooglePlacesFake)app.getEspressoRemoteResourcesModule().getGooglePlaces();
+        googlePlacesMock.setPlacesResponse(places);
 
         onView(withId(R.id.action_find_stores)).perform(click());
 
         onView(withText(getActivity().getApplication().getString(R.string.store_list_title)))
                 .check(matches(isDisplayed()));
-
-        verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), (Param[]) anyVararg());
     }
 
     private Place createDefaultGooglePlace() {
