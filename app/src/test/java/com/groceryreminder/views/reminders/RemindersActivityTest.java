@@ -95,6 +95,14 @@ public class RemindersActivityTest extends RobolectricTestBase {
     }
 
     @Test
+    public void whenTheActivityIsCreatedThenTheGroceryStoreServiceShouldBeStarted() {
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+
+        Intent startedIntent = shadowActivity.peekNextStartedService();
+        assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
+    }
+
+    @Test
     public void whenTheActivityIsCreatedThenTheReminderListShouldBeDisplayed() {
         ReminderListFragment reminderListFragment = getReminderListFragment();
 

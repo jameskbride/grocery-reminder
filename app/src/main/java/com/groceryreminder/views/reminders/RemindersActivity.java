@@ -40,6 +40,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
                 .add(R.id.reminder_fragment_container, ReminderListFragment.newInstance(reminders), REMINDER_LIST_FRAGMENT)
                 .commit();
         getSupportLoaderManager().initLoader(1, null, this);
+        startService(new Intent(this, GroceryLocatorService.class));
     }
 
     @Override
