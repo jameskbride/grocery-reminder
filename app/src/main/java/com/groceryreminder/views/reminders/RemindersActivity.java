@@ -77,7 +77,8 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         Log.d(TAG, "Requesting new reminder.");
         AddReminderFragment addReminderFragment = AddReminderFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.reminder_fragment_container, addReminderFragment).addToBackStack(null).commit();
+                .replace(R.id.reminder_fragment_container, addReminderFragment)
+                .commit();
     }
 
     @Override
@@ -85,12 +86,14 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         Log.d(TAG, "Adding reminder.");
         ReminderListFragment reminderListFragment = (ReminderListFragment)getSupportFragmentManager()
                 .findFragmentByTag(REMINDER_LIST_FRAGMENT);
+        if (reminderListFragment == null) {
+            reminderListFragment = ReminderListFragment.newInstance(new ArrayList<Reminder>());
+        }
         ContentValues values = new ContentValues();
         values.put(ReminderContract.Reminders.DESCRIPTION, value);
         getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, values);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.reminder_fragment_container, reminderListFragment, REMINDER_LIST_FRAGMENT)
-                .addToBackStack(null)
                 .commit();
     }
 
