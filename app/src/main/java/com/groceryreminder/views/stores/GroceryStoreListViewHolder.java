@@ -7,15 +7,22 @@ import android.widget.TextView;
 import com.groceryreminder.R;
 import com.groceryreminder.models.GroceryStore;
 
+import java.text.DecimalFormat;
+
 public class GroceryStoreListViewHolder extends RecyclerView.ViewHolder {
     private final TextView storeNameText;
+    private final TextView storeDistanceText;
 
     public GroceryStoreListViewHolder(View itemView) {
         super(itemView);
         this.storeNameText = (TextView)itemView.findViewById(R.id.stores_text_view);
+        this.storeDistanceText = (TextView)itemView.findViewById(R.id.store_distance);
     }
 
     public void bind(GroceryStore store) {
         storeNameText.setText(store.getName());
+        double miles = store.getDistance() * 0.00062137;
+        DecimalFormat decimalFormat = new DecimalFormat("0.0#");
+        storeDistanceText.setText(decimalFormat.format(miles) + " mi");
     }
 }

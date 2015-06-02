@@ -37,7 +37,6 @@ public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
 
         activity = Robolectric.buildActivity(FragmentActivity.class).create().start().get();
         activity.setContentView(R.layout.grocery_stores_activity);
-        //TODO This should be removed once the activity is completed test-drove with CursorLoader.
         activity.getSupportFragmentManager().beginTransaction()
                 .add(R.id.stores_fragment_container, GroceryStoreListFragment.newInstance(stores), "tag")
                 .commit();
@@ -54,6 +53,19 @@ public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
 
         TextView reminderText = (TextView)viewHolder.itemView.findViewById(R.id.stores_text_view);
         assertEquals("test", reminderText.getText());
+    }
+
+    @Test
+    public void givenStoresListViewWhenAStoreIsBoundThenTheStoreDistanceTextIsSet() {
+        RecyclerView recyclerView = getRecyclerView();
+        View view = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.store_viewholder, recyclerView, false);
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 2414.02);
+
+        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view);
+        viewHolder.bind(store);
+
+        TextView reminderText = (TextView)viewHolder.itemView.findViewById(R.id.store_distance);
+        assertEquals("1.5 mi", reminderText.getText());
     }
 
     private RecyclerView getRecyclerView() {
