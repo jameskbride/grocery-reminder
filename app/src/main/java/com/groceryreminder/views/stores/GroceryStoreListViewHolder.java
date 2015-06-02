@@ -10,6 +10,7 @@ import com.groceryreminder.models.GroceryStore;
 import java.text.DecimalFormat;
 
 public class GroceryStoreListViewHolder extends RecyclerView.ViewHolder {
+    private static final double MILES_TO_METERS_MULTIPLE = 0.00062137;
     private final TextView storeNameText;
     private final TextView storeDistanceText;
 
@@ -21,8 +22,8 @@ public class GroceryStoreListViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(GroceryStore store) {
         storeNameText.setText(store.getName());
-        double miles = store.getDistance() * 0.00062137;
-        DecimalFormat decimalFormat = new DecimalFormat("0.0#");
+        double miles = store.getDistance() * MILES_TO_METERS_MULTIPLE;
+        DecimalFormat decimalFormat = new DecimalFormat("0.0");
         storeDistanceText.setText(decimalFormat.format(miles) + " mi");
     }
 }
