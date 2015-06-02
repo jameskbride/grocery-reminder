@@ -101,12 +101,12 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     }
 
     @Test
-    public void testGivenAReminderIsAddedWhenTheBackButtonIsPressedThenTheAddReminderTextIsEmpty() {
-        addArbitraryReminder();
+    public void testGivenAReminderIsBeingAddedWhenTheBackButtonIsPressedThenTheReminderListIsDisplayed() {
+        onView(withId(R.id.fab)).perform(click());
         Espresso.pressBack();
-        onView(withId(R.id.add_reminder_edit)).check(matches(withText("")));
+        onView(withId(R.id.reminder_fragment_container)).check(matches(isDisplayed()));
     }
-
+    
     @Test
     public void testWhenTheStoresActionBarButtonIsPressedThenTheGroceryStoresAreListed() {
         EspressoReminderApplication app = (EspressoReminderApplication)getInstrumentation().getTargetContext().getApplicationContext();
@@ -134,8 +134,12 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     }
 
     private void addArbitraryReminder() {
+        addArbitraryReminder(ARBITRARY_REMINDER);
+    }
+
+    private void addArbitraryReminder(String reminder) {
         onView(withId(R.id.fab)).perform(click());
-        onView(withId(R.id.add_reminder_edit)).perform(typeText(ARBITRARY_REMINDER));
+        onView(withId(R.id.add_reminder_edit)).perform(typeText(reminder));
         onView(withId(R.id.add_reminder_button)).perform(click());
     }
 }
