@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class}, sdk = Build.VERSION_CODES.JELLY_BEAN)
+@Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class})
 public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
     private GroceryLocatorService groceryLocatorService;
