@@ -72,20 +72,26 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         List<GroceryStore> groceryStoreList = new ArrayList<GroceryStore>();
         Log.d(TAG, "In onLoadFinished");
         while (cursor.moveToNext()) {
-            String storeName = cursor.getString(cursor.getColumnIndex(ReminderContract.Locations.NAME));
-            Double latitude = cursor.getDouble(cursor.getColumnIndex(ReminderContract.Locations.LATITUDE));
-            Double longitude = cursor.getDouble(cursor.getColumnIndex(ReminderContract.Locations.LONGITUDE));
-            Location currentLocation = groceryStoreManager.getCurrentLocation();
-            float[] distanceResults = new float[1];
-            Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude, distanceResults);
-            Log.d(TAG, "Loading store from cursor: " + storeName);
-            GroceryStore store = new GroceryStore(storeName, distanceResults[0]);
+            GroceryStore store = loadStoreFromCursor(cursor);
             groceryStoreList.add(store);
         }
 
         GroceryStoreListFragment groceryStoreListFragment =
                 (GroceryStoreListFragment)getSupportFragmentManager().findFragmentById(R.id.stores_fragment_container);
         groceryStoreListFragment.setStores(groceryStoreList);
+    }
+
+    private GroceryStore loadStoreFromCursor(Cursor cursor) {
+        String storeName = cursor.getString(cursor.getColumnIndex(ReminderContract.Locations.NAME));
+        Log.d(TAG, "Loading store from cursor: " + storeName);
+
+        Double latitude = cursor.getDouble(cursor.getColumnIndex(ReminderContract.Locations.LATITUDE));
+        Double longitude = cursor.getDouble(cursor.getColumnIndex(ReminderContract.Locations.LONGITUDE));
+        Location currentLocation = groceryStoreManager.getCurrentLocation();
+        float[] distanceResults = new float[1];
+        Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude, distanceResults);
+
+        return new GroceryStore(storeName, distanceResults[0]);
     }
 
     @Override
