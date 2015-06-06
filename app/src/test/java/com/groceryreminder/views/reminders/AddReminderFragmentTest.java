@@ -1,8 +1,10 @@
 package com.groceryreminder.views.reminders;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -16,7 +18,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowInputMethodManager;
 import org.robolectric.util.ActivityController;
 
 import static junit.framework.Assert.assertNotNull;
@@ -39,6 +44,25 @@ public class AddReminderFragmentTest extends RobolectricTestBase {
     @After
     public void tearDown() {
         this.activityController.pause().stop().destroy();
+    }
+
+    private Button getAddReminderButton(AddReminderFragment reminderListFragment) {
+        return (Button)reminderListFragment.getView().findViewById(R.id.add_reminder_button);
+    }
+
+    private EditText getReminderText(AddReminderFragment reminderListFragment) {
+        return (EditText)reminderListFragment.getView().findViewById(R.id.add_reminder_edit);
+    }
+
+    private AddReminderFragment getAddReminderFragmentFromOnCreateView() {
+        AddReminderFragment reminderListFragment = AddReminderFragment.newInstance();
+        startFragment(activity, reminderListFragment);
+        reminderListFragment.onAttach(activity);
+        reminderListFragment.onCreate(new Bundle());
+        reminderListFragment.onCreateView(LayoutInflater.from(activity),
+                (ViewGroup) activity.findViewById(R.id.reminder_fragment_container), null);
+
+        return reminderListFragment;
     }
 
     @Test
@@ -78,6 +102,23 @@ public class AddReminderFragmentTest extends RobolectricTestBase {
     }
 
     @Test
+    public void givenTheSoftKeyboardIsVisibleWhenTheAddReminderButtonIsPressedThenTheSoftKeyboardIsDismissed() {
+        AddReminderFragment reminderListFragment = getAddReminderFragmentFromOnCreateView();
+        EditText reminderText = getReminderText(reminderListFragment);
+
+        reminderText.setText("test");
+
+        ShadowInputMethodManager shadowInputMethodManager =
+                Shadows.shadowOf((InputMethodManager)RuntimeEnvironment.application.getSystemService(Context.INPUT_METHOD_SERVICE));
+        shadowInputMethodManager.showSoftInput(reminderText, 0);
+
+        Button addReminderButton = getAddReminderButton(reminderListFragment);
+        addReminderButton.performClick();
+
+        assertFalse(shadowInputMethodManager.isSoftInputVisible());
+    }
+
+    @Test
     public void givenTheReminderTextIsSetWhenTheTextIsClearedThenTheAddReminderButtonIsDisabled() {
         AddReminderFragment reminderListFragment = getAddReminderFragmentFromOnCreateView();
         EditText reminderText = getReminderText(reminderListFragment);
@@ -98,24 +139,5 @@ public class AddReminderFragmentTest extends RobolectricTestBase {
 
         Button addReminderButton = getAddReminderButton(reminderListFragment);
         assertFalse(addReminderButton.isEnabled());
-    }
-
-    private Button getAddReminderButton(AddReminderFragment reminderListFragment) {
-        return (Button)reminderListFragment.getView().findViewById(R.id.add_reminder_button);
-    }
-
-    private EditText getReminderText(AddReminderFragment reminderListFragment) {
-        return (EditText)reminderListFragment.getView().findViewById(R.id.add_reminder_edit);
-    }
-
-    private AddReminderFragment getAddReminderFragmentFromOnCreateView() {
-        AddReminderFragment reminderListFragment = AddReminderFragment.newInstance();
-        startFragment(activity, reminderListFragment);
-        reminderListFragment.onAttach(activity);
-        reminderListFragment.onCreate(new Bundle());
-        reminderListFragment.onCreateView(LayoutInflater.from(activity),
-                (ViewGroup)activity.findViewById(R.id.reminder_fragment_container), null);
-
-        return reminderListFragment;
     }
 }
