@@ -23,4 +23,6 @@ public interface GroceryStoreManagerInterface extends LocationUpdater{
     void addProximityAlerts(List<Place> places);
 
     void listenForLocationUpdates();
+
+    Location getCurrentLocation();
 }

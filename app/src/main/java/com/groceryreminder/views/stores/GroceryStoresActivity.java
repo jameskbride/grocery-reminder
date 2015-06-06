@@ -1,6 +1,7 @@
 package com.groceryreminder.views.stores;
 
 import android.database.Cursor;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -11,15 +12,21 @@ import android.view.MenuItem;
 
 import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 import com.groceryreminder.models.GroceryStore;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class GroceryStoresActivity extends ReminderFragmentBaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "StoresActivity";
+
+    @Inject
+    GroceryStoreManagerInterface groceryStoreManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +35,6 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(new ArrayList<GroceryStore>());
         getSupportFragmentManager().beginTransaction().add(R.id.stores_fragment_container, groceryStoreListFragment).commit();
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
-    }
-
-    @Override
-    protected boolean shouldInject() {
-        return false;
     }
 
     @Override
@@ -70,9 +72,14 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         List<GroceryStore> groceryStoreList = new ArrayList<GroceryStore>();
         Log.d(TAG, "In onLoadFinished");
         while (cursor.moveToNext()) {
-            String storeName = cursor.getString(1);
+            String storeName = cursor.getString(cursor.getColumnIndex(ReminderContract.Locations.NAME));
+            Double latitude = cursor.getDouble(cursor.getColumnIndex(ReminderContract.Locations.LATITUDE));
+            Double longitude = cursor.getDouble(cursor.getColumnIndex(ReminderContract.Locations.LONGITUDE));
+            Location currentLocation = groceryStoreManager.getCurrentLocation();
+            float[] distanceResults = new float[1];
+            Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude, distanceResults);
             Log.d(TAG, "Loading store from cursor: " + storeName);
-            GroceryStore store = new GroceryStore(storeName);
+            GroceryStore store = new GroceryStore(storeName, distanceResults[0]);
             groceryStoreList.add(store);
         }
 

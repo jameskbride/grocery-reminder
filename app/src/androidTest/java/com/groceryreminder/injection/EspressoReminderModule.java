@@ -10,6 +10,7 @@ import com.groceryreminder.domain.GroceryStoreManager;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.reminders.RemindersActivity;
+import com.groceryreminder.views.stores.GroceryStoresActivity;
 
 import javax.inject.Singleton;
 
@@ -24,7 +25,8 @@ import dagger.Provides;
                 RemindersActivity.class,
                 GroceryLocatorService.class,
                 GroceryStoreManager.class,
-                GroceryStoreLocationManager.class
+                GroceryStoreLocationManager.class,
+                GroceryStoresActivity.class
         },
         complete = false
 )
