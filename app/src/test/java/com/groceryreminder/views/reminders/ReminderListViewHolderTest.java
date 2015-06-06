@@ -44,7 +44,7 @@ public class ReminderListViewHolderTest extends RobolectricTestBase {
     @Test
     public void givenRemindersListViewWhenAReminderIsBoundThenTheReminderTextIsSet() {
         RecyclerView recyclerView = getRecyclerView();
-        View view = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.reminders_swipelist, recyclerView, false);
+        View view = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.reminder_viewholder, recyclerView, false);
         Reminder reminder = new Reminder(0, "test");
 
         ReminderListViewHolder viewHolder = new ReminderListViewHolder(view);
