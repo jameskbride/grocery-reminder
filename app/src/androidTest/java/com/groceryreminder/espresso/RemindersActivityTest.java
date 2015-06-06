@@ -73,6 +73,15 @@ public class RemindersActivityTest extends ActivityInstrumentationTestCase2<Remi
     }
 
     @Test
+    public void testGivenAReminderHasBeenAddedWhenTheClearIconIsTappedThenTheReminderIsDismissed() {
+        addArbitraryReminder();
+
+        onView(withId(R.id.clear_icon)).perform(click());
+
+        onView(withText(ARBITRARY_REMINDER)).check(ViewAssertions.doesNotExist());
+    }
+
+    @Test
     public void testGivenAReminderHashBeenAddedWhenItIsSwipedLeftThenItIsDismissed() {
         addArbitraryReminder();
         onView(withText(ARBITRARY_REMINDER)).check(matches(isDisplayed()));
