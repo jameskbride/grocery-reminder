@@ -36,6 +36,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -79,8 +80,11 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
 
     private ShadowCursorWrapper createCursorWithDefaultReminder() {
         Cursor mockCursor = mock(Cursor.class);
+        when(mockCursor.getColumnIndex(ReminderContract.Locations.NAME)).thenReturn(1);
+        when(mockCursor.getColumnIndex(ReminderContract.Locations.LATITUDE)).thenReturn(3);
+        when(mockCursor.getColumnIndex(ReminderContract.Locations.LONGITUDE)).thenReturn(4);
         when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mockCursor.getString(anyInt())).thenReturn("test");
+        when(mockCursor.getString(1)).thenReturn("test");
         when(mockCursor.getDouble(3)).thenReturn(0.0);
         when(mockCursor.getDouble(4)).thenReturn(1.0);
         ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
@@ -164,5 +168,25 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
 
         RecyclerView listView = getRecyclerView(groceryStoreListFragment, R.id.stores_recycler_view);
         assertEquals(0, listView.getAdapter().getItemCount());
+    }
+
+    @Test
+    public void givenStoresAreLoadedWhenAStoreIsClickedThenTheMapApplicationIsLaunched() {
+        ShadowCursorWrapper wrapper = createCursorWithDefaultReminder();
+
+        GroceryStoreManagerInterface groceryStoreManagerMock = getTestReminderModule().getGroceryStoreManager();
+        when(groceryStoreManagerMock.getCurrentLocation()).thenReturn(new Location(LocationManager.PASSIVE_PROVIDER));
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoadFinished(cursorLoader, wrapper);
+        GroceryStoreListFragment groceryStoreListFragment = getGroceryStoreListFragment();
+        assertNotNull(groceryStoreListFragment);
+
+        RecyclerView listView = getRecyclerView(groceryStoreListFragment, R.id.stores_recycler_view);
+        listView.findViewHolderForAdapterPosition(0).itemView.performClick();
+
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        ShadowIntent shadowIntent = Shadows.shadowOf(shadowActivity.peekNextStartedActivity());
+        assertEquals("geo:0.0,1.0", shadowIntent.getData().toString());
     }
 }

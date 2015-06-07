@@ -25,6 +25,7 @@ public class GroceryStoreListViewHolder extends RecyclerView.ViewHolder implemen
         this.storeNameText = (TextView)itemView.findViewById(R.id.stores_text_view);
         this.storeDistanceText = (TextView)itemView.findViewById(R.id.store_distance);
         this.context = itemView.getContext();
+        itemView.setOnClickListener(this);
     }
 
     public void bind(GroceryStore store) {
