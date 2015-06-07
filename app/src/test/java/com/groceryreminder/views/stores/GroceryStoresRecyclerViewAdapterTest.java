@@ -58,7 +58,7 @@ public class GroceryStoresRecyclerViewAdapterTest extends RobolectricTestBase {
 
     @Test
     public void whenTheAdapterIsCreatedWithRemindersThenTheItemCountIsSet() {
-        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 0.0, 0.0, 0.0);
         stores.add(store);
         GroceryStoresRecyclerViewAdapter adapter = createAdapter(stores);
 
@@ -67,12 +67,12 @@ public class GroceryStoresRecyclerViewAdapterTest extends RobolectricTestBase {
 
     @Test
     public void whenTheStoresAreSetThenObserversAreNotified() {
-        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 0.0, 0.0, 0.0);
         stores.add(store);
         GroceryStoresRecyclerViewAdapter adapter = createAdapter(stores);
 
         List<GroceryStore> updatedStores = new ArrayList<GroceryStore>();
-        GroceryStore updatedStore1 = new GroceryStore(ARBITRARY_STORE_NAME + 1);
+        GroceryStore updatedStore1 = new GroceryStore(ARBITRARY_STORE_NAME + 1, 0.0, 0.0, 0.0);
         updatedStores.add(updatedStore1);
 
         GroceryStoresRecyclerViewAdapter adapterSpy = spy(adapter);
@@ -83,13 +83,13 @@ public class GroceryStoresRecyclerViewAdapterTest extends RobolectricTestBase {
 
     @Test
     public void whenTheStoresAreSetThenTheItemCountIsUpdated() {
-        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 0.0, 0.0, 0.0);
         stores.add(store);
         GroceryStoresRecyclerViewAdapter adapter = createAdapter(stores);
 
         List<GroceryStore> updatedStores = new ArrayList<GroceryStore>();
-        GroceryStore updatedStore1 = new GroceryStore(ARBITRARY_STORE_NAME + 1);
-        GroceryStore updatedStore2 = new GroceryStore(ARBITRARY_STORE_NAME + 2);
+        GroceryStore updatedStore1 = new GroceryStore(ARBITRARY_STORE_NAME + 1, 0.0, 0.0, 0.0);
+        GroceryStore updatedStore2 = new GroceryStore(ARBITRARY_STORE_NAME + 2, 0.0, 0.0, 0.0);
         updatedStores.add(updatedStore1);
         updatedStores.add(updatedStore2);
 
@@ -110,7 +110,7 @@ public class GroceryStoresRecyclerViewAdapterTest extends RobolectricTestBase {
 
     @Test
     public void givenAStoreWhenTheViewHolderIsBoundThenTheTextViewIsSet() {
-        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 0.0, 0.0, 0.0);
         stores.add(store);
         GroceryStoresRecyclerViewAdapter adapter = createAdapter(stores);
         RecyclerView recyclerView = getRecyclerView();
@@ -124,11 +124,11 @@ public class GroceryStoresRecyclerViewAdapterTest extends RobolectricTestBase {
 
     @Test
     public void givenMultipleStoresWhenViewHolderIsBoundWithAnArbitraryPositionThenTheTextViewIsSet() {
-        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME);
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 0.0, 0.0, 0.0);
         stores.add(store);
 
-        String expectedStore = ARBITRARY_STORE_NAME + 1;
-        GroceryStore secondStore = new GroceryStore(expectedStore);
+        String expectedName = ARBITRARY_STORE_NAME + 1;
+        GroceryStore secondStore = new GroceryStore(expectedName, 0.0, 0.0, 0.0);
         stores.add(secondStore);
 
         GroceryStoresRecyclerViewAdapter adapter = new GroceryStoresRecyclerViewAdapter(stores);

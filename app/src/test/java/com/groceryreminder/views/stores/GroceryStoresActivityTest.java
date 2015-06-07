@@ -24,8 +24,11 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowCursorWrapper;
+import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowLocation;
 import org.robolectric.util.ActivityController;
 

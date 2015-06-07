@@ -6,14 +6,14 @@ public class GroceryStore implements Serializable {
 
     private String name;
     private double distance;
+    private double latitude;
+    private double longitude;
 
-    public GroceryStore(String name) {
-        this.name = name;
-    }
-
-    public GroceryStore(String name, double distance) {
+    public GroceryStore(String name, double distance, double latitude, double longitude) {
         this.name = name;
         this.distance = distance;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public void setName(String name) {
@@ -30,7 +30,22 @@ public class GroceryStore implements Serializable {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     @Override
@@ -38,10 +53,12 @@ public class GroceryStore implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        GroceryStore that = (GroceryStore) o;
+        GroceryStore store = (GroceryStore) o;
 
-        if (Double.compare(that.distance, distance) != 0) return false;
-        return !(name != null ? !name.equals(that.name) : that.name != null);
+        if (Double.compare(store.distance, distance) != 0) return false;
+        if (Double.compare(store.latitude, latitude) != 0) return false;
+        if (Double.compare(store.longitude, longitude) != 0) return false;
+        return !(name != null ? !name.equals(store.name) : store.name != null);
 
     }
 
@@ -51,6 +68,10 @@ public class GroceryStore implements Serializable {
         long temp;
         result = name != null ? name.hashCode() : 0;
         temp = Double.doubleToLongBits(distance);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(latitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }

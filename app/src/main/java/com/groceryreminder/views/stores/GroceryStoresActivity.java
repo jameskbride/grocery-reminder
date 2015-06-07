@@ -91,7 +91,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         float[] distanceResults = new float[1];
         Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude, distanceResults);
 
-        return new GroceryStore(storeName, distanceResults[0]);
+        return new GroceryStore(storeName, distanceResults[0], latitude, longitude);
     }
 
     @Override

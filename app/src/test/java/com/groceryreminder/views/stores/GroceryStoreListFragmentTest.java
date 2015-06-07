@@ -45,7 +45,7 @@ public class GroceryStoreListFragmentTest extends RobolectricTestBase {
     @Test
     public void givenGroceryStoresWhenTheFragmentIsCreatedThenTheViewShouldBePopulated() {
         List<GroceryStore> stores = new ArrayList<GroceryStore>();
-        GroceryStore groceryStore = new GroceryStore("test");
+        GroceryStore groceryStore = new GroceryStore("test", 0.0, 0.0, 0.0);
         stores.add(groceryStore);
 
         GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(stores);
@@ -61,14 +61,14 @@ public class GroceryStoreListFragmentTest extends RobolectricTestBase {
     @Test
     public void givenGroceryStoresWhenFragmentSetsStoresThenTheViewShouldBeUpdated() {
         List<GroceryStore> stores = new ArrayList<GroceryStore>();
-        GroceryStore groceryStore = new GroceryStore("test");
+        GroceryStore groceryStore = new GroceryStore("test", 0.0, 0.0, 0.0);
         stores.add(groceryStore);
 
         GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(stores);
         startFragment(activity, groceryStoreListFragment);
 
         List<GroceryStore> updatedStores = new ArrayList<GroceryStore>();
-        GroceryStore updatedStore = new GroceryStore("update");
+        GroceryStore updatedStore = new GroceryStore("update", 0.0, 0.0, 0.0);
         updatedStores.add(updatedStore);
 
         groceryStoreListFragment.setStores(updatedStores);

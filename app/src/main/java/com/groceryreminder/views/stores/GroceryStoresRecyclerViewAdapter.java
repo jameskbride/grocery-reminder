@@ -1,5 +1,6 @@
 package com.groceryreminder.views.stores;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,9 @@ public class GroceryStoresRecyclerViewAdapter extends RecyclerView.Adapter<Groce
 
     @Override
     public GroceryStoreListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.store_viewholder, parent, false);
-        return new GroceryStoreListViewHolder(view);
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.store_viewholder, parent, false);
+        return new GroceryStoreListViewHolder(view, context);
     }
 
     @Override
