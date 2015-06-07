@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -36,7 +37,9 @@ public class GroceryStoreListViewHolder extends RecyclerView.ViewHolder implemen
 
     @Override
     public void onClick(View v) {
-        Uri geoUri = Uri.parse("geo:" + store.getLatitude() + "," + store.getLongitude());
+        String geoString = "geo:" + store.getLatitude() + "," + store.getLongitude();
+        Log.d("StoreViewHolder", "Launching geo app for: " + geoString);
+        Uri geoUri = Uri.parse(geoString);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoUri);
         context.startActivity(mapIntent);
     }
