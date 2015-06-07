@@ -61,7 +61,7 @@ public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
         View view = LayoutInflater.from(context).inflate(R.layout.store_viewholder, recyclerView, false);
         GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 0.0, 0.0, 0.0);
 
-        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view, context);
+        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view);
         viewHolder.bind(store);
 
         TextView reminderText = (TextView)viewHolder.itemView.findViewById(R.id.stores_text_view);
@@ -75,7 +75,7 @@ public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
         View view = LayoutInflater.from(context).inflate(R.layout.store_viewholder, recyclerView, false);
         GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 2414.02, 0.0, 0.0);
 
-        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view, context);
+        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view);
         viewHolder.bind(store);
 
         TextView reminderText = (TextView)viewHolder.itemView.findViewById(R.id.store_distance);
@@ -91,7 +91,7 @@ public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
         double longitude = 1.0;
         GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, 2414.02, latitude, longitude);
 
-        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view, context);
+        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view);
         viewHolder.bind(store);
 
         viewHolder.onClick(view);

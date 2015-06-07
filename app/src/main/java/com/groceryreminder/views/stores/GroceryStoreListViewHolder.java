@@ -19,11 +19,11 @@ public class GroceryStoreListViewHolder extends RecyclerView.ViewHolder implemen
     private final Context context;
     private GroceryStore store;
 
-    public GroceryStoreListViewHolder(View itemView, Context context) {
+    public GroceryStoreListViewHolder(View itemView) {
         super(itemView);
         this.storeNameText = (TextView)itemView.findViewById(R.id.stores_text_view);
         this.storeDistanceText = (TextView)itemView.findViewById(R.id.store_distance);
-        this.context = context;
+        this.context = itemView.getContext();
     }
 
     public void bind(GroceryStore store) {
