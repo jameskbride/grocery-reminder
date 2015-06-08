@@ -189,4 +189,11 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         ShadowIntent shadowIntent = Shadows.shadowOf(shadowActivity.peekNextStartedActivity());
         assertEquals("geo:0.0,1.0?q=0.0,1.0(test)", shadowIntent.getData().toString());
     }
+
+    @Test
+    public void whenTheActivityIsCreatedThenTheUserCannotLaunchTheGroceryStoreActivity() {
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        View menuItem = shadowActivity.findViewById(R.id.action_find_stores);
+        assertNull(menuItem);
+    }
 }
