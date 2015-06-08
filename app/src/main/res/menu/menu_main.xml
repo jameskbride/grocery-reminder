@@ -1,6 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    <item android:id="@+id/action_share" android:title="Share"
+        android:icon="@drawable/ic_action_social_share"
+        app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_find_stores" android:title="@string/find_stores"
         android:icon="@drawable/ic_action_find_stores" app:showAsAction="ifRoom" />
 </menu>
