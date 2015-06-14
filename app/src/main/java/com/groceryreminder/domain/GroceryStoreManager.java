@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
@@ -38,6 +39,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     private Application context;
     private LocationListener locationListener;
     private Location currentLocation;
+    private long lastUpdateTime;
 
     @Inject
     public GroceryStoreManager(@ForApplication Application applicationContext, LocationManager locationManager, GooglePlacesInterface googlePlaces) {
@@ -171,12 +173,18 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         if (this.currentLocation == null) {
             Log.d(TAG, "Current location is null");
             this.currentLocation = location;
+            this.lastUpdateTime = SystemClock.currentThreadTimeMillis();
             updateStoreLocations(location);
-        } else if (location.getTime() - this.currentLocation.getTime() >= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS) {
-            Log.d(TAG, "It's been at least 5 minutes since last update");
+        } else if (minimumUpdateTimeHasPassed(location)) {
+            Log.d(TAG, "Minimum update time has passed");
             this.currentLocation = location;
+            this.lastUpdateTime = SystemClock.currentThreadTimeMillis();
             updateStoreLocations(location);
         }
+    }
+
+    private boolean minimumUpdateTimeHasPassed(Location location) {
+        return location.getTime() - lastUpdateTime >= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS;
     }
 
     private void updateStoreLocations(Location location) {

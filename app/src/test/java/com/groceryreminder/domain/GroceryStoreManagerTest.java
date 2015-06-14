@@ -6,6 +6,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.SystemClock;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
@@ -433,7 +434,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         setLocationUpdatableTimestamp(location);
-
+        SystemClock.setCurrentTimeMillis(System.currentTimeMillis() + GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS + 1);
         Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
