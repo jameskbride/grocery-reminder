@@ -215,10 +215,11 @@ public class RemindersActivityTest extends RobolectricTestBase {
     @Test
     public void givenTheLoaderIsFinishedWhenTheShareButtonIsPressedThenTheLoadedListOfRemindersIsShared() {
         Reminder reminder = new Reminder(0, "test");
+        Reminder reminder2 = new Reminder(0, "test2");
         Cursor mockCursor = mock(Cursor.class);
-        when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
-        when(mockCursor.getLong(0)).thenReturn(reminder.getId());
-        when(mockCursor.getString(1)).thenReturn(reminder.getText());
+        when(mockCursor.moveToNext()).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(mockCursor.getLong(0)).thenReturn(reminder.getId()).thenReturn(reminder2.getId());
+        when(mockCursor.getString(1)).thenReturn(reminder.getText()).thenReturn(reminder2.getText());
         ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
         wrapper.__constructor__(mockCursor);
 
@@ -226,13 +227,12 @@ public class RemindersActivityTest extends RobolectricTestBase {
         activity.onLoadFinished(cursorLoader, wrapper);
 
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-
         shadowActivity.clickMenuItem(R.id.action_share);
 
         ShadowIntent shadowIntent = Shadows.shadowOf(shadowActivity.peekNextStartedActivity());
         assertEquals(Intent.ACTION_CHOOSER, shadowIntent.getAction());
         ShadowIntent shareIntent = Shadows.shadowOf((Intent) shadowIntent.getParcelableExtra("android.intent.extra.INTENT"));
         assertEquals("text/plain", shareIntent.getType());
-        assertEquals("test\n", shareIntent.getExtras().getString(Intent.EXTRA_TEXT));
+        assertEquals("test\ntest2\n", shareIntent.getExtras().getString(Intent.EXTRA_TEXT));
     }
 }
