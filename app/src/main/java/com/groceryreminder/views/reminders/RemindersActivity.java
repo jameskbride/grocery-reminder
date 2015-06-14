@@ -28,6 +28,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
     public static final String REMINDER_LIST_FRAGMENT = "REMINDER_LIST_FRAGMENT";
     private static final String TAG = "RemindersActivity";
+    private List<Reminder> reminders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +65,24 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_find_stores) {
-            startService(new Intent(this, GroceryLocatorService.class));
-            startActivity(new Intent(this, GroceryStoresActivity.class));
+        switch(id) {
+            case R.id.action_find_stores:
+                startService(new Intent(this, GroceryLocatorService.class));
+                startActivity(new Intent(this, GroceryStoresActivity.class));
+                break;
+            case R.id.action_share:
+                StringBuilder shareStringBuilder = new StringBuilder();
+                for (Reminder reminder : reminders) {
+                    shareStringBuilder.append(reminder.getText());
+                    shareStringBuilder.append("\n");
+                }
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareStringBuilder.toString());
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+                break;
+            default:
         }
 
         return super.onOptionsItemSelected(item);
@@ -121,7 +137,7 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        List<Reminder> reminders = new ArrayList<Reminder>();
+        this.reminders = new ArrayList<Reminder>();
         Log.d(TAG, "In onLoadFinished");
         while (cursor.moveToNext()) {
             Long reminderId = cursor.getLong(0);

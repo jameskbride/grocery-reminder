@@ -29,6 +29,7 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowCursorWrapper;
+import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -209,5 +210,29 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
         RecyclerView listView = getRecyclerView(reminderListFragment, R.id.reminders_recycler_view);
         assertEquals(0, listView.getAdapter().getItemCount());
+    }
+
+    @Test
+    public void givenTheLoaderIsFinishedWhenTheShareButtonIsPressedThenTheLoadedListOfRemindersIsShared() {
+        Reminder reminder = new Reminder(0, "test");
+        Cursor mockCursor = mock(Cursor.class);
+        when(mockCursor.moveToNext()).thenReturn(true).thenReturn(false);
+        when(mockCursor.getLong(0)).thenReturn(reminder.getId());
+        when(mockCursor.getString(1)).thenReturn(reminder.getText());
+        ShadowCursorWrapper wrapper = new ShadowCursorWrapper();
+        wrapper.__constructor__(mockCursor);
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoadFinished(cursorLoader, wrapper);
+
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+
+        shadowActivity.clickMenuItem(R.id.action_share);
+
+        ShadowIntent shadowIntent = Shadows.shadowOf(shadowActivity.peekNextStartedActivity());
+        assertEquals(Intent.ACTION_CHOOSER, shadowIntent.getAction());
+        ShadowIntent shareIntent = Shadows.shadowOf((Intent) shadowIntent.getParcelableExtra("android.intent.extra.INTENT"));
+        assertEquals("text/plain", shareIntent.getType());
+        assertEquals("test\n", shareIntent.getExtras().getString(Intent.EXTRA_TEXT));
     }
 }

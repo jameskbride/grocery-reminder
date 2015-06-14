@@ -8,4 +8,5 @@
     <string name="google_places_api_key_string">@string/google_places_api_key</string>
     <string name="reminder_notification">View your shopping list.</string>
     <string name="store_list_title">Nearby Stores</string>
+    <string name="send_to">Send To</string>
 </resources>
