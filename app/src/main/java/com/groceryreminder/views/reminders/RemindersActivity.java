@@ -71,21 +71,25 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
                 startActivity(new Intent(this, GroceryStoresActivity.class));
                 break;
             case R.id.action_share:
-                StringBuilder shareStringBuilder = new StringBuilder();
-                for (Reminder reminder : reminders) {
-                    shareStringBuilder.append(reminder.getText());
-                    shareStringBuilder.append("\n");
-                }
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareStringBuilder.toString());
-                shareIntent.setType("text/plain");
-                startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+                fireShareAction();
                 break;
             default:
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void fireShareAction() {
+        StringBuilder shareStringBuilder = new StringBuilder();
+        for (Reminder reminder : reminders) {
+            shareStringBuilder.append(reminder.getText());
+            shareStringBuilder.append("\n");
+        }
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareStringBuilder.toString());
+        shareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
     }
 
     @Override
