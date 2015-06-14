@@ -1,7 +1,6 @@
 package com.groceryreminder.domain;
 
 import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
@@ -82,15 +81,15 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         this.locationManager = spy(getTestAndroidModule().getLocationManager());
         this.shadowLocationManager = (com.groceryreminder.shadows.ShadowLocationManager)Shadows.shadowOf(locationManager);
         try {
-            assertTrue(shadowLocationManager.setBestProvider(LocationManager.PASSIVE_PROVIDER, true, new ArrayList<Criteria>()));
+            assertTrue(shadowLocationManager.setBestProvider(LocationManager.GPS_PROVIDER, true, new ArrayList<Criteria>()));
         } catch (Exception e) {
             fail("Unable to set the best provider.");
         }
 
-        defaultGPSLocation = createDefaultLocation(LocationManager.PASSIVE_PROVIDER);
+        defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
         ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
-        shadowLocationManager.setLastKnownLocation(LocationManager.PASSIVE_PROVIDER, defaultGPSLocation);
-        shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, true);
+        shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
+        shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, true);
         shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
     }
 
@@ -311,15 +310,15 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenLocationUpdatesAreRequestedThenAPassiveNetworkListenerIsAddedToTheLocationManager() {
+    public void whenLocationUpdatesAreRequestedThenAGPSListenerIsAddedToTheLocationManager() {
         groceryStoreManager.listenForLocationUpdates();
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
-        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.PASSIVE_PROVIDER));
+        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
     }
 
     @Test
-    public void whenLocationUpdatesAreRequestedThenTheMinTimeForGPSUpdatesIsFiveMinutes() {
+    public void whenLocationUpdatesAreRequestedThenTheMinTimeForLocationUpdatesIsFiveMinutes() {
         ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
 
         groceryStoreManager.listenForLocationUpdates();
@@ -331,7 +330,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenLocationUpdatesAreRequestedThenTheMinDistanceForGPSUpdatesIsFiveMilesInMeters() {
+    public void whenLocationUpdatesAreRequestedThenTheMinDistanceForLocationUpdatesIsFiveMilesInMeters() {
         ArgumentCaptor<Float> minDistanceCaptor = ArgumentCaptor.forClass(Float.class);
 
         groceryStoreManager.listenForLocationUpdates();
@@ -384,13 +383,13 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenThePassiveProviderIsNotEnabledWhenLocationUpdatesAreRequestedThenAGPSListenerIsNotAddedToTheLocationManager() {
-        shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, false);
+    public void givenTheGPSProviderIsNotEnabledWhenLocationUpdatesAreRequestedThenAGPSListenerIsNotAddedToTheLocationManager() {
+        shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, false);
 
         groceryStoreManager.listenForLocationUpdates();
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
-        assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.PASSIVE_PROVIDER));
+        assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
     }
 
     @Test
@@ -405,7 +404,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenNoLocationIsCurrentlySetWhenTheLocationIsUpdatedThenStoreLocationsAreUpdated() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         setLocationUpdatableTimestamp(location);
@@ -430,12 +429,12 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     @Test
     public void givenALocationIsSetWhenALocationIsHandledWithinFiveMinutesOfTheOriginalLocationThenTheLocationIsNotUpdated() {
 
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         setLocationUpdatableTimestamp(location);
 
-        Location updatedLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setTime(location.getTime() + 1);
@@ -447,7 +446,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentIsNotSetWhenALocationWithAnAccuracyWorseThanTheMaximumAccuracyTheNewLocationIsNotBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS + 1);
@@ -457,7 +456,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsNotSetWhenALocationWithTheMaximumAccuracyThenTheNewLocationIsBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
@@ -467,7 +466,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsNotSetWhenALocationWithLessThanMaximumAccuracyThenTheNewLocationIsBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 1);
@@ -477,7 +476,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsSetWhenTheCurrentLocationIsRequestedThenItIsReturned() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
@@ -489,7 +488,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsSetWhenTheLocationNotMoreAccurateThenItIsNotBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
@@ -501,14 +500,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsSetWhenTheLocationIsSignificantlyMoreAccurateThenItIsBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 1);
 
         groceryStoreManager.setLocation(location);
 
-        Location updatedLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setAccuracy(location.getAccuracy() / 2);
@@ -518,14 +517,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsSetWhenTheLocationIsSignificantlyNewerThenItIsBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
 
         groceryStoreManager.setLocation(location);
 
-        Location updatedLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
@@ -536,14 +535,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsSetWhenTheLocationIsMoreThanSignificantlyNewerThenItIsBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
 
         groceryStoreManager.setLocation(location);
 
-        Location updatedLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
@@ -554,14 +553,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsSetWhenTheLocationIsNotSignificantlyNewerThenItIsNotBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
 
         groceryStoreManager.setLocation(location);
 
-        Location updatedLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
@@ -572,14 +571,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenCurrentLocationIsSetWhenTheLocationIsNotSignificantlyNewerAndNotSignificantlyMoreAccurateThenItIsNotBetter() {
-        Location location = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         location.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS);
 
         groceryStoreManager.setLocation(location);
 
-        Location updatedLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+        Location updatedLocation = new Location(LocationManager.GPS_PROVIDER);
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 1);
