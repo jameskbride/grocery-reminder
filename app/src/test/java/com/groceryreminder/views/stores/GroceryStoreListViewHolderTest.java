@@ -83,6 +83,20 @@ public class GroceryStoreListViewHolderTest extends RobolectricTestBase {
     }
 
     @Test
+    public void givenDistanceIsNotAvailableWhenAStoreIsBoundThenTheStoreDistanceTextIsSetToNotAvailable() {
+        RecyclerView recyclerView = getRecyclerView();
+        Context context = recyclerView.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.store_viewholder, recyclerView, false);
+        GroceryStore store = new GroceryStore(ARBITRARY_STORE_NAME, -1, 0.0, 0.0);
+
+        GroceryStoreListViewHolder viewHolder = new GroceryStoreListViewHolder(view);
+        viewHolder.bind(store);
+
+        TextView reminderText = (TextView)viewHolder.itemView.findViewById(R.id.store_distance);
+        assertEquals("N/A", reminderText.getText());
+    }
+
+    @Test
     public void givenAStoreIsBoundWhenTheStoreViewHolderIsClickedThenTheMapApplicationIsLaunched() {
         RecyclerView recyclerView = getRecyclerView();
         Context context = recyclerView.getContext();

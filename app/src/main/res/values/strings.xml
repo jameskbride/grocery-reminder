@@ -9,4 +9,6 @@
     <string name="reminder_notification">View your shopping list.</string>
     <string name="store_list_title">Nearby Stores</string>
     <string name="send_to">Send To</string>
+    <string name="not_available">N/A</string>
+    <string name="mile_abbreviation">mi</string>
 </resources>

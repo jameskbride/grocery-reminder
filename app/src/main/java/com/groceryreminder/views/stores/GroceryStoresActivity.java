@@ -89,7 +89,11 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         Double longitude = cursor.getDouble(cursor.getColumnIndex(ReminderContract.Locations.LONGITUDE));
         Location currentLocation = groceryStoreManager.getCurrentLocation();
         float[] distanceResults = new float[1];
-        Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude, distanceResults);
+        if (currentLocation != null) {
+            Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), latitude, longitude, distanceResults);
+        } else {
+            distanceResults[0] = -1;
+        }
 
         return new GroceryStore(storeName, distanceResults[0], latitude, longitude);
     }

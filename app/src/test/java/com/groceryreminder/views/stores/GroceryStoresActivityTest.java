@@ -154,6 +154,25 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
     }
 
     @Test
+    public void givenTheCursorLoaderIsFinishedWhenTheLocationIsNotAvailableThenTheDistanceIsSetToNotAvailable() {
+        ShadowCursorWrapper wrapper = createCursorWithDefaultReminder();
+
+        GroceryStoreManagerInterface groceryStoreManagerMock = getTestReminderModule().getGroceryStoreManager();
+        when(groceryStoreManagerMock.getCurrentLocation()).thenReturn(null);
+
+        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
+        activity.onLoadFinished(cursorLoader, wrapper);
+        GroceryStoreListFragment groceryStoreListFragment = getGroceryStoreListFragment();
+        assertNotNull(groceryStoreListFragment);
+
+        RecyclerView listView = getRecyclerView(groceryStoreListFragment, R.id.stores_recycler_view);
+        TextView distanceText = (TextView)listView.findViewHolderForAdapterPosition(0).itemView.findViewById(R.id.store_distance);
+        assertEquals("N/A", distanceText.getText());
+
+        verify(groceryStoreManagerMock).getCurrentLocation();
+    }
+
+    @Test
     public void whenTheCursorIsResetThenTheGroceryStoreListFragmentShouldContainNoStores() {
         loadGroceryStoreListFragment();
 

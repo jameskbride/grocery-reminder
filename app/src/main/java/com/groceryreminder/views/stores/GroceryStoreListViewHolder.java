@@ -31,9 +31,15 @@ public class GroceryStoreListViewHolder extends RecyclerView.ViewHolder implemen
     public void bind(GroceryStore store) {
         this.store = store;
         storeNameText.setText(store.getName());
-        double miles = store.getDistance() * MILES_TO_METERS_MULTIPLE;
-        DecimalFormat decimalFormat = new DecimalFormat("0.0");
-        storeDistanceText.setText(decimalFormat.format(miles) + " mi");
+        if (store.getDistance() >= 0) {
+            double miles = store.getDistance() * MILES_TO_METERS_MULTIPLE;
+            DecimalFormat decimalFormat = new DecimalFormat("0.0");
+            storeDistanceText.setText(decimalFormat.format(miles) +
+                    " " +
+                    storeDistanceText.getContext().getResources().getString(R.string.mile_abbreviation));
+        } else {
+            storeDistanceText.setText(R.string.not_available);
+        }
     }
 
     @Override
