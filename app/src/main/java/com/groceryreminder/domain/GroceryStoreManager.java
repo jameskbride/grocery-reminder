@@ -200,6 +200,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     @Override
     public boolean isBetterThanCurrentLocation(Location location) {
         if (location.getAccuracy() > GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+            Log.d(TAG, "Location accuracy is not good enough");
             return false;
         }
 
@@ -223,13 +224,24 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     private boolean isSignificantlyMoreAccurate(Location currentLocation, Location updateLocation) {
         float accuracyRatio = updateLocation.getAccuracy() / currentLocation.getAccuracy();
 
-        return accuracyRatio <= SIGNIFICANT_LOCATION_ACCURACY_RATIO;
+        boolean isMoreAccurate = accuracyRatio <= SIGNIFICANT_LOCATION_ACCURACY_RATIO;
+        Log.d(TAG, "New location accuracyRatio: " + accuracyRatio);
+        Log.d(TAG, "New location is significantly more accurate: " + isMoreAccurate);
+        Log.d(TAG, "Significant location accuracy is: " + SIGNIFICANT_LOCATION_ACCURACY_RATIO);
+
+        return isMoreAccurate;
     }
 
     private boolean isSignificantlyNewerLocation(Location currentLocation, Location updateLocation) {
         long timeDelta = updateLocation.getTime() - currentLocation.getTime();
 
-        return timeDelta >= SIGNIFICANT_LOCATION_TIME_DELTA;
+        boolean isNewerLocation = timeDelta >= SIGNIFICANT_LOCATION_TIME_DELTA;
+
+        Log.d(TAG, "New location is more recent: " + isNewerLocation);
+        Log.d(TAG, "Time delta since current location: " + timeDelta);
+        Log.d(TAG, "Significant time delta is: " + SIGNIFICANT_LOCATION_TIME_DELTA);
+
+        return isNewerLocation;
     }
 
     public void setLocation(Location location) {
