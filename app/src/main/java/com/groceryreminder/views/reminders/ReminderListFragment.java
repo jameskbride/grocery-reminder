@@ -14,6 +14,7 @@ import com.groceryreminder.R;
 import com.groceryreminder.models.Reminder;
 import com.melnykov.fab.FloatingActionButton;
 
+import org.solovyev.android.views.llm.DividerItemDecoration;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.List;
@@ -71,6 +72,7 @@ public class ReminderListFragment extends Fragment {
 
     private RecyclerView wireListView(View root) {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.reminders_recycler_view);
+        list.addItemDecoration(new DividerItemDecoration(getActivity(), null));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(linearLayoutManager);
         this.adapter = new RemindersRecyclerViewAdapter(reminders, onReminderDataChangeListener);

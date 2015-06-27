@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.groceryreminder.R;
 import com.groceryreminder.models.GroceryStore;
 
+import org.solovyev.android.views.llm.DividerItemDecoration;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class GroceryStoreListFragment extends Fragment {
 
     private void wireListView(View root, GroceryStoresRecyclerViewAdapter adapter) {
         RecyclerView list = (RecyclerView)root.findViewById(R.id.stores_recycler_view);
+        list.addItemDecoration(new DividerItemDecoration(getActivity(), null));
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
     }
