@@ -22,7 +22,7 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
             Cursor cursor = context.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
-            if (cursor.getCount() > 0)
+            if (remindersExist(cursor))
             {
                 SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
                 String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
@@ -40,6 +40,10 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
             }
         }
 
+    }
+
+    private boolean remindersExist(Cursor cursor) {
+        return cursor.getCount() > 0;
     }
 
     private void saveNoticeDetails(SharedPreferences sharedPreferences, String currentStoreName, long currentTime) {
