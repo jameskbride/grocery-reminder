@@ -70,7 +70,9 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
 
         switch(id) {
             case R.id.action_find_stores:
-                startService(new Intent(this, GroceryLocatorService.class));
+                Intent intent = new Intent(this, GroceryLocatorService.class);
+                intent.putExtra(GroceryReminderConstants.LISTEN_FOR_GPS_EXTRA, true);
+                startService(intent);
                 startActivity(new Intent(this, GroceryStoresActivity.class));
                 break;
             case R.id.action_share:

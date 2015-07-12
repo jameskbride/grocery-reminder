@@ -167,6 +167,7 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
         Intent startedIntent = shadowActivity.peekNextStartedService();
         assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
+        assertTrue(startedIntent.getBooleanExtra(GroceryReminderConstants.LISTEN_FOR_GPS_EXTRA, false));
     }
 
     @Test
