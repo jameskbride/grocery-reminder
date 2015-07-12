@@ -127,15 +127,18 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public void listenForLocationUpdates(boolean listenForGPSUpdates) {
         if (this.locationListener == null) {
             this.locationListener = createLocationListener();
-            if (listenForGPSUpdates && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
+            if (listenForGPSUpdates) {
+                addLocationListenerForProvider(LocationManager.GPS_PROVIDER, locationListener);
             }
-            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
-            }
-            if (locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
-            }
+            addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener);
+            addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener);
+        }
+    }
+
+    private void addLocationListenerForProvider(String provider, LocationListener locationListener) {
+        if (locationManager.isProviderEnabled(provider)) {
+            Log.d(TAG, "Provider is enabled");
+            locationManager.requestLocationUpdates(provider, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
         }
     }
 
@@ -146,7 +149,10 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     @Override
     public void removeGPSListener() {
-
+        Log.d(TAG, "Removing GPS");
+        locationManager.removeUpdates(locationListener);
+        addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener);
+        addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener);
     }
 
     private LocationListener createLocationListener() {

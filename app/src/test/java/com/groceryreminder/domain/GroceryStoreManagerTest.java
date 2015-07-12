@@ -16,6 +16,7 @@ import com.groceryreminder.services.LocationUpdater;
 import com.groceryreminder.shadows.ShadowLocationManager;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -420,6 +421,25 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.NETWORK_PROVIDER));
+    }
+
+    @Test
+    @Ignore
+    /*
+        It appears there is a bug in the ShadowLocationManager.  When updates are removed there is a
+        null check against the map of of listeners.  Removing updates does not null the list of providers;
+        therefore when listeners are added there are not added to the map.  See line 228 of ShadowLocationManager (Robolectric 3.0-rc2)
+     */
+    public void whenGPSUpdatesAreNoLongerRequiredThenTheGPSListenerIsRemovedFromTheLocationManager() {
+        groceryStoreManager.listenForLocationUpdates(true);
+
+        List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
+
+        groceryStoreManager.removeGPSListener();
+
+        locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
     }
 
     @Test
