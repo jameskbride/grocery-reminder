@@ -192,6 +192,20 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     }
 
     @Test
+    public void whenANotificationIsSentThenTheNotificationTimeIsStoredAstheMostRecentNotificationTime() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+        intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
+
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
+
+        SharedPreferences sharedPreferences = RuntimeEnvironment.application
+                .getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+
+        assertTrue(sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0) > 0);
+    }
+
+    @Test
     public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityIsLaunched() {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);

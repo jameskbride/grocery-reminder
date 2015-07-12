@@ -16,4 +16,5 @@ public class GroceryReminderConstants {
     public static final long MIN_LOCATION_UPDATE_TIME_MILLIS = 150000l;
 
     public static final String LAST_NOTIFIED_STORE_KEY = "LAST_STORE_ALERT_KEY";
+    public static final String LAST_NOTIFICATION_TIME = "LAST_NOTIFICATION_TIME";
 }
