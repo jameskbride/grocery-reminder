@@ -144,6 +144,11 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         return currentLocation;
     }
 
+    @Override
+    public void removeGPSListener() {
+
+    }
+
     private LocationListener createLocationListener() {
         return new GroceryStoreLocationListener(this);
     }

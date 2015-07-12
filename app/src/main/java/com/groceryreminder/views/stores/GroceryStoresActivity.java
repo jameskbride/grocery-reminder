@@ -38,6 +38,12 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        groceryStoreManager.removeGPSListener();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.stores_menu, menu);

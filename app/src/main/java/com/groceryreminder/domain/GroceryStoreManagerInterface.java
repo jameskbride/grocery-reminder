@@ -25,4 +25,6 @@ public interface GroceryStoreManagerInterface extends LocationUpdater{
     void listenForLocationUpdates(boolean listenForGPSUpdates);
 
     Location getCurrentLocation();
+
+    void removeGPSListener();
 }

@@ -208,4 +208,20 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         ShadowIntent shadowIntent = Shadows.shadowOf(shadowActivity.peekNextStartedActivity());
         assertEquals("geo:0.0,1.0?q=0.0,1.0(test)", shadowIntent.getData().toString());
     }
+
+    @Test
+    public void whenTheActivityIsStoppedThenTheGroceryStoreManagerStopsListeningForGPSUpdates() {
+        ActivityController<GroceryStoresActivity> activityController = Robolectric.buildActivity(GroceryStoresActivity.class);;
+        activityController.create().start().get();
+
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
+
+        GroceryStoreManagerInterface groceryStoreManagerMock = getTestReminderModule().getGroceryStoreManager();
+
+        activityController.pause().stop();
+
+        verify(groceryStoreManagerMock).removeGPSListener();
+
+        activityController.destroy();
+    }
 }
