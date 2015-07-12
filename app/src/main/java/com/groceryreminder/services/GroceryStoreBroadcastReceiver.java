@@ -27,29 +27,46 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
                 SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
                 String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
                 String currentStoreName = intent.getStringExtra(ReminderContract.Locations.NAME);
-                if (lastNotifiedStore.equals(currentStoreName)) {
-                    return;
-                }
 
                 long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
                 long currentTime = System.currentTimeMillis();
-                if ((currentTime - lastNotificationTime) <= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS) {
+
+                if (!noticeCanBeSent(lastNotifiedStore, currentStoreName, lastNotificationTime, currentTime)) {
                     return;
                 }
 
-                PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
-                NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent, intent);
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
-
-                sharedPreferences.edit()
-                        .putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, currentStoreName)
-                        .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, System.currentTimeMillis())
-                        .commit();
+                sendNotification(context, intent);
+                saveNoticeDetails(sharedPreferences, currentStoreName, currentTime);
             }
         }
 
+    }
+
+    private void saveNoticeDetails(SharedPreferences sharedPreferences, String currentStoreName, long currentTime) {
+        sharedPreferences.edit()
+                .putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, currentStoreName)
+                .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, currentTime)
+                .commit();
+    }
+
+    private void sendNotification(Context context, Intent intent) {
+        PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
+        NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent, intent);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
+    }
+
+    private boolean noticeCanBeSent(String lastNotifiedStore, String currentStoreName, long lastNotificationTime, long currentTime) {
+        return !isNotificationForCurrentStore(lastNotifiedStore, currentStoreName) && !notificationIsTooRecent(lastNotificationTime, currentTime);
+    }
+
+    private boolean notificationIsTooRecent(long lastNotificationTime, long currentTime) {
+        return (currentTime - lastNotificationTime) <= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS;
+    }
+
+    private boolean isNotificationForCurrentStore(String lastNotifiedStore, String currentStoreName) {
+        return lastNotifiedStore.equals(currentStoreName);
     }
 
     private NotificationCompat.Builder buildReminderNotification(Context context, PendingIntent resultPendingIntent, Intent intent) {
