@@ -92,6 +92,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, true);
         shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
+        shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, true);
     }
 
     private void setupReminderContentProvider() {
@@ -324,7 +325,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates();
 
-        verify(locationManager, times(2)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+        verify(locationManager, times(3)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(0).longValue());
@@ -336,7 +337,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates();
 
-        verify(locationManager, times(2)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
+        verify(locationManager, times(3)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
         List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, capturedMinDistances.get(0).floatValue(), 0.001);
@@ -351,12 +352,20 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
+    public void whenLocationUpdatesAreRequestedThenAPassiveListenerIsAddedToTheLocationManager() {
+        groceryStoreManager.listenForLocationUpdates();
+
+        List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.PASSIVE_PROVIDER));
+    }
+
+    @Test
     public void givenLocationUpdatesHaveAlreadyBeenRequestedWhenUpdatesAreRequestedAgainThenAdditionalListenersAreNotAdded() {
         groceryStoreManager.listenForLocationUpdates();
         groceryStoreManager.listenForLocationUpdates();
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
-        assertEquals(2, locationListeners.size());
+        assertEquals(3, locationListeners.size());
     }
 
     @Test
@@ -365,7 +374,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates();
 
-        verify(locationManager, times(2)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+        verify(locationManager, times(3)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(1).longValue());
@@ -377,7 +386,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates();
 
-        verify(locationManager, times(2)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
+        verify(locationManager, times(3)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
         List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, capturedMinDistances.get(1).floatValue(), 0.001);

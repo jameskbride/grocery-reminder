@@ -134,6 +134,9 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
             }
+            if (locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
+            }
         }
     }
 
