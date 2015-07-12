@@ -55,6 +55,8 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class})
 public class GroceryStoreManagerTest extends RobolectricTestBase {
 
+    public static final int NETWORK_PROVIDER_COUNT = 1;
+    public static final int PASSIVE_PROVIDER_COUNT = 1;
     private GroceryStoreManager groceryStoreManager;
     private GroceryStoreLocationContentProvider reminderProvider;
     private ShadowContentResolver shadowContentResolver;
@@ -62,7 +64,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     private LocationManager locationManager;
     private ShadowLocationManager shadowLocationManager;
 
-    private Location defaultGPSLocation;
+    private Location defaultLocation;
 
     private static final double DEFAULT_LATITUDE = 39.9732997;
     private static final double DEFAULT_LONGITUDE = -82.99788610000002;
@@ -82,14 +84,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         this.locationManager = spy(getTestAndroidModule().getLocationManager());
         this.shadowLocationManager = (com.groceryreminder.shadows.ShadowLocationManager)Shadows.shadowOf(locationManager);
         try {
-            assertTrue(shadowLocationManager.setBestProvider(LocationManager.GPS_PROVIDER, true, new ArrayList<Criteria>()));
+            assertTrue(shadowLocationManager.setBestProvider(LocationManager.NETWORK_PROVIDER, true, new ArrayList<Criteria>()));
         } catch (Exception e) {
             fail("Unable to set the best provider.");
         }
 
-        defaultGPSLocation = createDefaultLocation(LocationManager.GPS_PROVIDER);
-        ShadowLocation.setDistanceBetween(new float[] {(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
-        shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, defaultGPSLocation);
+        defaultLocation = createDefaultLocation(LocationManager.NETWORK_PROVIDER);
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
+        shadowLocationManager.setLastKnownLocation(LocationManager.NETWORK_PROVIDER, defaultLocation);
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, true);
         shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
         shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, true);
@@ -148,7 +150,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
         ArgumentCaptor<Param> paramsCaptor = ArgumentCaptor.forClass(Param.class);
 
-        groceryStoreManager.findStoresByLocation(defaultGPSLocation);
+        groceryStoreManager.findStoresByLocation(defaultLocation);
 
         verify(googlePlacesMock).getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), eq(GroceryStoreManagerInterface.GOOGLE_PLACES_MAX_RESULTS), paramsCaptor.capture());
 
@@ -163,7 +165,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         List<Place> places = new ArrayList<Place>();
         places.add(place);
 
-        List<Place> actualPlaces = groceryStoreManager.filterPlacesByDistance(defaultGPSLocation, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS);
+        List<Place> actualPlaces = groceryStoreManager.filterPlacesByDistance(defaultLocation, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS);
         assertTrue(actualPlaces.isEmpty());
     }
 
@@ -192,7 +194,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         Cursor cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
         assertEquals(1, cursor.getCount());
 
-        groceryStoreManager.deleteStoresByLocation(defaultGPSLocation);
+        groceryStoreManager.deleteStoresByLocation(defaultLocation);
 
         cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
         assertEquals(0, cursor.getCount());
@@ -316,6 +318,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
+        assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
+    }
+
+    @Test
+    public void whenLocationUpdatesAreRequestedWithGPSUpdatesThenAGPSListenerIsAddedToTheLocationManager() {
+        groceryStoreManager.listenForLocationUpdates(true);
+
+        List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
     }
 
@@ -325,7 +335,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates(false);
 
-        verify(locationManager, times(3)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+        verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(0).longValue());
@@ -337,7 +347,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates(false);
 
-        verify(locationManager, times(3)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
+        verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
         List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, capturedMinDistances.get(0).floatValue(), 0.001);
@@ -365,7 +375,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
-        assertEquals(3, locationListeners.size());
+        assertEquals(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT, locationListeners.size());
     }
 
     @Test
@@ -374,7 +384,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates(false);
 
-        verify(locationManager, times(3)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+        verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(1).longValue());
@@ -386,7 +396,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         groceryStoreManager.listenForLocationUpdates(false);
 
-        verify(locationManager, times(3)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
+        verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
         List<Float> capturedMinDistances = minDistanceCaptor.getAllValues();
         assertEquals(GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, capturedMinDistances.get(1).floatValue(), 0.001);
@@ -414,7 +424,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenNoLocationIsCurrentlySetWhenTheLocationIsUpdatedThenStoreLocationsAreUpdated() {
-        Location location = new Location(LocationManager.GPS_PROVIDER);
+        Location location = new Location(LocationManager.NETWORK_PROVIDER);
         location.setLatitude(DEFAULT_LATITUDE);
         location.setLongitude(DEFAULT_LONGITUDE);
         setLocationUpdatableTimestamp(location);

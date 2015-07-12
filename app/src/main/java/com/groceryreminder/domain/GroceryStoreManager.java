@@ -127,7 +127,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public void listenForLocationUpdates(boolean listenForGPSUpdates) {
         if (this.locationListener == null) {
             this.locationListener = createLocationListener();
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (listenForGPSUpdates && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
             }
             if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
