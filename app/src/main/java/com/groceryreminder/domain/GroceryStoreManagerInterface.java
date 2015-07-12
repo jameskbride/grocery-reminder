@@ -22,7 +22,7 @@ public interface GroceryStoreManagerInterface extends LocationUpdater{
 
     void addProximityAlerts(List<Place> places);
 
-    void listenForLocationUpdates();
+    void listenForLocationUpdates(boolean listenForGPSUpdates);
 
     Location getCurrentLocation();
 }

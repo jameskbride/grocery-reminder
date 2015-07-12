@@ -17,4 +17,5 @@ public class GroceryReminderConstants {
 
     public static final String LAST_NOTIFIED_STORE_KEY = "LAST_STORE_ALERT_KEY";
     public static final String LAST_NOTIFICATION_TIME = "LAST_NOTIFICATION_TIME";
+    public static final String LISTEN_FOR_GPS_EXTRA = "LISTEN_FOR_GPS_EXTRA";
 }

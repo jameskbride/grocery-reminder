@@ -3,7 +3,6 @@ package com.groceryreminder.services;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
@@ -63,6 +62,22 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     }
 
     @Test
+    public void givenAnIntentWithTheListenForGPSExtraWhenTheIntentIsHandledThenTheGroceryStoreManagerListensForGPSUpdates() {
+        Intent intent = new Intent();
+        intent.putExtra(GroceryReminderConstants.LISTEN_FOR_GPS_EXTRA, true);
+
+        when(groceryStoreLocationManagerMock.getLastKnownLocation()).thenReturn(defaultLocation);
+        when(groceryStoreManagerMock.isBetterThanCurrentLocation(defaultLocation)).thenReturn(true);
+
+        groceryLocatorService.onHandleIntent(intent);
+
+        verify(groceryStoreManagerMock).listenForLocationUpdates(true);
+        verify(groceryStoreLocationManagerMock).getLastKnownLocation();
+        verify(groceryStoreManagerMock).isBetterThanCurrentLocation(defaultLocation);
+        verify(groceryStoreManagerMock).handleLocationUpdated(defaultLocation);
+    }
+
+    @Test
     public void givenALastKnownLocationWhichIsNotBetterWhenTheIntentIsHandledThenALocationUpdateIsNotHandled() {
         defaultLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS + 1);
 
@@ -82,7 +97,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         groceryLocatorService.onHandleIntent(new Intent());
 
         verify(groceryStoreLocationManagerMock).getLastKnownLocation();
-        verify(groceryStoreManagerMock).listenForLocationUpdates();
+        verify(groceryStoreManagerMock).listenForLocationUpdates(false);
         verifyNoMoreInteractions(groceryStoreManagerMock);
     }
 }

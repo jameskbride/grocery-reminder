@@ -134,7 +134,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         places.add(place);
 
         GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
-        groceryStoreManagerSpy.listenForLocationUpdates();
+        groceryStoreManagerSpy.listenForLocationUpdates(false);
 
         when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
         when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);
@@ -305,7 +305,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void whenLocationUpdatesAreRequestedThenLocationListenersAreAddedToTheLocationManager() {
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertFalse(locationListeners.isEmpty());
@@ -313,7 +313,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void whenLocationUpdatesAreRequestedThenAGPSListenerIsAddedToTheLocationManager() {
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
@@ -323,7 +323,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     public void whenLocationUpdatesAreRequestedThenTheMinTimeForLocationUpdatesIsFiveMinutes() {
         ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
 
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         verify(locationManager, times(3)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
@@ -335,7 +335,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     public void whenLocationUpdatesAreRequestedThenTheMinDistanceForLocationUpdatesIsFiveMilesInMeters() {
         ArgumentCaptor<Float> minDistanceCaptor = ArgumentCaptor.forClass(Float.class);
 
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         verify(locationManager, times(3)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
@@ -345,7 +345,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void whenLocationUpdatesAreRequestedThenANetworkListenerIsAddedToTheLocationManager() {
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.NETWORK_PROVIDER));
@@ -353,7 +353,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void whenLocationUpdatesAreRequestedThenAPassiveListenerIsAddedToTheLocationManager() {
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertTrue(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.PASSIVE_PROVIDER));
@@ -361,8 +361,8 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenLocationUpdatesHaveAlreadyBeenRequestedWhenUpdatesAreRequestedAgainThenAdditionalListenersAreNotAdded() {
-        groceryStoreManager.listenForLocationUpdates();
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
+        groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertEquals(3, locationListeners.size());
@@ -372,7 +372,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     public void whenLocationUpdatesAreRequestedThenTheMinTimeForNetworkUpdatesIsFiveMinutes() {
         ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
 
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         verify(locationManager, times(3)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
@@ -384,7 +384,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     public void whenLocationUpdatesAreRequestedThenTheMinDistanceForNetworkUpdatesIsFiveMilesInMeters() {
         ArgumentCaptor<Float> minDistanceCaptor = ArgumentCaptor.forClass(Float.class);
 
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         verify(locationManager, times(3)).requestLocationUpdates(anyString(), anyLong(), minDistanceCaptor.capture(), any(LocationListener.class));
 
@@ -396,7 +396,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     public void givenTheGPSProviderIsNotEnabledWhenLocationUpdatesAreRequestedThenAGPSListenerIsNotAddedToTheLocationManager() {
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, false);
 
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.GPS_PROVIDER));
@@ -406,7 +406,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     public void givenTheNetworkProviderIsNotEnabledWhenLocationUpdatesAreRequestedThenANetworkListenerIsNotAddedToTheLocationManager() {
         shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, false);
 
-        groceryStoreManager.listenForLocationUpdates();
+        groceryStoreManager.listenForLocationUpdates(false);
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertFalse(shadowLocationManager.getProvidersForListener(locationListeners.get(0)).contains(LocationManager.NETWORK_PROVIDER));
@@ -424,7 +424,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         places.add(place);
 
         GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
-        groceryStoreManagerSpy.listenForLocationUpdates();
+        groceryStoreManagerSpy.listenForLocationUpdates(false);
 
         when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
         when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);

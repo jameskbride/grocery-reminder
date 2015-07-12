@@ -18,7 +18,6 @@ import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.ForApplication;
-import com.groceryreminder.models.Reminder;
 import com.groceryreminder.services.GroceryStoreLocationListener;
 
 import java.util.ArrayList;
@@ -125,7 +124,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     }
 
     @Override
-    public void listenForLocationUpdates() {
+    public void listenForLocationUpdates(boolean listenForGPSUpdates) {
         if (this.locationListener == null) {
             this.locationListener = createLocationListener();
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
