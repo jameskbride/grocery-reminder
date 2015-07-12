@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 import com.groceryreminder.models.Reminder;
 import com.groceryreminder.services.GroceryLocatorService;
@@ -41,7 +42,9 @@ public class RemindersActivity extends ReminderFragmentBaseActivity implements O
                 .add(R.id.reminder_fragment_container, ReminderListFragment.newInstance(reminders), REMINDER_LIST_FRAGMENT)
                 .commit();
         getSupportLoaderManager().initLoader(1, null, this);
-        startService(new Intent(this, GroceryLocatorService.class));
+        Intent intent = new Intent(this, GroceryLocatorService.class);
+        intent.putExtra(GroceryReminderConstants.LISTEN_FOR_GPS_EXTRA, true);
+        startService(intent);
     }
 
     @Override

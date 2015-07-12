@@ -14,6 +14,7 @@ import com.groceryreminder.BuildConfig;
 import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.models.Reminder;
 import com.groceryreminder.services.GroceryLocatorService;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
@@ -102,6 +103,14 @@ public class RemindersActivityTest extends RobolectricTestBase {
 
         Intent startedIntent = shadowActivity.peekNextStartedService();
         assertEquals(GroceryLocatorService.class.getName(), startedIntent.getComponent().getClassName());
+    }
+
+    @Test
+    public void whenTheActivityIsCreatedThenTheGroceryStoreServiceShouldBeStartedWithTheListenForGPSFlag() {
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+
+        Intent startedIntent = shadowActivity.peekNextStartedService();
+        assertTrue(startedIntent.getBooleanExtra(GroceryReminderConstants.LISTEN_FOR_GPS_EXTRA, false));
     }
 
     @Test
