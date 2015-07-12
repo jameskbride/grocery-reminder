@@ -33,6 +33,7 @@ import org.robolectric.shadows.ShadowPendingIntent;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -192,7 +193,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenANotificationIsSentThenTheNotificationTimeIsStoredAstheMostRecentNotificationTime() {
+    public void whenANotificationIsSentThenTheNotificationTimeIsStoredAsTheMostRecentNotificationTime() {
         Intent intent = BuildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
@@ -203,6 +204,27 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
                 .getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
 
         assertTrue(sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0) > 0);
+    }
+
+    @Test
+    public void givenAStoreNotificationHasBeenStoredWhenAProximityAlertForTheSameStoreIsReceivedThenNoNotificationIsSent() {
+        Intent intent = BuildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+        intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
+
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+
+        Intent secondIntentForSameStore = BuildIntentToListenFor();
+        secondIntentForSameStore.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+        secondIntentForSameStore.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
+
+        shadowNotificationManager.cancelAll();
+
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, secondIntentForSameStore);
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertNull(notification);
     }
 
     @Test
