@@ -31,6 +31,12 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
                     return;
                 }
 
+                long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
+                long currentTime = System.currentTimeMillis();
+                if ((currentTime - lastNotificationTime) <= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS) {
+                    return;
+                }
+
                 PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
                 NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent, intent);
 
