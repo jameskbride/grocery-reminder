@@ -11,4 +11,5 @@
     <string name="send_to">Send To</string>
     <string name="not_available">N/A</string>
     <string name="mile_abbreviation">mi</string>
+    <string name="reminder_pref_key">reminder_prefs</string>
 </resources>

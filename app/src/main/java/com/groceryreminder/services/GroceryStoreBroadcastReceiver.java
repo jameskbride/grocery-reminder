@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.LocationManager;
 import android.provider.Settings;
@@ -27,6 +28,8 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
                 NotificationCompat.Builder builder = buildReminderNotification(context, resultPendingIntent, intent);
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
+                SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString("LAST_STORE_ALERT_KEY", intent.getStringExtra(ReminderContract.Locations.NAME)).commit();
             }
         }
 
