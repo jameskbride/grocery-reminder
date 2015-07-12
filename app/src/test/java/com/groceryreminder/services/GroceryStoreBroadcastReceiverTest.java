@@ -188,7 +188,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         SharedPreferences sharedPreferences = RuntimeEnvironment.application
                 .getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
 
-        assertEquals(ARBITRARY_STORE_NAME, sharedPreferences.getString("LAST_STORE_ALERT_KEY", ""));
+        assertEquals(ARBITRARY_STORE_NAME, sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ""));
     }
 
     @Test

@@ -29,7 +29,7 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
                 SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString("LAST_STORE_ALERT_KEY", intent.getStringExtra(ReminderContract.Locations.NAME)).commit();
+                sharedPreferences.edit().putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, intent.getStringExtra(ReminderContract.Locations.NAME)).commit();
             }
         }
 
