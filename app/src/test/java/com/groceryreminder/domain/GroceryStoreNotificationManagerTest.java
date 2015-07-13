@@ -1,6 +1,7 @@
 package com.groceryreminder.domain;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,7 @@ import static org.junit.Assert.assertTrue;
 @Config(constants = BuildConfig.class, shadows = {ShadowLocationManager.class})
 public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
 
+    public static final String ARBITRARY_STORE_NAME = "test";
     GroceryStoreNotificationManager groceryStoreNotificationManager;
 
     @Before
@@ -52,29 +54,36 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         groceryStoreNotificationManager = new GroceryStoreNotificationManager(RuntimeEnvironment.application);
     }
 
+    private Intent buildIntentToListenFor() {
+        Intent intentToListenFor =  new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
+
+        return intentToListenFor;
+    }
+
+    private ShadowNotificationManager getShadowNotificationManager() {
+        return Shadows.shadowOf((NotificationManager)
+                RuntimeEnvironment.application.getSystemService(Context.NOTIFICATION_SERVICE));
+    }
+
     @Test
     public void givenNoRemindersExistWhenTheIntentIsReceivedThenNoNotificationIsSent() {
         RuntimeEnvironment.application.getContentResolver().delete(ReminderContract.Reminders.CONTENT_URI, "", null);
-        assertFalse(groceryStoreNotificationManager.noticeCanBeSent("test", System.currentTimeMillis()));
+        assertFalse(groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis()));
     }
 
-//    @Test
-//    public void givenAnIntentWithoutTheProximityEnteringKeyWhenTheIntentIsReceivedThenNoNotificationIsSent() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        assertEquals(0, shadowNotificationManager.size());
-//    }
-//
-//    @Test
-//    public void whenANotificationIsSentThenTheNotificationIdShouldBeSet() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
-//        assertNotNull(notification);
-//    }
-//
+    @Test
+    public void whenANotificationIsSentThenTheNotificationShouldBeCreated() {
+        Intent intent = buildIntentToListenFor();
+        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+        intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
+
+        groceryStoreNotificationManager.sendNotification(intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertNotNull(notification);
+    }
+
 //    @Test
 //    public void whenANotificationIsSentThenTheSmallIconIsSet() {
 //        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
