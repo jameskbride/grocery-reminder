@@ -106,55 +106,62 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         assertEquals(RuntimeEnvironment.application.getString(R.string.app_name) + ": " + ARBITRARY_STORE_NAME, notification.getContentTitle());
     }
 
-//    @Test
-//    public void whenANotificationIsSentThenTheContentTextIsSet() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-//        assertEquals(RuntimeEnvironment.application.getString(R.string.reminder_notification), notification.getContentText());
-//    }
-//
-//    @Test
-//    public void whenANotificationIsSentThenTheVibrationIsSet() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-//
-//        assertArrayEquals(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN, notification.getRealNotification().vibrate);
-//    }
-//
-//    @Test
-//    public void whenANotificationIsSentThenTheDefaultNotificationSoundPlays() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-//
-//        assertEquals(Settings.System.DEFAULT_NOTIFICATION_URI, notification.getRealNotification().sound);
-//    }
-//
-//    @Test
-//    public void whenANotificationIsSentThenTheStoreNameIsStoredAsTheMostRecentStore() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        SharedPreferences sharedPreferences = RuntimeEnvironment.application
-//                .getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
-//
-//        assertEquals(ARBITRARY_STORE_NAME, sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ""));
-//    }
-//
-//    @Test
-//    public void whenANotificationIsSentThenTheNotificationTimeIsStoredAsTheMostRecentNotificationTime() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        SharedPreferences sharedPreferences = RuntimeEnvironment.application
-//                .getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
-//
-//        assertTrue(sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0) > 0);
-//    }
-//
+    @Test
+    public void whenANotificationIsSentThenTheContentTextIsSet() {
+        Intent intent = buildIntentToListenFor();
+
+        groceryStoreNotificationManager.sendNotification(intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+        assertEquals(RuntimeEnvironment.application.getString(R.string.reminder_notification), notification.getContentText());
+    }
+
+    @Test
+    public void whenANotificationIsSentThenTheVibrationIsSet() {
+        Intent intent = buildIntentToListenFor();
+
+        groceryStoreNotificationManager.sendNotification(intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+
+        assertArrayEquals(GroceryReminderConstants.PROXIMITY_VIBRATION_PATTERN, notification.getRealNotification().vibrate);
+    }
+
+    @Test
+    public void whenANotificationIsSentThenTheDefaultNotificationSoundPlays() {
+        Intent intent = buildIntentToListenFor();
+
+        groceryStoreNotificationManager.sendNotification(intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+
+        assertEquals(Settings.System.DEFAULT_NOTIFICATION_URI, notification.getRealNotification().sound);
+    }
+
+    @Test
+    public void whenANotificationIsSavedThenTheStoreNameIsStoredAsTheMostRecentStore() {
+        groceryStoreNotificationManager.saveNoticeDetails(ARBITRARY_STORE_NAME, System.currentTimeMillis());
+
+        SharedPreferences sharedPreferences = RuntimeEnvironment.application
+                .getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+
+        assertEquals(ARBITRARY_STORE_NAME, sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ""));
+    }
+
+    @Test
+    public void whenANotificationIsSentThenTheNotificationTimeIsStoredAsTheMostRecentNotificationTime() {
+        long notificationTime = System.currentTimeMillis();
+
+        groceryStoreNotificationManager.saveNoticeDetails(ARBITRARY_STORE_NAME, notificationTime);
+        SharedPreferences sharedPreferences = RuntimeEnvironment.application
+                .getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+
+        assertTrue(sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0) > 0);
+    }
+
 //    @Test
 //    public void givenAStoreNotificationHasBeenStoredWhenAProximityAlertForTheSameStoreIsReceivedThenNoNotificationIsSent() {
 //        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
