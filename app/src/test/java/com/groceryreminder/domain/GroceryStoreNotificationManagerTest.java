@@ -200,16 +200,16 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         assertEquals(RemindersActivity.class.getName(), shadowIntent.getComponent().getClassName());
     }
 
-//    @Test
-//    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheTheNotificationIsDismissed() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-//
-//        assertTrue((notification.getRealNotification().flags & Notification.FLAG_AUTO_CANCEL) == Notification.FLAG_AUTO_CANCEL);
-//    }
-//
+    @Test
+    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheTheNotificationIsDismissed() {
+        groceryStoreNotificationManager.sendNotification(buildIntentToListenFor());
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+
+        assertTrue((notification.getRealNotification().flags & Notification.FLAG_AUTO_CANCEL) == Notification.FLAG_AUTO_CANCEL);
+    }
+
 //    @Test
 //    @Ignore
 //    public void whenTheLastNetworkLocationIsInaccurateThenANotificationIsNotSent() {
