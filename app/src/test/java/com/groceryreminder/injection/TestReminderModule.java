@@ -4,9 +4,14 @@ import com.groceryreminder.domain.GroceryStoreLocationManager;
 import com.groceryreminder.domain.GroceryStoreLocationManagerInterface;
 import com.groceryreminder.domain.GroceryStoreManager;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
+import com.groceryreminder.domain.GroceryStoreNotificationManager;
+import com.groceryreminder.domain.GroceryStoreNotificationManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
+import com.groceryreminder.services.GroceryStoreBroadcastReceiver;
 import com.groceryreminder.views.reminders.RemindersActivity;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
+
+import org.robolectric.RuntimeEnvironment;
 
 import javax.inject.Singleton;
 
@@ -26,7 +31,9 @@ import static org.mockito.Mockito.mock;
                 GroceryLocatorService.class,
                 GroceryStoreManager.class,
                 GroceryStoreLocationManager.class,
-                GroceryStoresActivity.class
+                GroceryStoresActivity.class,
+                GroceryStoreBroadcastReceiver.class,
+                GroceryStoreNotificationManager.class
         }
 )
 public class TestReminderModule {
@@ -44,5 +51,11 @@ public class TestReminderModule {
     @Singleton
     public GroceryStoreLocationManagerInterface getGroceryStoreLocationManager() {
         return groceryStoreLocationManagerMock;
+    }
+
+    @Provides
+    @Singleton
+    public GroceryStoreNotificationManagerInterface getGroceryStoreNotificationManager() {
+        return new GroceryStoreNotificationManager(RuntimeEnvironment.application);
     }
 }

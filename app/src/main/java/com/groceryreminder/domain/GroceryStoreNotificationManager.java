@@ -11,13 +11,14 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
+import com.groceryreminder.injection.ForApplication;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
 public class GroceryStoreNotificationManager implements GroceryStoreNotificationManagerInterface {
 
     Context context;
 
-    public GroceryStoreNotificationManager(Context context) {
+    public GroceryStoreNotificationManager(@ForApplication Context context) {
         this.context = context;
     }
 

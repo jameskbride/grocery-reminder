@@ -6,7 +6,10 @@ import com.groceryreminder.domain.GroceryStoreLocationManager;
 import com.groceryreminder.domain.GroceryStoreLocationManagerInterface;
 import com.groceryreminder.domain.GroceryStoreManager;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
+import com.groceryreminder.domain.GroceryStoreNotificationManager;
+import com.groceryreminder.domain.GroceryStoreNotificationManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
+import com.groceryreminder.services.GroceryStoreBroadcastReceiver;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
 
 import javax.inject.Singleton;
@@ -22,7 +25,9 @@ import dagger.Provides;
         GroceryLocatorService.class,
         GroceryStoreManager.class,
         GroceryStoreLocationManager.class,
-        GroceryStoresActivity.class
+        GroceryStoresActivity.class,
+        GroceryStoreBroadcastReceiver.class,
+        GroceryStoreNotificationManager.class
     },
     complete = false
 )
@@ -43,5 +48,13 @@ public class ReminderModule {
         Log.d(TAG, "Providing the GroceryStoreLocationManager");
 
         return groceryStoreLocationManager;
+    }
+
+    @Provides
+    @Singleton
+    public GroceryStoreNotificationManagerInterface getGroceryStoryNotificationManager(GroceryStoreNotificationManager groceryStoreNotificationManager) {
+        Log.d(TAG, "Providing the GroceryStoreNotificationManager");
+
+        return groceryStoreNotificationManager;
     }
 }
