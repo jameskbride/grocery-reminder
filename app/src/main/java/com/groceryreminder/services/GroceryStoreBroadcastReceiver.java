@@ -23,12 +23,10 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
             String currentStoreName = intent.getStringExtra(ReminderContract.Locations.NAME);
             long currentTime = System.currentTimeMillis();
 
-            if (!groceryStoreNotificationManager.noticeCanBeSent(currentStoreName, currentTime)) {
-                return;
+            if (groceryStoreNotificationManager.noticeCanBeSent(currentStoreName, currentTime)) {
+                groceryStoreNotificationManager.sendNotification(intent);
+                groceryStoreNotificationManager.saveNoticeDetails(currentStoreName, currentTime);
             }
-
-            groceryStoreNotificationManager.sendNotification(intent);
-            groceryStoreNotificationManager.saveNoticeDetails(currentStoreName, currentTime);
         }
     }
 }
