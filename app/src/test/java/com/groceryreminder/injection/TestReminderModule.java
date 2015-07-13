@@ -40,6 +40,7 @@ public class TestReminderModule {
 
     private GroceryStoreManagerInterface groceryStoreManagerMock = mock(GroceryStoreManagerInterface.class);
     private GroceryStoreLocationManagerInterface groceryStoreLocationManagerMock = mock(GroceryStoreLocationManagerInterface.class);
+    private GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerMock = mock(GroceryStoreNotificationManagerInterface.class);
 
     @Provides
     @Singleton
@@ -56,6 +57,6 @@ public class TestReminderModule {
     @Provides
     @Singleton
     public GroceryStoreNotificationManagerInterface getGroceryStoreNotificationManager() {
-        return new GroceryStoreNotificationManager(RuntimeEnvironment.application);
+        return groceryStoreNotificationManagerMock;
     }
 }
