@@ -56,6 +56,8 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
 
     private Intent buildIntentToListenFor() {
         Intent intentToListenFor =  new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
+        intentToListenFor.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+        intentToListenFor.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
         return intentToListenFor;
     }
@@ -74,8 +76,6 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     @Test
     public void whenANotificationIsSentThenTheNotificationShouldBeCreated() {
         Intent intent = buildIntentToListenFor();
-        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
-        intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
         groceryStoreNotificationManager.sendNotification(intent);
 
@@ -84,15 +84,17 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         assertNotNull(notification);
     }
 
-//    @Test
-//    public void whenANotificationIsSentThenTheSmallIconIsSet() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
-//        assertEquals(R.drawable.ic_stat_maps_local_grocery_store, notification.icon);
-//    }
-//
+    @Test
+    public void whenANotificationIsSentThenTheSmallIconIsSet() {
+        Intent intent = buildIntentToListenFor();
+
+        groceryStoreNotificationManager.sendNotification(intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertEquals(R.drawable.ic_stat_maps_local_grocery_store, notification.icon);
+    }
+
 //    @Test
 //    public void whenANotificationIsSentThenTheContentTitleIsSet() {
 //        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
