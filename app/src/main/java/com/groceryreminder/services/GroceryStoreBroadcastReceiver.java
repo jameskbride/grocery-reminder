@@ -14,13 +14,12 @@ import com.groceryreminder.domain.GroceryStoreNotificationManager;
 
 public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
 
-    private final GroceryStoreNotificationManager groceryStoreNotificationManager = new GroceryStoreNotificationManager();
-
     @Override
     public void onReceive(Context context, Intent intent) {
+        GroceryStoreNotificationManager groceryStoreNotificationManager = new GroceryStoreNotificationManager(context);
         if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
-            Cursor cursor = context.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
-            if (groceryStoreNotificationManager.remindersExist(cursor))
+
+            if (groceryStoreNotificationManager.remindersExist())
             {
                 SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
                 String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");

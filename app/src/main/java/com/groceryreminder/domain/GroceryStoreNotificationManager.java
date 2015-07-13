@@ -14,10 +14,16 @@ import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
 public class GroceryStoreNotificationManager {
-    public GroceryStoreNotificationManager() {
+
+    Context context;
+
+    public GroceryStoreNotificationManager(Context context) {
+        this.context = context;
     }
 
-    public boolean remindersExist(Cursor cursor) {
+    public boolean remindersExist() {
+        Cursor cursor = context.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
+
         return cursor.getCount() > 0;
     }
 
