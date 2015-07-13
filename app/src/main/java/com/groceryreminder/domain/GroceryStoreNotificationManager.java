@@ -13,7 +13,7 @@ import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
-public class GroceryStoreNotificationManager {
+public class GroceryStoreNotificationManager implements GroceryStoreNotificationManagerInterface {
 
     Context context;
 
@@ -21,12 +21,14 @@ public class GroceryStoreNotificationManager {
         this.context = context;
     }
 
+    @Override
     public boolean remindersExist() {
         Cursor cursor = context.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
 
         return cursor.getCount() > 0;
     }
 
+    @Override
     public void saveNoticeDetails(String currentStoreName, long currentTime) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         sharedPreferences.edit()
@@ -35,6 +37,7 @@ public class GroceryStoreNotificationManager {
                 .commit();
     }
 
+    @Override
     public void sendNotification(Intent intent) {
         PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
         NotificationCompat.Builder builder = buildReminderNotification(resultPendingIntent, intent);
@@ -43,7 +46,8 @@ public class GroceryStoreNotificationManager {
         notificationManager.notify(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT, builder.build());
     }
 
-    public boolean noticeCanBeSent(String currentStoreName,long currentTime) {
+    @Override
+    public boolean noticeCanBeSent(String currentStoreName, long currentTime) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
         long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);

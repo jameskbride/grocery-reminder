@@ -7,25 +7,26 @@ import android.location.LocationManager;
 
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryStoreNotificationManager;
+import com.groceryreminder.domain.GroceryStoreNotificationManagerInterface;
 
 public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        GroceryStoreNotificationManager groceryStoreNotificationManager = new GroceryStoreNotificationManager(context);
+        GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerInterface = new GroceryStoreNotificationManager(context);
         if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
 
-            if (groceryStoreNotificationManager.remindersExist())
+            if (groceryStoreNotificationManagerInterface.remindersExist())
             {
                 String currentStoreName = intent.getStringExtra(ReminderContract.Locations.NAME);
                 long currentTime = System.currentTimeMillis();
 
-                if (!groceryStoreNotificationManager.noticeCanBeSent(currentStoreName, currentTime)) {
+                if (!groceryStoreNotificationManagerInterface.noticeCanBeSent(currentStoreName, currentTime)) {
                     return;
                 }
 
-                groceryStoreNotificationManager.sendNotification(intent);
-                groceryStoreNotificationManager.saveNoticeDetails(currentStoreName, currentTime);
+                groceryStoreNotificationManagerInterface.sendNotification(intent);
+                groceryStoreNotificationManagerInterface.saveNoticeDetails(currentStoreName, currentTime);
             }
         }
     }
