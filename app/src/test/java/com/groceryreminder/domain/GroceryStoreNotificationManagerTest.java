@@ -162,24 +162,19 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         assertTrue(sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0) > 0);
     }
 
-//    @Test
-//    public void givenAStoreNotificationHasBeenStoredWhenAProximityAlertForTheSameStoreIsReceivedThenNoNotificationIsSent() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//
-//        Intent secondIntentForSameStore = BuildIntentToListenFor();
-//        secondIntentForSameStore.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
-//        secondIntentForSameStore.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
-//
-//        shadowNotificationManager.cancelAll();
-//
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, secondIntentForSameStore);
-//
-//        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
-//        assertNull(notification);
-//    }
-//
+    @Test
+    public void givenAStoreNotificationHasBeenStoredWhenARequestToSendANotificationWithTheTheSameStoreIsReceivedThenNoNotificationIsSent() {
+        groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis());
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        shadowNotificationManager.cancelAll();
+
+        groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis());
+
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertNull(notification);
+    }
+
 //    @Test
 //    public void givenAStoreNotificationHasBeenSentWhenAProximityAlertIsReceivedUnderTheMinimumLocationUpdateTimeThenThenNotificationIsSent() {
 //        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
