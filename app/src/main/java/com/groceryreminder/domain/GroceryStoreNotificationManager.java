@@ -22,13 +22,6 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
     }
 
     @Override
-    public boolean remindersExist() {
-        Cursor cursor = context.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
-
-        return cursor.getCount() > 0;
-    }
-
-    @Override
     public void saveNoticeDetails(String currentStoreName, long currentTime) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         sharedPreferences.edit()
@@ -52,7 +45,15 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
         long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
 
-        return !isNotificationForCurrentStore(lastNotifiedStore, currentStoreName) && !notificationIsTooRecent(lastNotificationTime, currentTime);
+        return remindersExist() &&
+                !isNotificationForCurrentStore(lastNotifiedStore, currentStoreName) &&
+                !notificationIsTooRecent(lastNotificationTime, currentTime);
+    }
+
+    private boolean remindersExist() {
+        Cursor cursor = context.getContentResolver().query(ReminderContract.Reminders.CONTENT_URI, ReminderContract.Reminders.PROJECT_ALL, "", null, null);
+
+        return cursor.getCount() > 0;
     }
 
     private boolean notificationIsTooRecent(long lastNotificationTime, long currentTime) {
