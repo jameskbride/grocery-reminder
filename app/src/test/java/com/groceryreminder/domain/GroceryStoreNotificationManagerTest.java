@@ -188,18 +188,18 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         assertNull(notification);
     }
 
-//    @Test
-//    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityIsLaunched() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-//        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(notification.getRealNotification().contentIntent);
-//        ShadowIntent shadowIntent = Shadows.shadowOf(shadowPendingIntent.getSavedIntent());
-//
-//        assertEquals(RemindersActivity.class.getName(), shadowIntent.getComponent().getClassName());
-//    }
-//
+    @Test
+    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityIsLaunched() {
+        groceryStoreNotificationManager.sendNotification(buildIntentToListenFor());
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(notification.getRealNotification().contentIntent);
+        ShadowIntent shadowIntent = Shadows.shadowOf(shadowPendingIntent.getSavedIntent());
+
+        assertEquals(RemindersActivity.class.getName(), shadowIntent.getComponent().getClassName());
+    }
+
 //    @Test
 //    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheTheNotificationIsDismissed() {
 //        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
