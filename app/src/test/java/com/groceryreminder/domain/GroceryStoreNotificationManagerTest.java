@@ -169,30 +169,25 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         shadowNotificationManager.cancelAll();
 
-        groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis());
+        groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis() + GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS + 1);
 
         Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
         assertNull(notification);
     }
 
-//    @Test
-//    public void givenAStoreNotificationHasBeenSentWhenAProximityAlertIsReceivedUnderTheMinimumLocationUpdateTimeThenThenNotificationIsSent() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//
-//        Intent secondIntentForSameStore = BuildIntentToListenFor();
-//        secondIntentForSameStore.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
-//        secondIntentForSameStore.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME + 1);
-//
-//        shadowNotificationManager.cancelAll();
-//
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, secondIntentForSameStore);
-//
-//        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
-//        assertNull(notification);
-//    }
-//
+    @Test
+    public void givenAStoreNotificationHasBeenSentWhenARequestToSendANotificationIsReceivedUnderTheMinimumLocationUpdateTimeThenThenNotificationIsSent() {
+        groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis());
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        shadowNotificationManager.cancelAll();
+
+        groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME + 1, System.currentTimeMillis() + GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS - 1);
+
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertNull(notification);
+    }
+
 //    @Test
 //    public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityIsLaunched() {
 //        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
