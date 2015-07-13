@@ -51,7 +51,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
         RuntimeEnvironment.application.getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, reminderValues);
     }
 
-    private Intent BuildIntentToListenFor() {
+    private Intent buildIntentToListenFor() {
         Intent intentToListenFor =  new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
 
         return intentToListenFor;
@@ -64,7 +64,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenTheProximityEventIntentIsSentThenTheBroadcastReceiverListensForIt() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
 
         ShadowApplication shadowApplication = Shadows.shadowOf(RuntimeEnvironment.application);
         assertTrue(shadowApplication.hasReceiverForIntent(intent));
@@ -72,7 +72,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenAnIntentWithTheProximityEnteringKeyWhenTheIntentIsReceivedThenANotificationIsSent() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
@@ -83,7 +83,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenNoRemindersExistWhenTheIntentIsReceivedThenNoNotificationIsSent() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         RuntimeEnvironment.application.getContentResolver().delete(ReminderContract.Reminders.CONTENT_URI, "", null);
@@ -95,7 +95,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenAnIntentWithoutTheProximityEnteringKeyWhenTheIntentIsReceivedThenNoNotificationIsSent() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
 
@@ -105,7 +105,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheNotificationIdShouldBeSet() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
@@ -117,7 +117,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheSmallIconIsSet() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
@@ -129,7 +129,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheContentTitleIsSet() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
@@ -142,7 +142,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheContentTextIsSet() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
@@ -154,7 +154,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheVibrationIsSet() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
@@ -167,7 +167,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheDefaultNotificationSoundPlays() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
@@ -180,7 +180,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheStoreNameIsStoredAsTheMostRecentStore() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
@@ -194,7 +194,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void whenANotificationIsSentThenTheNotificationTimeIsStoredAsTheMostRecentNotificationTime() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
@@ -208,7 +208,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenAStoreNotificationHasBeenStoredWhenAProximityAlertForTheSameStoreIsReceivedThenNoNotificationIsSent() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
@@ -216,7 +216,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
 
-        Intent secondIntentForSameStore = BuildIntentToListenFor();
+        Intent secondIntentForSameStore = buildIntentToListenFor();
         secondIntentForSameStore.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         secondIntentForSameStore.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
@@ -230,7 +230,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenAStoreNotificationHasBeenSentWhenAProximityAlertIsReceivedUnderTheMinimumLocationUpdateTimeThenThenNotificationIsSent() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         intent.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
 
@@ -238,7 +238,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
 
-        Intent secondIntentForSameStore = BuildIntentToListenFor();
+        Intent secondIntentForSameStore = buildIntentToListenFor();
         secondIntentForSameStore.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
         secondIntentForSameStore.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME + 1);
 
@@ -252,7 +252,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityIsLaunched() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
@@ -267,7 +267,7 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
 
     @Test
     public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheTheNotificationIsDismissed() {
-        Intent intent = BuildIntentToListenFor();
+        Intent intent = buildIntentToListenFor();
         intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
