@@ -95,15 +95,17 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         assertEquals(R.drawable.ic_stat_maps_local_grocery_store, notification.icon);
     }
 
-//    @Test
-//    public void whenANotificationIsSentThenTheContentTitleIsSet() {
-//        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
-//
-//        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
-//        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
-//        assertEquals(RuntimeEnvironment.application.getString(R.string.app_name) + ": " + ARBITRARY_STORE_NAME, notification.getContentTitle());
-//    }
-//
+    @Test
+    public void whenANotificationIsSentThenTheContentTitleIsSet() {
+        Intent intent = buildIntentToListenFor();
+
+        groceryStoreNotificationManager.sendNotification(intent);
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+        ShadowNotification notification = Shadows.shadowOf(shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT));
+        assertEquals(RuntimeEnvironment.application.getString(R.string.app_name) + ": " + ARBITRARY_STORE_NAME, notification.getContentTitle());
+    }
+
 //    @Test
 //    public void whenANotificationIsSentThenTheContentTextIsSet() {
 //        groceryStoreNotificationManager.onReceive(RuntimeEnvironment.application, intent);
