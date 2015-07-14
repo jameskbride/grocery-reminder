@@ -1,10 +1,13 @@
 package com.groceryreminder.domain;
 
+import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -16,10 +19,12 @@ import com.groceryreminder.views.reminders.RemindersActivity;
 
 public class GroceryStoreNotificationManager implements GroceryStoreNotificationManagerInterface {
 
-    Context context;
+    Application context;
+    LocationManager locationManager;
 
-    public GroceryStoreNotificationManager(@ForApplication Context context) {
+    public GroceryStoreNotificationManager(@ForApplication Application context, LocationManager locationManager) {
         this.context = context;
+        this.locationManager = locationManager;
     }
 
     @Override
@@ -46,9 +51,13 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
         long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
 
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        boolean isAccurate = location.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
+
         return remindersExist() &&
                 !isNotificationForCurrentStore(lastNotifiedStore, currentStoreName) &&
-                !notificationIsTooRecent(lastNotificationTime, currentTime);
+                !notificationIsTooRecent(lastNotificationTime, currentTime) &&
+                isAccurate;
     }
 
     private boolean remindersExist() {

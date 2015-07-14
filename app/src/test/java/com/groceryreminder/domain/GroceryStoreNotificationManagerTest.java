@@ -51,7 +51,7 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         super.setUp();
         ContentValues reminderValues = new ReminderValuesBuilder().createDefaultReminderValues().build();
         RuntimeEnvironment.application.getContentResolver().insert(ReminderContract.Reminders.CONTENT_URI, reminderValues);
-        groceryStoreNotificationManager = new GroceryStoreNotificationManager(RuntimeEnvironment.application);
+        groceryStoreNotificationManager = new GroceryStoreNotificationManager(RuntimeEnvironment.application, getTestAndroidModule().getLocationManager());
     }
 
     private Intent buildIntentToListenFor() {
@@ -67,8 +67,21 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
                 RuntimeEnvironment.application.getSystemService(Context.NOTIFICATION_SERVICE));
     }
 
+    private Location buildInaccurateLocation(String provider) {
+        Location networkLocation = new Location(provider);
+        networkLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS + 1);
+        return networkLocation;
+    }
+
+    private Location buildAccurateLocation(String provider) {
+        Location networkLocation = new Location(provider);
+        networkLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS - 1);
+        return networkLocation;
+    }
+
     @Test
     public void givenNoRemindersExistWhenTheIntentIsReceivedThenNoNotificationIsSent() {
+        setAccurateLocation();
         RuntimeEnvironment.application.getContentResolver().delete(ReminderContract.Reminders.CONTENT_URI, "", null);
         assertFalse(groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis()));
     }
@@ -164,6 +177,8 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenAStoreNotificationHasBeenStoredWhenARequestToSendANotificationWithTheTheSameStoreIsReceivedThenNoNotificationIsSent() {
+        setAccurateLocation();
+
         groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis());
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
@@ -176,7 +191,9 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenAStoreNotificationHasBeenSentWhenARequestToSendANotificationIsReceivedUnderTheMinimumLocationUpdateTimeThenThenNotificationIsSent() {
+    public void givenAStoreNotificationHasBeenSentWhenARequestToSendANotificationIsReceivedUnderTheMinimumLocationUpdateTimeThenNoNotificationIsSent() {
+        setAccurateLocation();
+
         groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis());
 
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
@@ -186,6 +203,12 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
 
         Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
         assertNull(notification);
+    }
+
+    private void setAccurateLocation() {
+        Location location = buildAccurateLocation(LocationManager.NETWORK_PROVIDER);
+        ShadowLocationManager shadowLocationManager = (ShadowLocationManager) Shadows.shadowOf(getTestAndroidModule().getLocationManager());
+        shadowLocationManager.setLastKnownLocation(LocationManager.NETWORK_PROVIDER, location);
     }
 
     @Test
@@ -210,15 +233,15 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         assertTrue((notification.getRealNotification().flags & Notification.FLAG_AUTO_CANCEL) == Notification.FLAG_AUTO_CANCEL);
     }
 
-//    @Test
-//    @Ignore
-//    public void whenTheLastNetworkLocationIsInaccurateThenANotificationIsNotSent() {
-//        ShadowLocationManager shadowLocationManager = (ShadowLocationManager)Shadows.shadowOf(getTestAndroidModule().getLocationManager());
-//        shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
-//        Location networkLocation = new Location(LocationManager.NETWORK_PROVIDER);
-//        networkLocation.setAccuracy(GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS + 1);
-//        shadowLocationManager.setLastKnownLocation(LocationManager.NETWORK_PROVIDER, networkLocation);
-//
-//        assertFalse(groceryStoreNotificationManager.noticeCanBeSent("test", System.currentTimeMillis()));
-//    }
+    @Test
+    public void whenTheLastNetworkLocationIsInaccurateThenANotificationIsNotSent() {
+        ShadowLocationManager shadowLocationManager = (ShadowLocationManager)Shadows.shadowOf(getTestAndroidModule().getLocationManager());
+        shadowLocationManager.setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
+        Location networkLocation = buildInaccurateLocation(LocationManager.NETWORK_PROVIDER);
+        shadowLocationManager.setLastKnownLocation(LocationManager.NETWORK_PROVIDER, networkLocation);
+
+        assertFalse(groceryStoreNotificationManager.noticeCanBeSent("test", System.currentTimeMillis()));
+    }
+
+
 }
