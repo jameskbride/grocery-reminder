@@ -288,4 +288,15 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
 
         assertTrue(groceryStoreNotificationManager.noticeCanBeSent("test", System.currentTimeMillis()));
     }
+
+    @Test
+    public void givenThePassiveProviderIsDisabledWhenOneOfTheOtherProvidersIsAccurateThenANotificationCanBeSent() {
+        ShadowLocationManager shadowLocationManager = (ShadowLocationManager)Shadows.shadowOf(getTestAndroidModule().getLocationManager());
+        shadowLocationManager.setProviderEnabled(LocationManager.PASSIVE_PROVIDER, false);
+        shadowLocationManager.setLastKnownLocation(LocationManager.PASSIVE_PROVIDER, null);
+        setAccurateLocation(LocationManager.GPS_PROVIDER);
+        setInaccurateLocation(LocationManager.NETWORK_PROVIDER);
+
+        assertTrue(groceryStoreNotificationManager.noticeCanBeSent("test", System.currentTimeMillis()));
+    }
 }

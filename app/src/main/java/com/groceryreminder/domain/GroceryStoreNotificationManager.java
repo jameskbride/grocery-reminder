@@ -61,10 +61,7 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
 
     private boolean isLocationIsAccurate() {
         boolean networkLocationIsAccurate = isLocationProviderAccurate(LocationManager.NETWORK_PROVIDER);
-
-        Location passiveLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-        boolean passiveLocationIsAccurate = passiveLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
-
+        boolean passiveLocationIsAccurate = isLocationProviderAccurate(LocationManager.PASSIVE_PROVIDER);
         boolean gpsLocationIsAccurate = isLocationProviderAccurate(LocationManager.GPS_PROVIDER);
 
         return (networkLocationIsAccurate || passiveLocationIsAccurate || gpsLocationIsAccurate);
