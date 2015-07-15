@@ -60,24 +60,27 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
     }
 
     private boolean isLocationIsAccurate() {
-        Location networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        boolean networkLocationIsAccurate = networkLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
+        boolean networkLocationIsAccurate = isLocationProviderAccurate(LocationManager.NETWORK_PROVIDER);
 
         Location passiveLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
         boolean passiveLocationIsAccurate = passiveLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
 
-
-        Location gpsLocation = null;
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-
-        boolean gpsLocationIsAccurate = false;
-        if (gpsLocation != null && gpsLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
-            gpsLocationIsAccurate = true;
-        }
+        boolean gpsLocationIsAccurate = isLocationProviderAccurate(LocationManager.GPS_PROVIDER);
 
         return (networkLocationIsAccurate || passiveLocationIsAccurate || gpsLocationIsAccurate);
+    }
+
+    private boolean isLocationProviderAccurate(String provider) {
+        Location location = null;
+        if (locationManager.isProviderEnabled(provider)) {
+            location = locationManager.getLastKnownLocation(provider);
+        }
+
+        boolean locationIsAccurate = false;
+        if (location != null && location.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+            locationIsAccurate = true;
+        }
+        return locationIsAccurate;
     }
 
     private boolean remindersExist() {
