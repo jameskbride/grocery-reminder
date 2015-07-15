@@ -16,8 +16,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowBroadcastReceiver;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -41,46 +45,24 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     private Intent buildIntentToListenFor() {
         Intent intentToListenFor =  new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
         intentToListenFor.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
+        intentToListenFor.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
         return intentToListenFor;
     }
 
     @Test
-    public void whenAProximityAlertWithoutTheProximityEnteringFlagThenNoNotificationIsSent() {
-        Intent intent = buildIntentToListenFor();
+    public void whenAnIntentIsReceivedThenTheGroceryStoreNotificationServiceIsStarted() {
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, buildIntentToListenFor());
 
-        GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerMock = getTestReminderModule().getGroceryStoreNotificationManager();
-        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
-
-        verifyNoMoreInteractions(groceryStoreNotificationManagerMock);
+        Intent serviceIntent = Shadows.shadowOf(RuntimeEnvironment.application).peekNextStartedService();
+        assertEquals(GroceryStoreNotificationService.class.getCanonicalName(), serviceIntent.getComponent().getClassName());
     }
 
     @Test
-    public void givenAValidProximityAlertWhenTheNoticeCannotBeSentThenTheNoticeIsNotSent() {
-        Intent intent = buildIntentToListenFor();
-        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
+    public void whenAnIntentIsReceivedThenTheKeyProximityEnteringIsAddedToTheIntent() {
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, buildIntentToListenFor());
 
-        GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerMock = getTestReminderModule().getGroceryStoreNotificationManager();
-
-        when(groceryStoreNotificationManagerMock.noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong())).thenReturn(false);
-        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
-
-        verify(groceryStoreNotificationManagerMock).noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong());
-        verifyNoMoreInteractions(groceryStoreNotificationManagerMock);
-    }
-
-    @Test
-    public void givenAValidProximityAlertWhenTheNoticeCanBeSentThenTheNoticeIsSent() {
-        Intent intent = buildIntentToListenFor();
-        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
-
-        GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerMock = getTestReminderModule().getGroceryStoreNotificationManager();
-
-        when(groceryStoreNotificationManagerMock.noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong())).thenReturn(true);
-        broadcastReceiver.onReceive(RuntimeEnvironment.application, intent);
-
-        verify(groceryStoreNotificationManagerMock).noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong());
-        verify(groceryStoreNotificationManagerMock).sendNotification(intent);
-        verify(groceryStoreNotificationManagerMock).saveNoticeDetails(eq(ARBITRARY_STORE_NAME), anyLong());
+        Intent serviceIntent = Shadows.shadowOf(RuntimeEnvironment.application).peekNextStartedService();
+        assertTrue(serviceIntent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false));
     }
 }

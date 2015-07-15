@@ -33,7 +33,6 @@ import static org.mockito.Mockito.mock;
                 GroceryStoreManager.class,
                 GroceryStoreLocationManager.class,
                 GroceryStoresActivity.class,
-                GroceryStoreBroadcastReceiver.class,
                 GroceryStoreNotificationService.class,
                 GroceryStoreNotificationManager.class
         }

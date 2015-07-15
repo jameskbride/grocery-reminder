@@ -27,7 +27,6 @@ import dagger.Provides;
         GroceryStoreManager.class,
         GroceryStoreLocationManager.class,
         GroceryStoresActivity.class,
-        GroceryStoreBroadcastReceiver.class,
         GroceryStoreNotificationService.class,
         GroceryStoreNotificationManager.class
     },

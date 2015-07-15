@@ -17,11 +17,14 @@ import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.ForApplication;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
+import javax.inject.Inject;
+
 public class GroceryStoreNotificationManager implements GroceryStoreNotificationManagerInterface {
 
     Application context;
     LocationManager locationManager;
 
+    @Inject
     public GroceryStoreNotificationManager(@ForApplication Application context, LocationManager locationManager) {
         this.context = context;
         this.locationManager = locationManager;

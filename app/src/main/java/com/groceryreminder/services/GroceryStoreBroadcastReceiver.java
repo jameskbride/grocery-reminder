@@ -13,20 +13,10 @@ import javax.inject.Inject;
 
 public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
 
-    @Inject
-    GroceryStoreNotificationManagerInterface groceryStoreNotificationManager;
-
     @Override
     public void onReceive(Context context, Intent intent) {
-        ((ReminderApplication)context.getApplicationContext()).inject(this);
-        if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
-            String currentStoreName = intent.getStringExtra(ReminderContract.Locations.NAME);
-            long currentTime = System.currentTimeMillis();
-
-            if (groceryStoreNotificationManager.noticeCanBeSent(currentStoreName, currentTime)) {
-                groceryStoreNotificationManager.sendNotification(intent);
-                groceryStoreNotificationManager.saveNoticeDetails(currentStoreName, currentTime);
-            }
-        }
+        Intent serviceIntent = new Intent(context, GroceryStoreNotificationService.class);
+        serviceIntent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false));
+        context.startService(serviceIntent);
     }
 }
