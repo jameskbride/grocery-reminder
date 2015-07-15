@@ -1,5 +1,6 @@
 package com.groceryreminder.views.stores;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,6 +16,7 @@ import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.models.GroceryStore;
+import com.groceryreminder.services.GroceryLocatorService;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +36,7 @@ import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -210,17 +213,19 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenTheActivityIsStoppedThenTheGroceryStoreManagerStopsListeningForGPSUpdates() {
+    public void whenTheActivityIsStoppedThenTheGroceryLocatorServiceIsStartedWithoutGPSExtra() {
         ActivityController<GroceryStoresActivity> activityController = Robolectric.buildActivity(GroceryStoresActivity.class);;
         activityController.create().start().get();
 
         ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS});
 
-        GroceryStoreManagerInterface groceryStoreManagerMock = getTestReminderModule().getGroceryStoreManager();
-
         activityController.pause().stop();
 
-        verify(groceryStoreManagerMock).removeGPSListener();
+        ShadowActivity shadowActivity = (ShadowActivity)Shadows.shadowOf(activity);
+
+        Intent serviceIntent = shadowActivity.peekNextStartedService();
+        assertEquals(GroceryLocatorService.class.getCanonicalName(), serviceIntent.getComponent().getClassName());
+        assertFalse(serviceIntent.getBooleanExtra(GroceryReminderConstants.LISTEN_FOR_GPS_EXTRA, false));
 
         activityController.destroy();
     }

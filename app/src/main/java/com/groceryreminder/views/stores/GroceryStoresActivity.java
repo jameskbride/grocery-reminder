@@ -1,5 +1,6 @@
 package com.groceryreminder.views.stores;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.injection.views.ReminderFragmentBaseActivity;
 import com.groceryreminder.models.GroceryStore;
+import com.groceryreminder.services.GroceryLocatorService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
     @Override
     protected void onStop() {
         super.onStop();
-        groceryStoreManager.removeGPSListener();
+        startService(new Intent(this, GroceryLocatorService.class));
     }
 
     @Override
