@@ -51,18 +51,25 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
         long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
 
+        boolean locationIsAccurate = isLocationIsAccurate();
+
+        return remindersExist() &&
+                !isNotificationForCurrentStore(lastNotifiedStore, currentStoreName) &&
+                !notificationIsTooRecent(lastNotificationTime, currentTime) &&
+                locationIsAccurate;
+    }
+
+    private boolean isLocationIsAccurate() {
         Location networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         boolean networkLocationIsAccurate = networkLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
 
         Location passiveLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
         boolean passiveLocationIsAccurate = passiveLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
 
-        boolean locationIsAccurate = networkLocationIsAccurate ? networkLocationIsAccurate : passiveLocationIsAccurate;
+        Location gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        boolean gpsLocationIsAccurate = gpsLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
 
-        return remindersExist() &&
-                !isNotificationForCurrentStore(lastNotifiedStore, currentStoreName) &&
-                !notificationIsTooRecent(lastNotificationTime, currentTime) &&
-                locationIsAccurate;
+        return (networkLocationIsAccurate || passiveLocationIsAccurate || gpsLocationIsAccurate);
     }
 
     private boolean remindersExist() {
