@@ -69,6 +69,7 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     private void setAccurateLocation(String provider) {
         Location location = buildAccurateLocation(provider);
         ShadowLocationManager shadowLocationManager = (ShadowLocationManager) Shadows.shadowOf(getTestAndroidModule().getLocationManager());
+        shadowLocationManager.setProviderEnabled(provider, true);
         shadowLocationManager.setLastKnownLocation(provider, location);
     }
 
@@ -240,7 +241,7 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenAllProvidersAreInaccurateWThenANotificationIsNotSent() {
+    public void whenAllProvidersAreInaccurateWThenANotificationCannotBeSent() {
         setInaccurateLocation(LocationManager.NETWORK_PROVIDER);
         setInaccurateLocation(LocationManager.PASSIVE_PROVIDER);
         setInaccurateLocation(LocationManager.GPS_PROVIDER);
@@ -249,7 +250,7 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenTheOtherProvidersAreInaccurateWhenTheLastPassiveLocationIsAccurateThenANotificationIsSent() {
+    public void givenTheOtherProvidersAreInaccurateWhenTheLastPassiveLocationIsAccurateThenANotificationCanBeSent() {
         setInaccurateLocation(LocationManager.NETWORK_PROVIDER);
         setInaccurateLocation(LocationManager.GPS_PROVIDER);
         setAccurateLocation(LocationManager.PASSIVE_PROVIDER);
@@ -258,10 +259,21 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenTheOtherProviderLocationsAreInaccurateWhenTheGPSLocationIsAccurateThenANotificationIsSent() {
+    public void givenTheOtherProviderLocationsAreInaccurateWhenTheGPSLocationIsAccurateThenANotificationCanBeSent() {
         setInaccurateLocation(LocationManager.NETWORK_PROVIDER);
         setInaccurateLocation(LocationManager.PASSIVE_PROVIDER);
         setAccurateLocation(LocationManager.GPS_PROVIDER);
+
+        assertTrue(groceryStoreNotificationManager.noticeCanBeSent("test", System.currentTimeMillis()));
+    }
+
+    @Test
+    public void givenTheGPSProviderIsDisabledWhenOneOfTheOtherProvidersIsAccurateThenANotificationCanBeSent() {
+        ShadowLocationManager shadowLocationManager = (ShadowLocationManager)Shadows.shadowOf(getTestAndroidModule().getLocationManager());
+        shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, false);
+        shadowLocationManager.setLastKnownLocation(LocationManager.GPS_PROVIDER, null);
+        setAccurateLocation(LocationManager.NETWORK_PROVIDER);
+        setInaccurateLocation(LocationManager.PASSIVE_PROVIDER);
 
         assertTrue(groceryStoreNotificationManager.noticeCanBeSent("test", System.currentTimeMillis()));
     }

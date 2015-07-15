@@ -66,8 +66,16 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         Location passiveLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
         boolean passiveLocationIsAccurate = passiveLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
 
-        Location gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        boolean gpsLocationIsAccurate = gpsLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
+
+        Location gpsLocation = null;
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+
+        boolean gpsLocationIsAccurate = false;
+        if (gpsLocation != null && gpsLocation.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+            gpsLocationIsAccurate = true;
+        }
 
         return (networkLocationIsAccurate || passiveLocationIsAccurate || gpsLocationIsAccurate);
     }
