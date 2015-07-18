@@ -90,7 +90,12 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
     private boolean isStoreNearby(Location location, GroceryStore groceryStore) {
         float[] distanceResults = new float[1];
         Location.distanceBetween(location.getLatitude(), location.getLongitude(), groceryStore.getLatitude(), groceryStore.getLongitude(), distanceResults);
-        return distanceResults[0] <= GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS;
+
+        boolean storeIsNearby = distanceResults[0] <= GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS;
+
+        Log.d(TAG, "Distance from store: " + distanceResults[0]);
+        Log.d(TAG, "Store is close: " + storeIsNearby);
+        return storeIsNearby;
     }
 
     private boolean remindersExist() {
