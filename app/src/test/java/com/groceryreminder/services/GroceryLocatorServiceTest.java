@@ -54,7 +54,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         when(groceryStoreLocationManagerMock.getLastKnownLocation()).thenReturn(defaultLocation);
         when(groceryStoreManagerMock.isBetterThanCurrentLocation(defaultLocation)).thenReturn(true);
 
-        groceryLocatorService.onHandleIntent(new Intent());
+        groceryLocatorService.onStartCommand(new Intent(), 0, 0);
 
         verify(groceryStoreLocationManagerMock).getLastKnownLocation();
         verify(groceryStoreManagerMock).isBetterThanCurrentLocation(defaultLocation);
@@ -69,7 +69,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         when(groceryStoreLocationManagerMock.getLastKnownLocation()).thenReturn(defaultLocation);
         when(groceryStoreManagerMock.isBetterThanCurrentLocation(defaultLocation)).thenReturn(true);
 
-        groceryLocatorService.onHandleIntent(intent);
+        groceryLocatorService.onStartCommand(intent, 0, 0);
 
         verify(groceryStoreManagerMock).listenForLocationUpdates(true);
         verify(groceryStoreLocationManagerMock).getLastKnownLocation();
@@ -83,7 +83,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
 
         when(groceryStoreLocationManagerMock.getLastKnownLocation()).thenReturn(defaultLocation);
         when(groceryStoreManagerMock.isBetterThanCurrentLocation(defaultLocation)).thenReturn(false);
-        groceryLocatorService.onHandleIntent(new Intent());
+        groceryLocatorService.onStartCommand(new Intent(), 0, 0);
 
         verify(groceryStoreLocationManagerMock).getLastKnownLocation();
         verify(groceryStoreManagerMock).isBetterThanCurrentLocation(defaultLocation);
@@ -94,7 +94,7 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
     public void whenNoProviderIsAvailableThenNoStoresAreUpdated() {
         when(groceryStoreLocationManagerMock.getLastKnownLocation()).thenReturn(null);
 
-        groceryLocatorService.onHandleIntent(new Intent());
+        groceryLocatorService.onStartCommand(new Intent(), 0, 0);
 
         verify(groceryStoreLocationManagerMock).getLastKnownLocation();
         verify(groceryStoreManagerMock).listenForLocationUpdates(false);

@@ -1,8 +1,10 @@
 package com.groceryreminder.services;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
+import android.os.IBinder;
 import android.util.Log;
 
 import com.groceryreminder.domain.GroceryReminderConstants;
@@ -12,7 +14,7 @@ import com.groceryreminder.injection.ReminderApplication;
 
 import javax.inject.Inject;
 
-public class GroceryLocatorService extends IntentService {
+public class GroceryLocatorService extends Service {
 
     private static final String TAG = "GroceryLocatorService";
 
@@ -23,7 +25,7 @@ public class GroceryLocatorService extends IntentService {
     GroceryStoreManagerInterface groceryStoreManager;
 
     public GroceryLocatorService() {
-        super("GroceryLocatorService");
+        super();
     }
 
     @Override
@@ -33,7 +35,12 @@ public class GroceryLocatorService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "In onHandleIntent");
         if (intent.getBooleanExtra(GroceryReminderConstants.LISTEN_FOR_GPS_EXTRA, false)) {
             groceryStoreManager.listenForLocationUpdates(true);
@@ -44,5 +51,7 @@ public class GroceryLocatorService extends IntentService {
         if (location != null && groceryStoreManager.isBetterThanCurrentLocation(location)) {
             groceryStoreManager.handleLocationUpdated(location);
         }
+
+        return START_STICKY;
     }
 }
