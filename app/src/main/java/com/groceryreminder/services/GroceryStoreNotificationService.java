@@ -2,7 +2,7 @@ package com.groceryreminder.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.location.LocationManager;
+import android.location.Location;
 import android.util.Log;
 
 import com.groceryreminder.data.ReminderContract;
@@ -31,15 +31,12 @@ public class GroceryStoreNotificationService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "Handling proximity alert.");
-        if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
-            String currentStoreName = intent.getStringExtra(ReminderContract.Locations.NAME);
-            long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
-            if (groceryStoreNotificationManager.noticeCanBeSent(currentStoreName, currentTime)) {
-                Log.d(TAG, "Sending notice");
-                groceryStoreNotificationManager.sendNotification(intent);
-                groceryStoreNotificationManager.saveNoticeDetails(currentStoreName, currentTime);
-            }
-        }
+        Location location = new Location(intent.getStringExtra(GroceryStoreLocationListener.PROVIDER));
+        location.setLatitude(intent.getDoubleExtra(ReminderContract.Locations.LATITUDE, 0));
+        location.setLongitude(intent.getDoubleExtra(ReminderContract.Locations.LONGITUDE, 0));
+
+        groceryStoreNotificationManager.sendPotentialNotification(location, currentTime);
     }
 }

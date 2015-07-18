@@ -9,6 +9,12 @@ public class GroceryStore implements Serializable {
     private double latitude;
     private double longitude;
 
+    public GroceryStore(String name, double latitude, double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public GroceryStore(String name, double distance, double latitude, double longitude) {
         this.name = name;
         this.distance = distance;

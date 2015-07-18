@@ -1,26 +1,25 @@
 package com.groceryreminder.services;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.location.Location;
 import android.location.LocationManager;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContract;
-import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreNotificationManagerInterface;
+import com.groceryreminder.testUtils.LocationValuesBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -34,51 +33,30 @@ public class GroceryStoreNotificationServiceTest extends RobolectricTestBase {
         super.setUp();
         groceryStoreNotificationService = new GroceryStoreNotificationService();
         groceryStoreNotificationService.onCreate();
+        ContentValues storeValues = new LocationValuesBuilder().createDefaultLocationValues().withName(ARBITRARY_STORE_NAME).build();
+        groceryStoreNotificationService.getContentResolver().insert(ReminderContract.Locations.CONTENT_URI, storeValues);
     }
 
     private Intent buildIntentToListenFor() {
-        Intent intentToListenFor =  new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
-        intentToListenFor.putExtra(ReminderContract.Locations.NAME, ARBITRARY_STORE_NAME);
+        Intent intentToListenFor =  new Intent();
+        intentToListenFor.putExtra(ReminderContract.Locations.LATITUDE, "1.0");
+        intentToListenFor.putExtra(ReminderContract.Locations.LONGITUDE, "2.0");
+        intentToListenFor.putExtra(GroceryStoreLocationListener.PROVIDER, LocationManager.GPS_PROVIDER);
 
         return intentToListenFor;
     }
 
     @Test
-    public void whenARequestWithoutTheProximityEnteringFlagThenNoNotificationIsSent() {
+    public void givenAValidRequestThenAPotentialNotificationIsSent() {
         Intent intent = buildIntentToListenFor();
 
         GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerMock = getTestReminderModule().getGroceryStoreNotificationManager();
+
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(1.0);
+        location.setLongitude(2.0);
         groceryStoreNotificationService.onHandleIntent(intent);
 
-        verifyNoMoreInteractions(groceryStoreNotificationManagerMock);
-    }
-
-    @Test
-    public void givenAValidRequestWhenTheNoticeCannotBeSentThenTheNoticeIsNotSent() {
-        Intent intent = buildIntentToListenFor();
-        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
-
-        GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerMock = getTestReminderModule().getGroceryStoreNotificationManager();
-
-        when(groceryStoreNotificationManagerMock.noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong())).thenReturn(false);
-        groceryStoreNotificationService.onHandleIntent(intent);
-
-        verify(groceryStoreNotificationManagerMock).noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong());
-        verifyNoMoreInteractions(groceryStoreNotificationManagerMock);
-    }
-
-    @Test
-    public void givenAValidRequestWhenTheNoticeCanBeSentThenTheNoticeIsSent() {
-        Intent intent = buildIntentToListenFor();
-        intent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, true);
-
-        GroceryStoreNotificationManagerInterface groceryStoreNotificationManagerMock = getTestReminderModule().getGroceryStoreNotificationManager();
-
-        when(groceryStoreNotificationManagerMock.noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong())).thenReturn(true);
-        groceryStoreNotificationService.onHandleIntent(intent);
-
-        verify(groceryStoreNotificationManagerMock).noticeCanBeSent(eq(ARBITRARY_STORE_NAME), anyLong());
-        verify(groceryStoreNotificationManagerMock).sendNotification(intent);
-        verify(groceryStoreNotificationManagerMock).saveNoticeDetails(eq(ARBITRARY_STORE_NAME), anyLong());
+        verify(groceryStoreNotificationManagerMock).sendPotentialNotification(any(Location.class), anyLong());
     }
 }

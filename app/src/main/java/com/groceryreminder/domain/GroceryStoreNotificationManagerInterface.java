@@ -1,11 +1,7 @@
 package com.groceryreminder.domain;
 
-import android.content.Intent;
+import android.location.Location;
 
 public interface GroceryStoreNotificationManagerInterface {
-    void saveNoticeDetails(String currentStoreName, long currentTime);
-
-    void sendNotification(Intent intent);
-
-    boolean noticeCanBeSent(String currentStoreName, long currentTime);
+    void sendPotentialNotification(Location location, long currentTime);
 }

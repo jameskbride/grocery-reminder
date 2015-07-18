@@ -139,7 +139,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     }
 
     private LocationListener createLocationListener() {
-        return new GroceryStoreLocationListener(this);
+        return new GroceryStoreLocationListener(context, this);
     }
 
     private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
@@ -197,7 +197,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     @Override
     public boolean isBetterThanCurrentLocation(Location location) {
-        if (location.getAccuracy() > GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+        if (!isAccurate(location)) {
             Log.d(TAG, "Location accuracy is not good enough");
             return false;
         }
@@ -207,6 +207,11 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean isAccurate(Location location) {
+        return location.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS;
     }
 
     private boolean compareLocations(Location currentLocation, Location updateLocation) {

@@ -16,6 +16,7 @@ import android.util.Log;
 import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.ForApplication;
+import com.groceryreminder.models.GroceryStore;
 import com.groceryreminder.views.reminders.RemindersActivity;
 
 import javax.inject.Inject;
@@ -32,7 +33,6 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         this.locationManager = locationManager;
     }
 
-    @Override
     public void saveNoticeDetails(String currentStoreName, long currentTime) {
         Log.d(TAG, "Saving notice details");
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
@@ -42,7 +42,6 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
                 .commit();
     }
 
-    @Override
     public void sendNotification(Intent intent) {
         PendingIntent resultPendingIntent = createRemindersActivityIntent(context);
         NotificationCompat.Builder builder = buildReminderNotification(resultPendingIntent, intent);
@@ -52,51 +51,46 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
     }
 
     @Override
-    public boolean noticeCanBeSent(String currentStoreName, long currentTime) {
+    public void sendPotentialNotification(Location location, long currentTime) {
+        Cursor storeCursor = context.getContentResolver().query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, null, null, ReminderContract.Locations.SORT_ORDER_DEFAULT);
+        if (storeCursor.getCount() > 0 && remindersExist()) {
+            while(storeCursor.moveToNext()) {
+                GroceryStore groceryStore = new GroceryStore(
+                        storeCursor.getString(storeCursor.getColumnIndex(ReminderContract.Locations.NAME)),
+                        storeCursor.getDouble(storeCursor.getColumnIndex(ReminderContract.Locations.LATITUDE)),
+                        storeCursor.getDouble(storeCursor.getColumnIndex(ReminderContract.Locations.LONGITUDE)));
+
+                sendSingleNotification(location, currentTime, groceryStore);
+            }
+        }
+    }
+
+    private void sendSingleNotification(Location location, long currentTime, GroceryStore groceryStore) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
         long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
         Log.d(TAG, "Last notification time: " + lastNotificationTime);
-        boolean locationIsAccurate = isLocationIsAccurate();
-        Log.d(TAG, "Location is accurate: " + locationIsAccurate);
 
-        boolean remindersExist = remindersExist();
-        Log.d(TAG, "Reminders exist: " + remindersExist);
+        boolean isLastNotifiedStore = isNotificationForCurrentStore(lastNotifiedStore, groceryStore.getName());
+        Log.d(TAG, "Notification is for current store: " + isLastNotifiedStore);
 
-        boolean notificationIsForCurrentStore = isNotificationForCurrentStore(lastNotifiedStore, currentStoreName);
-        Log.d(TAG, "Notification is for current store: " + notificationIsForCurrentStore);
+        boolean storeIsNearby = isStoreNearby(location, groceryStore);
 
         boolean notificationIsTooRecent = notificationIsTooRecent(lastNotificationTime, currentTime);
         Log.d(TAG, "Notification is too recent: " + notificationIsTooRecent);
 
-        return remindersExist &&
-                (!notificationIsForCurrentStore) &&
-                (!notificationIsTooRecent) &&
-                locationIsAccurate;
+        if (storeIsNearby && !isLastNotifiedStore && !notificationIsTooRecent) {
+            Intent notificationIntent = new Intent();
+            notificationIntent.putExtra(ReminderContract.Locations.NAME, groceryStore.getName());
+            sendNotification(notificationIntent);
+            saveNoticeDetails(groceryStore.getName(), currentTime);
+        }
     }
 
-    private boolean isLocationIsAccurate() {
-        boolean networkLocationIsAccurate = isLocationProviderAccurate(LocationManager.NETWORK_PROVIDER);
-        boolean passiveLocationIsAccurate = isLocationProviderAccurate(LocationManager.PASSIVE_PROVIDER);
-        boolean gpsLocationIsAccurate = isLocationProviderAccurate(LocationManager.GPS_PROVIDER);
-
-        return (networkLocationIsAccurate || passiveLocationIsAccurate || gpsLocationIsAccurate);
-    }
-
-    private boolean isLocationProviderAccurate(String provider) {
-        Location location = null;
-        if (locationManager.isProviderEnabled(provider)) {
-            location = locationManager.getLastKnownLocation(provider);
-        }
-
-        boolean locationIsAccurate = false;
-        if (location != null && location.getAccuracy() <= (GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS)) {
-            locationIsAccurate = true;
-        }
-
-        Log.d(TAG, "Location is accurate for notification (" + provider+  "): " + locationIsAccurate);
-
-        return locationIsAccurate;
+    private boolean isStoreNearby(Location location, GroceryStore groceryStore) {
+        float[] distanceResults = new float[1];
+        Location.distanceBetween(location.getLatitude(), location.getLongitude(), groceryStore.getLatitude(), groceryStore.getLongitude(), distanceResults);
+        return distanceResults[0] <= GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS;
     }
 
     private boolean remindersExist() {
