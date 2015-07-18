@@ -42,6 +42,8 @@
         </provider>
         <service android:name=".services.GroceryLocatorService"
             android:exported="false"/>
+        <service android:name=".services.GroceryStoreNotificationService"
+            android:exported="false"/>
         <receiver android:name=".services.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
