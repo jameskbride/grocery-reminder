@@ -20,9 +20,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowLocation;
@@ -44,8 +47,10 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -139,11 +144,13 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
         groceryStoreManagerSpy.listenForLocationUpdates(false);
 
-        when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
         when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);
+        when(googlePlacesMock.getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), anyInt(), (Param[])anyVararg())).thenReturn(places);
 
         groceryStoreManagerSpy.handleLocationUpdated(location);
+        Robolectric.flushBackgroundScheduler();
         groceryStoreManagerSpy.handleLocationUpdated(updatedLocation);
+        Robolectric.flushBackgroundScheduler();
     }
 
     @Test
@@ -456,10 +463,10 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
         groceryStoreManagerSpy.listenForLocationUpdates(false);
 
-        when(groceryStoreManagerSpy.findStoresByLocation(location)).thenReturn(places);
+        when(googlePlacesMock.getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), anyInt(), (Param[])anyVararg())).thenReturn(places);
         when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);
-
         shadowLocationManager.simulateLocation(location);
+        Robolectric.flushBackgroundScheduler();
 
         verify(groceryStoreManagerSpy).deleteStoresByLocation(location);
         verify(groceryStoreManagerSpy).persistGroceryStores(places);

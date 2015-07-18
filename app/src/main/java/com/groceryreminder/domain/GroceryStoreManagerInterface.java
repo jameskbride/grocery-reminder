@@ -12,7 +12,7 @@ public interface GroceryStoreManagerInterface extends LocationUpdater{
 
     int GOOGLE_PLACES_MAX_RESULTS = 40;
 
-    List<Place> findStoresByLocation(Location location);
+    void findStoresByLocation(Location location);
 
     List<Place> filterPlacesByDistance(Location location, List<Place> places, double distanceInMeters);
 
@@ -27,4 +27,6 @@ public interface GroceryStoreManagerInterface extends LocationUpdater{
     Location getCurrentLocation();
 
     void removeGPSListener();
+
+    void onStoreLocationsUpdated(Location location, List<Place> updatedPlaces);
 }

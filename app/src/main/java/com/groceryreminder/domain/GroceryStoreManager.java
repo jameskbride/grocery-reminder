@@ -26,9 +26,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import se.walkercrou.places.GooglePlacesInterface;
-import se.walkercrou.places.Param;
 import se.walkercrou.places.Place;
-import se.walkercrou.places.Types;
 
 public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
@@ -48,13 +46,11 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     }
 
     @Override
-    public List<Place> findStoresByLocation(Location location) {
+    public void findStoresByLocation(Location location) {
         Log.d(TAG, "Location: " + location);
-        Param groceryStoreType = Param.name(GooglePlacesInterface.STRING_TYPE).value(Types.TYPE_GROCERY_OR_SUPERMARKET);
-        googlePlaces.setDebugModeEnabled(true);
-        List<Place> places = googlePlaces.getNearbyPlacesRankedByDistance(location.getLatitude(), location.getLongitude(), GOOGLE_PLACES_MAX_RESULTS, groceryStoreType);
 
-        return places;
+        GooglePlacesNearbySearchTask googlePlacesNearbySearchTask = new GooglePlacesNearbySearchTask(googlePlaces, this);
+        googlePlacesNearbySearchTask.execute(location);
     }
 
     @Override
@@ -82,7 +78,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
         for (ContentValues contentValues : contentValuesList) {
             operations.add(ContentProviderOperation.newInsert(ReminderContract.Locations.CONTENT_URI)
-                    .withValues(contentValues).build()
+                            .withValues(contentValues).build()
             );
         }
 
@@ -202,7 +198,10 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
     private void updateStoreLocations(Location location) {
         deleteStoresByLocation(location);
-        List<Place> updatedPlaces = findStoresByLocation(location);
+        findStoresByLocation(location);
+    }
+
+    public void onStoreLocationsUpdated(Location location, List<Place> updatedPlaces) {
         List<Place> places = filterPlacesByDistance(location, updatedPlaces, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS);
 
         Log.d(TAG, "Places count: " + places.size());
@@ -260,4 +259,5 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public void setLocation(Location location) {
         this.currentLocation = location;
     }
+
 }

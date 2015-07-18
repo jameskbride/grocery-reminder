@@ -34,6 +34,7 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
 
     @Override
     public void saveNoticeDetails(String currentStoreName, long currentTime) {
+        Log.d(TAG, "Saving notice details");
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         sharedPreferences.edit()
                 .putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, currentStoreName)
@@ -93,7 +94,7 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
             locationIsAccurate = true;
         }
 
-        Log.d(TAG, "Location is accurate for notification: " + locationIsAccurate);
+        Log.d(TAG, "Location is accurate for notification (" + provider+  "): " + locationIsAccurate);
 
         return locationIsAccurate;
     }
