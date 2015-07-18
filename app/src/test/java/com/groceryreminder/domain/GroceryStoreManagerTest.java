@@ -192,7 +192,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
     @Test
     public void givenPersistedPlacesWhichAreMoreThanFiveMilesDistanceWhenTheIntentIsHandledThenTheDistancePlacesAreDeleted() {
-        ShadowLocation.setDistanceBetween(new float[] {(float)GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS + 1});
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS + 1});
 
         Place place = createDefaultGooglePlace();
         List<Place> places = new ArrayList<Place>();
@@ -291,7 +291,19 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
-        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(1).longValue());
+        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(0).longValue());
+    }
+
+    @Test
+    public void whenLocationUpdatesAreRequestedThenTheMinTimeForPassiveUpdatesIsZero() {
+        ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
+
+        groceryStoreManager.listenForLocationUpdates(false);
+
+        verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
+
+        List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
+        assertEquals(0, capturedMinTimes.get(1).longValue());
     }
 
     @Test
@@ -385,7 +397,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         performMultipleLocationUpdates(location, updatedLocation, groceryStoreManagerSpy);
 
         verify(groceryStoreManagerSpy, times(1)).deleteStoresByLocation(location);
-        verify(groceryStoreManagerSpy, times(1)).persistGroceryStores((List<Place>)anyCollection());
+        verify(groceryStoreManagerSpy, times(1)).persistGroceryStores((List<Place>) anyCollection());
     }
 
     @Test

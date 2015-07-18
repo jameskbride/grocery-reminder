@@ -111,17 +111,17 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
         if (this.locationListener == null) {
             this.locationListener = createLocationListener();
             if (listenForGPSUpdates) {
-                addLocationListenerForProvider(LocationManager.GPS_PROVIDER, locationListener);
+                addLocationListenerForProvider(LocationManager.GPS_PROVIDER, locationListener, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
             }
-            addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener);
-            addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener);
+            addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
+            addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener, 0);
         }
     }
 
-    private void addLocationListenerForProvider(String provider, LocationListener locationListener) {
+    private void addLocationListenerForProvider(String provider, LocationListener locationListener, long minUpdateTime) {
         if (locationManager.isProviderEnabled(provider)) {
             Log.d(TAG, "Provider is enabled");
-            locationManager.requestLocationUpdates(provider, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, (float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
+            locationManager.requestLocationUpdates(provider, minUpdateTime, (float) GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS, locationListener);
         }
     }
 
@@ -134,8 +134,8 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public void removeGPSListener() {
         Log.d(TAG, "Removing GPS");
         locationManager.removeUpdates(locationListener);
-        addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener);
-        addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener);
+        addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
+        addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener, 0);
     }
 
     private LocationListener createLocationListener() {
