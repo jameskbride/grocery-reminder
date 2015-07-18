@@ -107,19 +107,6 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     }
 
     @Override
-    public void addProximityAlerts(List<Place> places) {
-        int requestCode = 0;
-        for (Place place : places) {
-            Intent proximityAlertIntent = new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
-            proximityAlertIntent.putExtra(ReminderContract.Locations.NAME, place.getName());
-            locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(),
-                    GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS, GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION,
-                    PendingIntent.getBroadcast(context, requestCode++, proximityAlertIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT));
-        }
-    }
-
-    @Override
     public void listenForLocationUpdates(boolean listenForGPSUpdates) {
         if (this.locationListener == null) {
             this.locationListener = createLocationListener();
@@ -206,7 +193,6 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
 
         Log.d(TAG, "Places count: " + places.size());
         persistGroceryStores(places);
-        addProximityAlerts(places);
     }
 
     @Override
