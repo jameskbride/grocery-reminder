@@ -5,8 +5,10 @@ import android.app.PendingIntent;
 import android.content.ContentProviderOperation;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,6 +18,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.injection.ForApplication;
 import com.groceryreminder.services.GroceryStoreLocationListener;
@@ -49,8 +52,14 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public void findStoresByLocation(Location location) {
         Log.d(TAG, "Location: " + location);
 
-        GooglePlacesNearbySearchTask googlePlacesNearbySearchTask = new GooglePlacesNearbySearchTask(googlePlaces, this);
-        googlePlacesNearbySearchTask.execute(location);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+        long lastPollTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_GOOGLE_PLACES_POLL_TIME, 0);
+
+        if (System.currentTimeMillis() - lastPollTime > GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS) {
+            GooglePlacesNearbySearchTask googlePlacesNearbySearchTask = new GooglePlacesNearbySearchTask(googlePlaces, this);
+            googlePlacesNearbySearchTask.execute(location);
+            sharedPreferences.edit().putLong(GroceryReminderConstants.LAST_GOOGLE_PLACES_POLL_TIME, System.currentTimeMillis()).commit();
+        }
     }
 
     @Override

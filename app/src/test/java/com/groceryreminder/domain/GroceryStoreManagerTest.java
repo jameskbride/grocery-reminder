@@ -1,6 +1,8 @@
 package com.groceryreminder.domain;
 
 import android.app.PendingIntent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
@@ -9,6 +11,7 @@ import android.location.LocationManager;
 import android.os.SystemClock;
 
 import com.groceryreminder.BuildConfig;
+import com.groceryreminder.R;
 import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.GroceryStoreLocationContentProvider;
 import com.groceryreminder.data.ReminderContract;
@@ -56,6 +59,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -165,6 +169,16 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         Param actualParams = paramsCaptor.getValue();
         assertEquals(actualParams, groceryStoreType);
+    }
+
+    @Test
+    public void whenPlacesAreRequestedUnderTheMinimumUpdateTimeThenANearbySearchIsNotPerformed() {
+        SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+        sharedPreferences.edit().putLong(GroceryReminderConstants.LAST_GOOGLE_PLACES_POLL_TIME, System.currentTimeMillis()).commit();
+
+        groceryStoreManager.findStoresByLocation(defaultLocation);
+
+        verifyNoMoreInteractions(googlePlacesMock);
     }
 
     @Test
