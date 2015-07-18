@@ -59,10 +59,18 @@ public class GroceryStoreBroadcastReceiverTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenAnIntentIsReceivedThenTheKeyProximityEnteringIsAddedToTheIntent() {
+    public void whenAnIntentIsReceivedThenTheKeyProximityEnteringIsAddedToTheGroceryLocationServiceIntent() {
         broadcastReceiver.onReceive(RuntimeEnvironment.application, buildIntentToListenFor());
 
         Intent serviceIntent = Shadows.shadowOf(RuntimeEnvironment.application).peekNextStartedService();
         assertTrue(serviceIntent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false));
+    }
+
+    @Test
+    public void givenAnIntentWithTheLocationNamewhenTheIntentIsReceivedThenTheLocationNameIsAddedToTheGroceryNotificationServiceIntent() {
+        broadcastReceiver.onReceive(RuntimeEnvironment.application, buildIntentToListenFor());
+
+        Intent serviceIntent = Shadows.shadowOf(RuntimeEnvironment.application).peekNextStartedService();
+        assertEquals(ARBITRARY_STORE_NAME, serviceIntent.getStringExtra(ReminderContract.Locations.NAME));
     }
 }

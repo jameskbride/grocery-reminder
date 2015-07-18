@@ -219,6 +219,14 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     }
 
     @Test
+    public void givenAStoreNotificationHasNotBeenSentWhenARequestToSendANotificationIsReceivedThenTheNotificationCanBeSent() {
+        SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(RuntimeEnvironment.application.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+        sharedPreferences.edit().putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0).commit();
+
+        assertTrue(groceryStoreNotificationManager.noticeCanBeSent(ARBITRARY_STORE_NAME, System.currentTimeMillis()));
+    }
+
+    @Test
     public void givenANotificationIsSentWhenTheNotificationIsActedOnThenTheRemindersActivityIsLaunched() {
         groceryStoreNotificationManager.sendNotification(buildIntentToListenFor());
 

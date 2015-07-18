@@ -17,6 +17,7 @@ public class GroceryStoreBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent serviceIntent = new Intent(context, GroceryStoreNotificationService.class);
         serviceIntent.putExtra(LocationManager.KEY_PROXIMITY_ENTERING, intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false));
+        serviceIntent.putExtra(ReminderContract.Locations.NAME, intent.getStringExtra(ReminderContract.Locations.NAME));
         context.startService(serviceIntent);
     }
 }

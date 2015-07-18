@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.groceryreminder.R;
 import com.groceryreminder.data.ReminderContract;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 
 public class GroceryStoreNotificationManager implements GroceryStoreNotificationManagerInterface {
 
+    public static final String TAG = "StoreNotification";
     Application context;
     LocationManager locationManager;
 
@@ -53,12 +55,22 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
         long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
-
+        Log.d(TAG, "Last notification time: " + lastNotificationTime);
         boolean locationIsAccurate = isLocationIsAccurate();
+        Log.d(TAG, "Location is accurate: " + locationIsAccurate);
 
-        return remindersExist() &&
-                !isNotificationForCurrentStore(lastNotifiedStore, currentStoreName) &&
-                !notificationIsTooRecent(lastNotificationTime, currentTime) &&
+        boolean remindersExist = remindersExist();
+        Log.d(TAG, "Reminders exist: " + remindersExist);
+
+        boolean notificationIsForCurrentStore = isNotificationForCurrentStore(lastNotifiedStore, currentStoreName);
+        Log.d(TAG, "Notification is for current store: " + notificationIsForCurrentStore);
+
+        boolean notificationIsTooRecent = notificationIsTooRecent(lastNotificationTime, currentTime);
+        Log.d(TAG, "Notification is too recent: " + notificationIsTooRecent);
+
+        return remindersExist &&
+                (!notificationIsForCurrentStore) &&
+                (!notificationIsTooRecent) &&
                 locationIsAccurate;
     }
 
@@ -77,9 +89,12 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         }
 
         boolean locationIsAccurate = false;
-        if (location != null && location.getAccuracy() <= GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS) {
+        if (location != null && location.getAccuracy() <= (GroceryReminderConstants.MAXIMUM_ACCURACY_IN_METERS)) {
             locationIsAccurate = true;
         }
+
+        Log.d(TAG, "Location is accurate for notification: " + locationIsAccurate);
+
         return locationIsAccurate;
     }
 
@@ -90,7 +105,11 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
     }
 
     private boolean notificationIsTooRecent(long lastNotificationTime, long currentTime) {
-        return (currentTime - lastNotificationTime) <= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS;
+        Log.d(TAG, "Current time: " + currentTime);
+        Log.d(TAG, "Previous time: " + lastNotificationTime);
+        long timeDelta = currentTime - lastNotificationTime;
+        Log.d(TAG, "Time Delta: " + timeDelta);
+        return timeDelta <= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS;
     }
 
     private boolean isNotificationForCurrentStore(String lastNotifiedStore, String currentStoreName) {
