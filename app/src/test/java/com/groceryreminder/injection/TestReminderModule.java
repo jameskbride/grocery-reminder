@@ -7,12 +7,9 @@ import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.domain.GroceryStoreNotificationManager;
 import com.groceryreminder.domain.GroceryStoreNotificationManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
-import com.groceryreminder.services.GroceryStoreBroadcastReceiver;
 import com.groceryreminder.services.GroceryStoreNotificationService;
 import com.groceryreminder.views.reminders.RemindersActivity;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
-
-import org.robolectric.RuntimeEnvironment;
 
 import javax.inject.Singleton;
 
