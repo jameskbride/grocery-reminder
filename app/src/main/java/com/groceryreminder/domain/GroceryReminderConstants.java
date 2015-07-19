@@ -12,10 +12,12 @@ public class GroceryReminderConstants {
 
     public static final long[] PROXIMITY_VIBRATION_PATTERN = {1000, 1000};
 
-    public static final long MIN_LOCATION_UPDATE_TIME_MILLIS = 150000l;
+    public static final long MIN_LOCATION_UPDATE_TIME_MILLIS = 300000l;
 
     public static final String LAST_NOTIFIED_STORE_KEY = "LAST_STORE_ALERT_KEY";
     public static final String LAST_NOTIFICATION_TIME = "LAST_NOTIFICATION_TIME";
     public static final String LISTEN_FOR_GPS_EXTRA = "LISTEN_FOR_GPS_EXTRA";
     public static final String LAST_GOOGLE_PLACES_POLL_TIME = "LAST_GOOGLE_PLACES_POLL_TIME";
+    public static final int NETWORK_MIN_UPDATE_TIME = 60000;
+    public static final int PASSIVE_MIN_UPDATE_TIME = 0;
 }

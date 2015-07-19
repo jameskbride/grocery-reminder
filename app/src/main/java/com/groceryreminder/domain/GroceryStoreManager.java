@@ -122,8 +122,8 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             if (listenForGPSUpdates) {
                 addLocationListenerForProvider(LocationManager.GPS_PROVIDER, locationListener, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
             }
-            addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, 60000);
-            addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener, 0);
+            addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, GroceryReminderConstants.NETWORK_MIN_UPDATE_TIME);
+            addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener, GroceryReminderConstants.PASSIVE_MIN_UPDATE_TIME);
         }
     }
 
@@ -143,8 +143,8 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public void removeGPSListener() {
         Log.d(TAG, "Removing GPS");
         locationManager.removeUpdates(locationListener);
-        addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
-        addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener, 0);
+        addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, GroceryReminderConstants.NETWORK_MIN_UPDATE_TIME);
+        addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener, GroceryReminderConstants.PASSIVE_MIN_UPDATE_TIME);
     }
 
     private LocationListener createLocationListener() {
