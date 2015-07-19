@@ -19,6 +19,7 @@ import com.groceryreminder.models.GroceryStore;
 import com.groceryreminder.services.GroceryLocatorService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -83,6 +84,8 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
             GroceryStore store = loadStoreFromCursor(cursor);
             groceryStoreList.add(store);
         }
+
+        Collections.sort(groceryStoreList);
 
         GroceryStoreListFragment groceryStoreListFragment =
                 (GroceryStoreListFragment)getSupportFragmentManager().findFragmentById(R.id.stores_fragment_container);

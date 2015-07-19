@@ -20,4 +20,35 @@ public class GroceryStoreTest {
         assertEquals(1.0, store.getLatitude(), 0.001);
     }
 
+    @Test
+    public void givenStoreAIsCloserWhenTwoStoresAreComparedThenStoreAIsGreater() {
+        GroceryStore store1 = new GroceryStore("test", 1.0, 1.0, 1.0);
+        GroceryStore store2 = new GroceryStore("test1", 0.0, 1.0, 1.0);
+
+        assertEquals(1, store1.compareTo(store2));
+    }
+
+    @Test
+    public void givenStoreBIsCloserWhenTwoStoresAreComparedThenStoreAIsLesser() {
+        GroceryStore store1 = new GroceryStore("test", 0.0, 1.0, 1.0);
+        GroceryStore store2 = new GroceryStore("test1", 1.0, 1.0, 1.0);
+
+        assertEquals(-1, store1.compareTo(store2));
+    }
+
+    @Test
+    public void givenBothStoresAreEquallyCloseWhenTheyAreComparedThenStoreAEqualsStoreB() {
+        GroceryStore store1 = new GroceryStore("test", 0.0, 1.0, 1.0);
+        GroceryStore store2 = new GroceryStore("test1", 0.0, 1.0, 1.0);
+
+        assertEquals(0, store1.compareTo(store2));
+    }
+
+    @Test
+    public void givenTheSecondStoreIsNullWhenTwoStoresAreComparedThenStoreAIsGreater() {
+        GroceryStore store1 = new GroceryStore("test", 0.0, 1.0, 1.0);
+
+        assertEquals(1, store1.compareTo(null));
+    }
+
 }

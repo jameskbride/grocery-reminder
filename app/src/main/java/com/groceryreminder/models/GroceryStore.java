@@ -2,7 +2,7 @@ package com.groceryreminder.models;
 
 import java.io.Serializable;
 
-public class GroceryStore implements Serializable {
+public class GroceryStore implements Serializable, Comparable<GroceryStore> {
 
     private String name;
     private double distance;
@@ -80,5 +80,16 @@ public class GroceryStore implements Serializable {
         temp = Double.doubleToLongBits(longitude);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    @Override
+    public int compareTo(GroceryStore another) {
+        if (another == null) {
+            return 1;
+        } else if (this.distance == another.distance) {
+            return 0;
+        }
+
+        return this.distance > another.distance ? 1 : -1;
     }
 }
