@@ -122,7 +122,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
             if (listenForGPSUpdates) {
                 addLocationListenerForProvider(LocationManager.GPS_PROVIDER, locationListener, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
             }
-            addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
+            addLocationListenerForProvider(LocationManager.NETWORK_PROVIDER, locationListener, 60000);
             addLocationListenerForProvider(LocationManager.PASSIVE_PROVIDER, locationListener, 0);
         }
     }

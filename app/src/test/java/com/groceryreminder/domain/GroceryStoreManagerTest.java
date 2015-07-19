@@ -1,6 +1,5 @@
 package com.groceryreminder.domain;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -28,11 +27,8 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowContentResolver;
-import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowLocation;
-import org.robolectric.shadows.ShadowPendingIntent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +40,6 @@ import se.walkercrou.places.Types;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -248,7 +243,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void whenLocationUpdatesAreRequestedThenTheMinTimeForLocationUpdatesIsFiveMinutes() {
+    public void whenNetworkLocationUpdatesAreRequestedThenAMaximumUpdateTimeIsUsed() {
         ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
 
         groceryStoreManager.listenForLocationUpdates(false);
@@ -256,7 +251,7 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
 
         List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
-        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(0).longValue());
+        assertTrue(capturedMinTimes.get(0).longValue() > 0);
     }
 
     @Test
@@ -294,18 +289,6 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         List<LocationListener> locationListeners = shadowLocationManager.getRequestLocationUpdateListeners();
         assertEquals(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT, locationListeners.size());
-    }
-
-    @Test
-    public void whenLocationUpdatesAreRequestedThenTheMinTimeForNetworkUpdatesIsFiveMinutes() {
-        ArgumentCaptor<Long> minTimeCaptor = ArgumentCaptor.forClass(Long.class);
-
-        groceryStoreManager.listenForLocationUpdates(false);
-
-        verify(locationManager, times(NETWORK_PROVIDER_COUNT + PASSIVE_PROVIDER_COUNT)).requestLocationUpdates(anyString(), minTimeCaptor.capture(), anyFloat(), any(LocationListener.class));
-
-        List<Long> capturedMinTimes = minTimeCaptor.getAllValues();
-        assertEquals(GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS, capturedMinTimes.get(0).longValue());
     }
 
     @Test
