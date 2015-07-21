@@ -35,7 +35,7 @@ public class GroceryLocatorService extends Service {
         ((ReminderApplication)getApplication()).inject(this);
 
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
-                android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                android.os.Process.THREAD_PRIORITY_DEFAULT);
         thread.start();
 
         // Get the HandlerThread's Looper and use it for our Handler
