@@ -51,6 +51,9 @@ public class GroceryLocatorService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "In onHandleIntent");
+        if (intent == null) {
+            return START_STICKY;
+        }
 
         Message message = mServiceHandler.obtainMessage();
         message.arg1 = startId;

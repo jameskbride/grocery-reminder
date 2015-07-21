@@ -1,5 +1,6 @@
 package com.groceryreminder.services;
 
+import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -99,5 +101,13 @@ public class GroceryLocatorServiceTest extends RobolectricTestBase {
         verify(groceryStoreLocationManagerMock).getLastKnownLocation();
         verify(groceryStoreManagerMock).listenForLocationUpdates(false);
         verifyNoMoreInteractions(groceryStoreManagerMock);
+    }
+
+    @Test
+    public void whenTheServiceIsRestartedAndTheIntentIsNullThenNoUpdatesAreHandled() {
+        assertEquals(Service.START_STICKY, groceryLocatorService.onStartCommand(null, 0, 0));
+
+        verifyNoMoreInteractions(groceryStoreManagerMock);
+        verifyNoMoreInteractions(groceryStoreLocationManagerMock);
     }
 }
