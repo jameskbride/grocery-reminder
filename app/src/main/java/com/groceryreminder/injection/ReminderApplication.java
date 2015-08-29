@@ -9,13 +9,14 @@ import dagger.ObjectGraph;
 
 public class ReminderApplication extends Application {
 
-    protected ObjectGraph graph;
+    protected ReminderObjectGraph reminderObjectGraph;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        graph = ObjectGraph.create(getModules().toArray());
+        reminderObjectGraph = ReminderObjectGraph.getInstance();
+        reminderObjectGraph.createObjectGraph(getModules());
     }
 
     protected List<Object> getModules() {
@@ -28,6 +29,6 @@ public class ReminderApplication extends Application {
     }
 
     public void inject(Object object) {
-        graph.inject(object);
+        reminderObjectGraph.inject(object);
     }
 }

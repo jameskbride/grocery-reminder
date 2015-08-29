@@ -3,18 +3,11 @@ package com.groceryreminder.injection;
 import java.util.ArrayList;
 import java.util.List;
 
-import dagger.ObjectGraph;
-
 public class EspressoReminderApplication extends ReminderApplication {
 
     private AndroidModule androidModule;
     private EspressoReminderModule reminderModule;
     private EspressoRemoteResourcesModule espressoRemoteResourcesModule;
-
-    @Override
-    public void onCreate() {
-        graph = ObjectGraph.create(getModules().toArray());
-    }
 
     protected List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
@@ -25,9 +18,6 @@ public class EspressoReminderApplication extends ReminderApplication {
         return modules;
     }
 
-    public void inject(Object object) {
-        graph.inject(object);
-    }
 
     public AndroidModule getAndroidModule() {
         if (this.androidModule == null) {

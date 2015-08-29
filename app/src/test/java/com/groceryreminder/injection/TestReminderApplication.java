@@ -12,12 +12,6 @@ public class TestReminderApplication extends ReminderApplication {
     private TestAndroidModule testAndroidModule;
 
     @Override
-    public void onCreate() {
-        List<Object> modules = getModules();
-        graph = ObjectGraph.create(modules.toArray());
-    }
-
-    @Override
     protected List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(getTestReminderModule());
