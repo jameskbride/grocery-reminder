@@ -12,7 +12,7 @@ public class TestReminderApplication extends ReminderApplication {
     private TestAndroidModule testAndroidModule;
 
     @Override
-    protected List<Object> getModules() {
+    public List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(getTestReminderModule());
         modules.add(getTestRemoteResourcesModule());

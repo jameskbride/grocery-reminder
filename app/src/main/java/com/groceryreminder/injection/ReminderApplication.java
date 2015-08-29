@@ -19,7 +19,7 @@ public class ReminderApplication extends Application {
         reminderObjectGraph.createObjectGraph(getModules());
     }
 
-    protected List<Object> getModules() {
+    public List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(new AndroidModule(this));
         modules.add(new RemoteResourcesModule(this));
