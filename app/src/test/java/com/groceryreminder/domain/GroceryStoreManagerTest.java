@@ -1,5 +1,6 @@
 package com.groceryreminder.domain;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -28,7 +29,9 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
+import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowLocation;
+import org.robolectric.shadows.ShadowPendingIntent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,7 @@ import se.walkercrou.places.Types;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -141,7 +145,6 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         List<Place> places = new ArrayList<Place>();
         places.add(place);
 
-
         groceryStoreManagerSpy.listenForLocationUpdates(false);
 
         when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);
@@ -216,6 +219,111 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
 
         cursor = reminderProvider.query(ReminderContract.Locations.CONTENT_URI, ReminderContract.Locations.PROJECT_ALL, "", null, null);
         assertEquals(0, cursor.getCount());
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenTheRadiusIsSetToFiftyFeetInMeters() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+
+        assertEquals(GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS, proximityAlert.getRadius(), 0.001);
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenTheExpirationDoesNotExpire() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+
+        assertEquals(GroceryReminderConstants.PROXIMITY_ALERT_EXPIRATION, proximityAlert.getExpiration());
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenThePendingIntentIsSetToBroadcast() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(proximityAlert.getPendingIntent());
+
+        assertTrue(shadowPendingIntent.isBroadcastIntent());
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenTheStorePendingIntentIsSet() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(proximityAlert.getPendingIntent());
+        ShadowIntent shadowIntent = Shadows.shadowOf(shadowPendingIntent.getSavedIntent());
+
+        assertEquals(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT, shadowIntent.getAction());
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenTheStorePendingIntentCancelsTheCurrentRequest() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(proximityAlert.getPendingIntent());
+
+        assertEquals(PendingIntent.FLAG_CANCEL_CURRENT, shadowPendingIntent.getFlags());
+    }
+
+    @Test
+    public void whenProximityAlertIsAddedThenTheStorePendingIntentContainsTheStoreName() {
+        Place place = createDefaultGooglePlace();
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert proximityAlert = shadowLocationManager.getProximityAlert(place.getLatitude(), place.getLongitude());
+        ShadowPendingIntent shadowPendingIntent = Shadows.shadowOf(proximityAlert.getPendingIntent());
+
+        assertEquals(place.getName(), shadowPendingIntent.getSavedIntent().getStringExtra(ReminderContract.Locations.NAME));
+    }
+
+    @Test
+    public void givenPlacesWhenProximityAlertIsAddedThenTheStorePendingIntentRequestCodeIsUnique() {
+        Place place = createDefaultGooglePlace();
+        Place place2 = new Place();
+        place2.setLatitude(place.getLatitude()+1);
+        place2.setLongitude(place.getLongitude());
+        place2.setName("test 2");
+        place2.setPlaceId("test_id2");
+        List<Place> places = new ArrayList<Place>();
+        places.add(place);
+        places.add(place2);
+
+        groceryStoreManager.addProximityAlerts(places);
+
+        List<com.groceryreminder.shadows.ShadowLocationManager.ProximityAlert> proximityAlerts = shadowLocationManager.getProximityAlerts();
+        assertEquals(places.size(), proximityAlerts.size());
+
+        ShadowPendingIntent shadowPendingIntent1 = Shadows.shadowOf(proximityAlerts.get(0).getPendingIntent());
+        ShadowPendingIntent shadowPendingIntent2 = Shadows.shadowOf(proximityAlerts.get(1).getPendingIntent());
+        assertNotEquals(shadowPendingIntent1.getRequestCode(), shadowPendingIntent2.getRequestCode());
     }
 
     @Test
@@ -368,13 +476,14 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
         groceryStoreManagerSpy.listenForLocationUpdates(false);
 
-        when(googlePlacesMock.getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), anyInt(), (Param[]) anyVararg())).thenReturn(places);
+        when(googlePlacesMock.getNearbyPlacesRankedByDistance(anyDouble(), anyDouble(), anyInt(), (Param[])anyVararg())).thenReturn(places);
         when(groceryStoreManagerSpy.filterPlacesByDistance(location, places, GroceryReminderConstants.LOCATION_SEARCH_RADIUS_METERS)).thenReturn(places);
         shadowLocationManager.simulateLocation(location);
         Robolectric.flushBackgroundScheduler();
 
         verify(groceryStoreManagerSpy).deleteStoresByLocation(location);
         verify(groceryStoreManagerSpy).persistGroceryStores(places);
+        verify(groceryStoreManagerSpy).addProximityAlerts(places);
     }
 
     @Test
@@ -389,10 +498,13 @@ public class GroceryStoreManagerTest extends RobolectricTestBase {
         updatedLocation.setLatitude(DEFAULT_LATITUDE);
         updatedLocation.setLongitude(DEFAULT_LONGITUDE);
         updatedLocation.setTime(location.getTime() + 1);
-
         GroceryStoreManager groceryStoreManagerSpy = spy(groceryStoreManager);
+
         performMultipleLocationUpdates(location, updatedLocation, groceryStoreManagerSpy);
 
+        List<ShadowLocationManager.ProximityAlert> proximityAlerts = shadowLocationManager.getProximityAlerts();
+
+        assertEquals(1, proximityAlerts.size());
         verify(groceryStoreManagerSpy, times(1)).deleteStoresByLocation(location);
         verify(groceryStoreManagerSpy, times(1)).persistGroceryStores((List<Place>) anyCollection());
     }

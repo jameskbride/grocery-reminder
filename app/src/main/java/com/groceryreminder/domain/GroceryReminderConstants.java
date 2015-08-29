@@ -20,4 +20,5 @@ public class GroceryReminderConstants {
     public static final String LAST_GOOGLE_PLACES_POLL_TIME = "LAST_GOOGLE_PLACES_POLL_TIME";
     public static final int NETWORK_MIN_UPDATE_TIME = 45000;
     public static final int PASSIVE_MIN_UPDATE_TIME = 0;
+    public static final long PROXIMITY_ALERT_EXPIRATION = -1;
 }
