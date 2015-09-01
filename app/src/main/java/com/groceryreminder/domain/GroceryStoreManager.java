@@ -119,6 +119,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     public void addProximityAlerts(List<Place> places) {
         int requestCode = 0;
         for (Place place : places) {
+            Log.d(TAG, "Adding proximity alert");
             Intent proximityAlertIntent = new Intent(GroceryReminderConstants.ACTION_STORE_PROXIMITY_EVENT);
             proximityAlertIntent.putExtra(ReminderContract.Locations.NAME, place.getName());
             locationManager.addProximityAlert(place.getLatitude(), place.getLongitude(),

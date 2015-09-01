@@ -9,6 +9,7 @@ import com.groceryreminder.domain.GroceryStoreManagerInterface;
 import com.groceryreminder.domain.GroceryStoreNotificationManager;
 import com.groceryreminder.domain.GroceryStoreNotificationManagerInterface;
 import com.groceryreminder.services.GroceryLocatorService;
+import com.groceryreminder.services.GroceryStoreBroadcastReceiver;
 import com.groceryreminder.services.GroceryStoreNotificationService;
 import com.groceryreminder.views.stores.GroceryStoresActivity;
 
@@ -27,7 +28,8 @@ import dagger.Provides;
         GroceryStoreLocationManager.class,
         GroceryStoresActivity.class,
         GroceryStoreNotificationService.class,
-        GroceryStoreNotificationManager.class
+        GroceryStoreNotificationManager.class,
+        GroceryStoreBroadcastReceiver.class
     },
     complete = false
 )
