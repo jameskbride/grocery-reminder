@@ -1,6 +1,5 @@
 package com.groceryreminder.views.stores;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
@@ -16,17 +15,14 @@ import com.groceryreminder.RobolectricTestBase;
 import com.groceryreminder.data.ReminderContract;
 import com.groceryreminder.domain.GroceryReminderConstants;
 import com.groceryreminder.domain.GroceryStoreManagerInterface;
-import com.groceryreminder.models.GroceryStore;
 import com.groceryreminder.services.GroceryLocatorService;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
@@ -34,7 +30,6 @@ import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowCursorWrapper;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowLocation;
-import org.robolectric.shadows.ShadowProgressDialog;
 import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -42,8 +37,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -115,21 +108,6 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         assertNull(cursorLoader.getSelectionArgs());
     }
 
-    //
-    @Ignore
-    @Test
-    public void whenTheActivityIsCreatedThenAProgressDialogIsDisplayed() {
-        ProgressDialog progressDialog = (ProgressDialog)ShadowProgressDialog.getLatestDialog();
-        assertTrue(progressDialog.isShowing());
-        ShadowProgressDialog shadowProgressDialog = Shadows.shadowOf(progressDialog);
-
-        assertEquals(activity.getString(R.string.loading_stores_dialog_title), shadowProgressDialog.getTitle());
-        //FIXME It looks like there is a defect in Robolectric that doesn't capture the message of ProgressDialog correctly.
-//        assertEquals(activity.getString(R.string.loading_stores_dialog_message), shadowProgressDialog.getMessage());
-        assertTrue(shadowProgressDialog.isCancelable());
-        assertTrue(progressDialog.isIndeterminate());
-    }
-
     @Test
     public void whenTheActivityIsCreatedThenTheGroceryStoreListFragmentShouldBeCreated() {
         GroceryStoreListFragment groceryStoreListFragment = getGroceryStoreListFragment();
@@ -172,20 +150,6 @@ public class GroceryStoresActivityTest extends RobolectricTestBase {
         assertEquals("5.0 mi", distanceText.getText());
 
         verify(groceryStoreManagerMock).getCurrentLocation();
-    }
-
-    @Test
-    public void givenStoresExistWhenTheCursorLoaderIsFinishedThenTheProgressDialogIsHidden() {
-        ShadowCursorWrapper wrapper = createCursorWithDefaultReminder();
-
-        GroceryStoreManagerInterface groceryStoreManagerMock = getTestReminderModule().getGroceryStoreManager();
-        when(groceryStoreManagerMock.getCurrentLocation()).thenReturn(new Location(LocationManager.PASSIVE_PROVIDER));
-
-        CursorLoader cursorLoader = (CursorLoader)activity.onCreateLoader(0, null);
-        activity.onLoadFinished(cursorLoader, wrapper);
-
-        ProgressDialog progressDialog = (ProgressDialog)ShadowProgressDialog.getLatestDialog();
-        assertFalse(progressDialog.isShowing());
     }
 
     @Test
