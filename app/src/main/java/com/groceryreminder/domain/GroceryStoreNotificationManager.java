@@ -36,9 +36,15 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
     public void saveNoticeDetails(String currentStoreName, long currentTime) {
         Log.d(TAG, "Saving notice details");
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+        long lastNotificationTimeForSameStore = 0;
+        if (currentStoreName.equals(sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ""))) {
+            lastNotificationTimeForSameStore = currentTime;
+        }
+
         sharedPreferences.edit()
                 .putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, currentStoreName)
                 .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, currentTime)
+                .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME_FOR_SAME_STORE, lastNotificationTimeForSameStore)
                 .commit();
     }
 
@@ -69,6 +75,7 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         String lastNotifiedStore = sharedPreferences.getString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, "");
         long lastNotificationTime = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME, 0);
+        long lastNotificationTimeForSameStore = sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME_FOR_SAME_STORE, 0);
         Log.d(TAG, "Last notification time: " + lastNotificationTime);
 
         boolean isLastNotifiedStore = isNotificationForCurrentStore(lastNotifiedStore, groceryStore.getName());
@@ -76,15 +83,21 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
 
         boolean storeIsNearby = isStoreNearby(location, groceryStore);
 
-        boolean notificationIsTooRecent = notificationIsTooRecent(lastNotificationTime, currentTime);
+        boolean notificationIsTooRecent = notificationIsTooRecent(lastNotificationTime, currentTime, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
+        boolean notificationIsTooRecentForSameStore = notificationIsTooRecent(lastNotificationTimeForSameStore, currentTime, 360000);
+
         Log.d(TAG, "Notification is too recent: " + notificationIsTooRecent);
 
-        if (storeIsNearby && !isLastNotifiedStore && !notificationIsTooRecent) {
+        if (storeIsNearby && canNotifyForStore(isLastNotifiedStore, notificationIsTooRecentForSameStore) && !notificationIsTooRecent) {
             Intent notificationIntent = new Intent();
             notificationIntent.putExtra(ReminderContract.Locations.NAME, groceryStore.getName());
             sendNotification(notificationIntent);
             saveNoticeDetails(groceryStore.getName(), currentTime);
         }
+    }
+
+    private boolean canNotifyForStore(boolean isLastNotifiedStore, boolean notificationIsTooRecentForSameStore) {
+        return (isLastNotifiedStore && !notificationIsTooRecentForSameStore) || !isLastNotifiedStore;
     }
 
     private boolean isStoreNearby(Location location, GroceryStore groceryStore) {
@@ -104,12 +117,12 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         return cursor.getCount() > 0;
     }
 
-    private boolean notificationIsTooRecent(long lastNotificationTime, long currentTime) {
+    private boolean notificationIsTooRecent(long lastNotificationTime, long currentTime, long threshold) {
         Log.d(TAG, "Current time: " + currentTime);
         Log.d(TAG, "Previous time: " + lastNotificationTime);
         long timeDelta = currentTime - lastNotificationTime;
         Log.d(TAG, "Time Delta: " + timeDelta);
-        return timeDelta <= GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS;
+        return timeDelta <= threshold;
     }
 
     private boolean isNotificationForCurrentStore(String lastNotifiedStore, String currentStoreName) {

@@ -204,6 +204,22 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     }
 
     @Test
+    public void whenANotificationIsSentForTheSameStoreThenTheTheLastNotificationTimeForTheSameStoreIsSetAreSaved() {
+        ShadowApplication shadowApplication = (ShadowApplication) Shadows.shadowOf(RuntimeEnvironment.application);
+        SharedPreferences sharedPreferences = shadowApplication.getSharedPreferences(shadowApplication.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ARBITRARY_STORE_NAME).commit();
+
+        insertStoreLocation(shadowApplication);
+
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS});
+
+        long currentTime = System.currentTimeMillis();
+        groceryStoreNotificationManager.sendPotentialNotification(new Location(LocationManager.GPS_PROVIDER), currentTime);
+
+        assertEquals(currentTime, sharedPreferences.getLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME_FOR_SAME_STORE, 0));
+    }
+
+    @Test
     public void whenANotificationIsSentThenTheTheNotificationIncludesTheStoreName() {
         ShadowApplication shadowApplication = (ShadowApplication) Shadows.shadowOf(RuntimeEnvironment.application);
 
@@ -217,7 +233,7 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
         Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
         ShadowNotification shadowNotification = (ShadowNotification)Shadows.shadowOf(notification);
-        assertTrue(((String)shadowNotification.getContentTitle()).contains(ARBITRARY_STORE_NAME));
+        assertTrue(((String) shadowNotification.getContentTitle()).contains(ARBITRARY_STORE_NAME));
     }
 
     private void insertStoreLocation(ShadowApplication shadowApplication) {
@@ -242,12 +258,14 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
     }
 
     @Test
-    public void givenAStoreNotificationHasBeenStoredWhenARequestToSendANotificationWithTheTheSameStoreIsReceivedThenTheNotificationIsNotSent() {
+     public void givenAStoreNotificationHasBeenStoredWhenARequestToSendANotificationWithTheTheSameStoreIsReceivedBeforeTheMinimumUpdateTimeForTheSameStoreThenTheNotificationIsNotSent() {
         ShadowApplication shadowApplication = (ShadowApplication) Shadows.shadowOf(RuntimeEnvironment.application);
 
         insertStoreLocation(shadowApplication);
         SharedPreferences sharedPreferences = shadowApplication.getSharedPreferences(shadowApplication.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ARBITRARY_STORE_NAME).commit();
+        sharedPreferences.edit().putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ARBITRARY_STORE_NAME)
+                .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME_FOR_SAME_STORE, System.currentTimeMillis() - 1)
+                .commit();
 
         ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS});
 
@@ -257,6 +275,27 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
 
         Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
         assertNull(notification);
+    }
+
+    @Test
+    public void givenAStoreNotificationHasBeenStoredWhenARequestToSendANotificationWithTheTheSameStoreAfterTheMinimumUpdateTimeForTheSameStoreIsReceivedThenTheNotificationIsSent() {
+        ShadowApplication shadowApplication = (ShadowApplication) Shadows.shadowOf(RuntimeEnvironment.application);
+
+        insertStoreLocation(shadowApplication);
+        SharedPreferences sharedPreferences = shadowApplication.getSharedPreferences(shadowApplication.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
+        sharedPreferences.edit()
+                .putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ARBITRARY_STORE_NAME)
+                .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME_FOR_SAME_STORE, 360000 + 1)
+                .commit();
+
+        ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS});
+
+        ShadowNotificationManager shadowNotificationManager = getShadowNotificationManager();
+
+        groceryStoreNotificationManager.sendPotentialNotification(new Location(LocationManager.GPS_PROVIDER), System.currentTimeMillis());
+
+        Notification notification = shadowNotificationManager.getNotification(GroceryReminderConstants.NOTIFICATION_PROXIMITY_ALERT);
+        assertNotNull(notification);
     }
 
     @Test
