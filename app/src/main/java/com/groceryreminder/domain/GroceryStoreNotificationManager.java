@@ -84,7 +84,7 @@ public class GroceryStoreNotificationManager implements GroceryStoreNotification
         boolean storeIsNearby = isStoreNearby(location, groceryStore);
 
         boolean notificationIsTooRecent = notificationIsTooRecent(lastNotificationTime, currentTime, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_MILLIS);
-        boolean notificationIsTooRecentForSameStore = notificationIsTooRecent(lastNotificationTimeForSameStore, currentTime, 360000);
+        boolean notificationIsTooRecentForSameStore = notificationIsTooRecent(lastNotificationTimeForSameStore, currentTime, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_FOR_SAME_STORE_MILLIS);
 
         Log.d(TAG, "Notification is too recent: " + notificationIsTooRecent);
 

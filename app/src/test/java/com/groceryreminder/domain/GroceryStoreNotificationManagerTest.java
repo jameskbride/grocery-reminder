@@ -285,7 +285,7 @@ public class GroceryStoreNotificationManagerTest extends RobolectricTestBase {
         SharedPreferences sharedPreferences = shadowApplication.getSharedPreferences(shadowApplication.getString(R.string.reminder_pref_key), Context.MODE_PRIVATE);
         sharedPreferences.edit()
                 .putString(GroceryReminderConstants.LAST_NOTIFIED_STORE_KEY, ARBITRARY_STORE_NAME)
-                .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME_FOR_SAME_STORE, 360000 + 1)
+                .putLong(GroceryReminderConstants.LAST_NOTIFICATION_TIME_FOR_SAME_STORE, GroceryReminderConstants.MIN_LOCATION_UPDATE_TIME_FOR_SAME_STORE_MILLIS + 1)
                 .commit();
 
         ShadowLocation.setDistanceBetween(new float[]{(float) GroceryReminderConstants.LOCATION_GEOFENCE_RADIUS_METERS});

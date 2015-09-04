@@ -13,6 +13,7 @@ public class GroceryReminderConstants {
     public static final long[] PROXIMITY_VIBRATION_PATTERN = {1000, 1000};
 
     public static final long MIN_LOCATION_UPDATE_TIME_MILLIS = 300000l;
+    public static final long MIN_LOCATION_UPDATE_TIME_FOR_SAME_STORE_MILLIS = 3600000l;
 
     public static final String LAST_NOTIFIED_STORE_KEY = "LAST_STORE_ALERT_KEY";
     public static final String LAST_NOTIFICATION_TIME = "LAST_NOTIFICATION_TIME";
