@@ -12,4 +12,6 @@
     <string name="not_available">N/A</string>
     <string name="mile_abbreviation">mi</string>
     <string name="reminder_pref_key">reminder_prefs</string>
+    <string name="loading_stores_dialog_title">Loading Stores</string>
+    <string name="loading_stores_dialog_message">Attempting to find stores near you...</string>
 </resources>

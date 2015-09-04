@@ -1,6 +1,5 @@
 package com.groceryreminder.services;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -11,11 +10,9 @@ public class GroceryStoreLocationListener implements LocationListener {
     private static final String TAG = "StoreLocationListener";
     public static final String PROVIDER = "provider";
 
-    private Context context;
     private final LocationUpdater locationUpdater;
 
-    public GroceryStoreLocationListener(Context context, LocationUpdater locationUpdater) {
-        this.context = context;
+    public GroceryStoreLocationListener(LocationUpdater locationUpdater) {
         this.locationUpdater = locationUpdater;
     }
 
@@ -32,16 +29,21 @@ public class GroceryStoreLocationListener implements LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        resetListeningRequests();
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        resetListeningRequests();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        resetListeningRequests();
+    }
 
+    private void resetListeningRequests() {
+        locationUpdater.removeGPSListener();
+        locationUpdater.listenForLocationUpdates(false);
     }
 }

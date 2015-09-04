@@ -11,4 +11,8 @@ public interface LocationUpdater {
     boolean isBetterThanCurrentLocation(Location location);
 
     boolean isAccurate(Location location);
+
+    void listenForLocationUpdates(boolean listenForGPSUpdates);
+
+    void removeGPSListener();
 }

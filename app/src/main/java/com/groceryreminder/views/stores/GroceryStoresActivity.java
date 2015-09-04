@@ -1,5 +1,6 @@
 package com.groceryreminder.views.stores;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
@@ -30,6 +31,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
 
     @Inject
     GroceryStoreManagerInterface groceryStoreManager;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,9 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         setContentView(R.layout.grocery_stores_activity);
         GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(new ArrayList<GroceryStore>());
         getSupportFragmentManager().beginTransaction().add(R.id.stores_fragment_container, groceryStoreListFragment).commit();
+        this.progressDialog = ProgressDialog.show(this, getString(R.string.loading_stores_dialog_title), getString(R.string.loading_stores_dialog_message), true);
+        this.progressDialog.setCancelable(true);
+        this.progressDialog.setIndeterminate(true);
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
     }
 
@@ -86,6 +91,9 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         }
 
         Collections.sort(groceryStoreList);
+        if (!groceryStoreList.isEmpty()) {
+            progressDialog.hide();
+        }
 
         GroceryStoreListFragment groceryStoreListFragment =
                 (GroceryStoreListFragment)getSupportFragmentManager().findFragmentById(R.id.stores_fragment_container);

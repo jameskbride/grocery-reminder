@@ -162,7 +162,7 @@ public class GroceryStoreManager implements GroceryStoreManagerInterface {
     }
 
     private LocationListener createLocationListener() {
-        return new GroceryStoreLocationListener(context, this);
+        return new GroceryStoreLocationListener(this);
     }
 
     private void applyBatchOperations(ArrayList<ContentProviderOperation> operations) {
