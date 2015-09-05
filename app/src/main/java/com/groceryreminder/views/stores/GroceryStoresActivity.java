@@ -39,9 +39,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
         setContentView(R.layout.grocery_stores_activity);
         GroceryStoreListFragment groceryStoreListFragment = GroceryStoreListFragment.newInstance(new ArrayList<GroceryStore>());
         getSupportFragmentManager().beginTransaction().add(R.id.stores_fragment_container, groceryStoreListFragment).commit();
-        this.progressDialog = ProgressDialog.show(this, getString(R.string.loading_stores_dialog_title), getString(R.string.loading_stores_dialog_message), true);
-        this.progressDialog.setCancelable(true);
-        this.progressDialog.setIndeterminate(true);
+
         getSupportLoaderManager().initLoader(0, savedInstanceState, this);
     }
 
@@ -71,6 +69,9 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.d(TAG, "in onCreateLoader");
+        this.progressDialog = ProgressDialog.show(this, getString(R.string.loading_stores_dialog_title), getString(R.string.loading_stores_dialog_message), true);
+        this.progressDialog.setCancelable(true);
+        this.progressDialog.setIndeterminate(true);
         CursorLoader loader = new CursorLoader(this,
                 ReminderContract.Locations.CONTENT_URI,
                 ReminderContract.Locations.PROJECT_ALL,
@@ -92,6 +93,7 @@ public class GroceryStoresActivity extends ReminderFragmentBaseActivity implemen
 
         Collections.sort(groceryStoreList);
         if (!groceryStoreList.isEmpty()) {
+            Log.d(TAG, "Hitting the empty clause.");
             progressDialog.hide();
         }
 
