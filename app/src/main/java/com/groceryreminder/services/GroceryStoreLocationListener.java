@@ -29,21 +29,16 @@ public class GroceryStoreLocationListener implements LocationListener {
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        resetListeningRequests();
+
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        resetListeningRequests();
+
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        resetListeningRequests();
-    }
 
-    private void resetListeningRequests() {
-        locationUpdater.removeGPSListener();
-        locationUpdater.listenForLocationUpdates(false);
     }
 }

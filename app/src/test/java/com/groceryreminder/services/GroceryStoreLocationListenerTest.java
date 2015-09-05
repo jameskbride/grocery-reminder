@@ -1,9 +1,7 @@
 package com.groceryreminder.services;
 
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 
 import com.groceryreminder.BuildConfig;
 import com.groceryreminder.RobolectricTestBase;
@@ -12,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.mock;
@@ -55,29 +52,5 @@ public class GroceryStoreLocationListenerTest extends RobolectricTestBase {
         groceryStoreLocationListener.onLocationChanged(location);
 
         verify(locationUpdaterMock, times(0)).handleLocationUpdated(location);
-    }
-
-    @Test
-    public void whenTheStatusChangesTheLocationUpdaterShouldRequestToListenForUpdates() {
-        groceryStoreLocationListener.onStatusChanged(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE, null);
-
-        verify(locationUpdaterMock).removeGPSListener();
-        verify(locationUpdaterMock).listenForLocationUpdates(false);
-    }
-
-    @Test
-    public void whenAProviderIsEnabledTheLocationUpdaterShouldRequestToListenForUpdates() {
-        groceryStoreLocationListener.onProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        verify(locationUpdaterMock).removeGPSListener();
-        verify(locationUpdaterMock).listenForLocationUpdates(false);
-    }
-
-    @Test
-    public void whenAProviderIsDisabledTheLocationUpdaterShouldRequestToListenForUpdates() {
-        groceryStoreLocationListener.onProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        verify(locationUpdaterMock).removeGPSListener();
-        verify(locationUpdaterMock).listenForLocationUpdates(false);
     }
 }
