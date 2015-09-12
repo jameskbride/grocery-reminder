@@ -9,7 +9,7 @@ public class EspressoReminderApplication extends ReminderApplication {
     private EspressoReminderModule reminderModule;
     private EspressoRemoteResourcesModule espressoRemoteResourcesModule;
 
-    protected List<Object> getModules() {
+    public List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.add(getAndroidModule());
         modules.add(getEspressoRemoteResourcesModule());
